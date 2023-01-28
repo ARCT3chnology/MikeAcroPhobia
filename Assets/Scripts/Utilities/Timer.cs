@@ -1,7 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class Timer : MonoBehaviour
 {
@@ -11,35 +14,32 @@ public class Timer : MonoBehaviour
     [SerializeField] Text _timertext;
     [SerializeField] Slider _timeSlider;
     [HideInInspector] float _currenttime;
-    
-    public Text TimerText { get { return _timertext; } }
-    public Slider TimeSlider { get { return _timeSlider; } }
-    public float StartTime { get { return _starttime;} }
-    public float EndTime { get { return _endtime;} }
-    public float CurrentTime { get { return _currenttime;} }
-    public bool StartTimer { get { return _startTimer;} }
+    [SerializeField] GameManager gameManager;
 
-
-    private void Start()
+    private void OnEnable()
     {
-        _currenttime = StartTime;
-        TimeSlider.minValue = EndTime;
-        TimeSlider.maxValue = StartTime;
+        _currenttime = _starttime;
+        //Debug.Log(" " + _currenttime.ToString());
+        _timeSlider.value = _starttime;
+        _timeSlider.minValue = _endtime;
+        _timeSlider.maxValue = _starttime;  
+        _startTimer = true;
     }
 
     private void Update()
     {
-        if (StartTimer)
+        if (_startTimer)
         {
-            if (CurrentTime > EndTime)
+            if (_currenttime > _endtime)
             {
                 _currenttime -= Time.deltaTime;
-                TimerText.text = Mathf.FloorToInt(_currenttime%60).ToString();
-                TimeSlider.value = _currenttime;
+                _timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
+                _timeSlider.value = _currenttime;
             }
             else
             {
                 _startTimer = false;
+                gameManager.OnAnswerTimeComplete();
             }
         }
     }
