@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Realtime;
 using UnityEditor;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class CreateRoom : MonoBehaviourPunCallbacks
 {
@@ -26,7 +27,12 @@ public class CreateRoom : MonoBehaviourPunCallbacks
         options.MaxPlayers = 3;
         options.PlayerTtl = 60;
         options.EmptyRoomTtl = 60;
-        
+        Hashtable roomProps= new Hashtable();
+        roomProps.Add("P13Letters", 0);
+        roomProps.Add("P23Letters", 0);
+        roomProps.Add("P33Letters", 0);
+        options.CustomRoomProperties = roomProps;
+
         if(_roomName.text != "")
             PhotonNetwork.JoinOrCreateRoom(_roomName.text, options, TypedLobby.Default);
     }

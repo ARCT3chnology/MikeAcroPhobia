@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,9 +34,9 @@ public class WelcomePanel : MonoBehaviour
             }
             else
             {
+                UiController.Start3LetterRound();
                 StartTimer = false;
                 this.gameObject.SetActive(false);
-                UiController.Start3LetterRound();
             }
         }
     }

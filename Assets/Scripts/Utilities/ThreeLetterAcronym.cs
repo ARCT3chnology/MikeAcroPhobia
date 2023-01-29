@@ -22,6 +22,7 @@ public class ThreeLetterAcronym : MonoBehaviourPun
     [PunRPC]
     public void RPC_setText(int[] letters)
     {
+        Debug.Log("RPC_setText");
         acroText.text = alphabets[letters[0]].ToString() + alphabets[letters[1]].ToString() + alphabets[letters[2]].ToString(); 
     }
 
@@ -30,7 +31,7 @@ public class ThreeLetterAcronym : MonoBehaviourPun
         acroText.text = alphabets[letters[0]].ToString() + alphabets[letters[1]].ToString() + alphabets[letters[2]].ToString(); 
     }
 
-    private void OnEnable()
+    private void Start()
     {
 //#if !UNITY_EDITOR
         if (PhotonNetwork.IsMasterClient)
