@@ -19,7 +19,7 @@ public class CreateRoom : MonoBehaviourPunCallbacks
 
     public void onClick_CreateRoom()
     {
-        if(!PhotonNetwork.IsConnected)
+        if (!PhotonNetwork.IsConnected)
             return;
 
 
@@ -27,14 +27,21 @@ public class CreateRoom : MonoBehaviourPunCallbacks
         options.MaxPlayers = 3;
         options.PlayerTtl = 60;
         options.EmptyRoomTtl = 60;
-        Hashtable roomProps= new Hashtable();
-        roomProps.Add("P13Letters", 0);
-        roomProps.Add("P23Letters", 0);
-        roomProps.Add("P33Letters", 0);
-        options.CustomRoomProperties = roomProps;
+        addRoomProperties(options);
 
-        if(_roomName.text != "")
+        if (_roomName.text != "")
             PhotonNetwork.JoinOrCreateRoom(_roomName.text, options, TypedLobby.Default);
+    }
+
+    private static void addRoomProperties(RoomOptions options)
+    {
+        Hashtable roomProps = new Hashtable();
+        roomProps.Add(GameSettings.PlAYER1_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
+        roomProps.Add(GameSettings.ROUND_NUMBER, 0);
+        options.CustomRoomProperties = roomProps;
     }
 
     public override void OnCreatedRoom()

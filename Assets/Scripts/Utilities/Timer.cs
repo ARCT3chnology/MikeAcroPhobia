@@ -8,8 +8,8 @@ using Debug = UnityEngine.Debug;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] float _starttime;
-    [SerializeField] float _endtime;
+    public float _starttime;
+    public float _endtime;
     [SerializeField] bool _startTimer;
     [SerializeField] Text _timertext;
     [SerializeField] Slider _timeSlider;

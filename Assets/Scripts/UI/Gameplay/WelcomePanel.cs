@@ -11,33 +11,76 @@ public class WelcomePanel : MonoBehaviour
     [SerializeField] float CurrentTime, EndTime;
     [SerializeField] bool StartTimer;
     [SerializeField] UiController UiController;
+    public UiController UIController 
+    { 
+        get {
+            return UiController;
+        }
+    }
     private void OnEnable()
     {
        Invoke("StartGame",1f);
     }
 
-    private void StartGame()
+    public void StartGame()
     {
         //TimerTxt.gameObject.SetActive(true);
+        Debug.Log("StartGame");
         CurrentTime = EndTime;
         StartTimer = true;
+        TimerTxt.text = "";
     }
 
     private void Update()
+    {
+        Timer("Starting Three Letter Round in: ");
+    }
+
+    public virtual void Timer(string text)
     {
         if (StartTimer)
         {
             if (CurrentTime >= 0)
             {
                 CurrentTime -= Time.deltaTime;
-                TimerTxt.text = "Starting Three Letter Round in: " + Mathf.FloorToInt(CurrentTime % 60).ToString();
+                setTimerText(text);
             }
             else
             {
-                UiController.Start3LetterRound();
-                StartTimer = false;
-                this.gameObject.SetActive(false);
+                onTimerComplete();
             }
         }
     }
+
+    public virtual void onTimerComplete()
+    {
+        switch (GameManager.getroundNumber())
+        {
+            case 0:
+                UiController.Start3LetterRound();
+                break;
+            case 1:
+                UiController.Start4LetterRound();
+                break;
+            case 2:
+                UiController.Start5LetterRound();
+                break;
+            case 3:
+                UiController.Start6LetterRound();
+                break;
+            case 4:
+                UiController.Start7LetterRound();
+                break;
+            default:
+                break;
+        }
+        StartTimer = false;
+        this.gameObject.SetActive(false);
+    }
+
+    public virtual void setTimerText(string text)
+    {
+        TimerTxt.text = text + Mathf.FloorToInt(CurrentTime % 60).ToString();
+    }
+
 }

@@ -26,6 +26,7 @@ public class RoomListingMenu : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        Debug.Log("Room list updated");
         foreach (RoomInfo info in roomList)
         {
             if (info.RemovedFromList)
@@ -50,7 +51,14 @@ public class RoomListingMenu : MonoBehaviourPunCallbacks
                         _rooms.Add(listing);
                     }
                 }
+                else
+                {
+                    _rooms[index].setRoomInfo(info);
+                    Debug.Log("Index is: " + index);
+                }
             }
         }
     }
+
+
 }

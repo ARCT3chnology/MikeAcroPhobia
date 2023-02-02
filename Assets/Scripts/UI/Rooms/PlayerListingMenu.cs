@@ -123,6 +123,11 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
                 PhotonNetwork.LoadLevel(1);
             }else
             {
+#if UNITY_EDITOR
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                PhotonNetwork.LoadLevel(1);
+#endif
                 Debug.Log("All Players not connected");
             }
         }

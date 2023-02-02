@@ -11,21 +11,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
     [SerializeField] InputField threeLetterAnswerInputField;
     [SerializeField] UiController uiController;
+
     
     public void setAnswer()
     {
-        //if (_myCustomProperties.ContainsKey("ThreeletterAcronym"))
-        //{
-        //    //_myCustomProperties.Add("ThreeletterAcronym",threeLetterAnswerInputField.text.ToString());
-        //    _myCustomProperties["ThreeletterAcronym"] = threeLetterAnswerInputField.text.ToString();
-
-        //}
-        //else
-        //{
-        //}
-
         stats = new ExitGames.Client.Photon.Hashtable();
-        stats["3Letter"] = threeLetterAnswerInputField.text.ToString();
+        stats[GameSettings.PlAYER_ANSWER] = threeLetterAnswerInputField.text.ToString();
         PhotonNetwork.SetPlayerCustomProperties(stats);
         //Debug.Log("setting answer");
         //Debug.Log(PhotonNetwork.PlayerList[0].NickName + "setting answer");
@@ -33,8 +24,24 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-
         //base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+    }
+
+    //public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    //{
+    //    uiController.votingPanel.updateVotesStats(3, (int)propertiesThatChanged["PlayerVoted"]);
+    //}
+
+    public static int getroundNumber()
+    {
+        return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
+    }
+
+    public static void updateRoundNumber()
+    {
+        int roundNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
+        roundNumber++;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.ROUND_NUMBER, roundNumber } });
     }
 
     public void OnAnswerTimeComplete()

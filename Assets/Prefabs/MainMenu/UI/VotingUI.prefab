@@ -349,7 +349,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   answerText: {fileID: 5788791365344028784}
   votebutton: {fileID: 5788791366741605599}
-  noOfVotes: {fileID: 0}
+  noOfVotes: {fileID: 6079635096016113754}
+  votingMenu: {fileID: 0}
 --- !u!114 &282835145927905416
 MonoBehaviour:
   m_ObjectHideFlags: 0

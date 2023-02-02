@@ -13,6 +13,7 @@ public class RoomListing : MonoBehaviour
 
     public void setRoomInfo(RoomInfo roomInfo)
     {
+        Debug.Log("Setting Room Info");
         _roomInfo = roomInfo;
         _text.text = roomInfo.PlayerCount.ToString()+" / "+roomInfo.MaxPlayers.ToString()+ ", " + roomInfo.Name;
     }

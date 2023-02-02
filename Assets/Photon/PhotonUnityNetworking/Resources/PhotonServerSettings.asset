@@ -44,6 +44,16 @@ MonoBehaviour:
   - RPC_setText
   - RPC_ShowWelcomePanel
   - RPC_ShowFirstRoundPanel
+  - RPC_updateVotesStats
+  - RPC_ShowFifthRoundPanel
+  - RPC_ShowFourthRoundPanel
+  - RPC_ShowSecondRoundPanel
+  - RPC_ShowThirdRoundPanel
+  - RPC_setTextFor3Letters
+  - RPC_setTextFor4Letters
+  - RPC_setTextFor5Letters
+  - RPC_setTextFor6Letters
+  - RPC_setTextFor7Letters
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
