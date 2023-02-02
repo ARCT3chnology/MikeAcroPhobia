@@ -1,17 +1,16 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerListingMenu : MonoBehaviourPunCallbacks
 {
+    [SerializeField] MultiplayerNetworkManager _mnp;
     [SerializeField] PlayerListing _playerListing;
     [SerializeField] Transform content;
 
     private List<PlayerListing> _playerLists = new List<PlayerListing>();
-    private GameCanvas _gameCanvas;
     private bool _ready;
     [SerializeField] Text _readyUpText;
     public override void OnEnable()
@@ -30,39 +29,49 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
         _playerLists.Clear();
     }
-    public void FirstInitialize(GameCanvas panel)
-    {
-        _gameCanvas = panel;
-    }
-    private void SetReadyUp(bool state)
-    {
-        _ready = state;
-        if (_ready)
-        {
-            _readyUpText.text = "R";
-        }
-        else
-        {
-            _readyUpText.text = "N";
 
+    #region UI CALLBACKS
+    public void ReadyUp_OnClick()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            SetReadyUp(!_ready);
+            photonView.RPC("RPC_ChangeReadyState", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer, _ready);
         }
     }
 
-    private void getCurrentRoomplayers()
+    public void StartGame_OnClick()
     {
-        if (!PhotonNetwork.IsConnected)
-            return;
-        if (PhotonNetwork.CurrentRoom == null || PhotonNetwork.CurrentRoom.Players == null)
+        if (PhotonNetwork.IsMasterClient)
         {
-            return;
-        }
-
-        foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
-        {
-            addPlayerlisting(playerInfo.Value);
+            for (int i = 0; i < _playerLists.Count; i++)
+            {
+                if (_playerLists[i].Player != PhotonNetwork.LocalPlayer)
+                {
+                    if (!_playerLists[i].Ready)
+                        return;
+                }
+            }
+            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                PhotonNetwork.LoadLevel(1);
+            }
+            else
+            {
+#if UNITY_EDITOR
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                PhotonNetwork.LoadLevel(1);
+#endif
+                Debug.Log("All Players not connected");
+            }
         }
     }
+    #endregion
 
+    #region PRIVATE FUNCTIONS
     private void addPlayerlisting(Player player)
     {
         int index = _playerLists.FindIndex(x => x.Player == player);
@@ -82,11 +91,42 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnMasterClientSwitched(Player newMasterClient)
+    private void SetReadyUp(bool state)
     {
-        _gameCanvas.roomPanel.leaveRoomMenu.onClick_LeaveRoom();
+        _ready = state;
+        if (_ready)
+        {
+            _readyUpText.text = "R";
+        }
+        else
+        {
+            _readyUpText.text = "N";
+
+        }
+    }
+    private void getCurrentRoomplayers()
+    {
+        if (!PhotonNetwork.IsConnected)
+            return;
+        if (PhotonNetwork.CurrentRoom == null || PhotonNetwork.CurrentRoom.Players == null)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<int, Player> playerInfo in PhotonNetwork.CurrentRoom.Players)
+        {
+            addPlayerlisting(playerInfo.Value);
+        }
     }
 
+    #endregion
+
+    #region PHOTON CALLBACKS
+    //PLAYER CALLBACKS
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        _mnp.LeaveRoom_OnClick();
+    }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -104,46 +144,9 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
     }
 
-    public void onClick_StartGame()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            for (int i = 0; i < _playerLists.Count; i++)
-            {
-                if (_playerLists[i].Player != PhotonNetwork.LocalPlayer)
-                {
-                    if (!_playerLists[i].Ready)
-                        return;
-                }
-            }
-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
-            {
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-                PhotonNetwork.LoadLevel(1);
-            }else
-            {
-#if UNITY_EDITOR
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-                PhotonNetwork.LoadLevel(1);
-#endif
-                Debug.Log("All Players not connected");
-            }
-        }
-    }
-
-    public void onClick_ReadyUp()
-    {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            SetReadyUp(!_ready);
-            photonView.RPC("RPC_ChangeReadyState",RpcTarget.MasterClient,PhotonNetwork.LocalPlayer,_ready);
-        }
-    }
-
+    //PUN RPC CALLBACKS
     [PunRPC]
-    private void RPC_ChangeReadyState(Player player,bool ready)
+    private void RPC_ChangeReadyState(Player player, bool ready)
     {
         int index = _playerLists.FindIndex(x => x.Player == player);
         if (index != -1)
@@ -153,6 +156,8 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_ChangePlayerCount()
     {
-        _gameCanvas.roomPanel.UpdatePlayerCount(PhotonNetwork.CurrentRoom.MaxPlayers, PhotonNetwork.CurrentRoom.PlayerCount);
+        _mnp.UpdatePlayerCount(PhotonNetwork.CurrentRoom.MaxPlayers, PhotonNetwork.CurrentRoom.PlayerCount);
     }
+
+    #endregion
 }
