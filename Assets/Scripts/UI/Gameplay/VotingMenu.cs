@@ -20,7 +20,7 @@ public class VotingMenu : MonoBehaviour
 
     public void instantiateAnswers()
     {
-
+        
         //Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
