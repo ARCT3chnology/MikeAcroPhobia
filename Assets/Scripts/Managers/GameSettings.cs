@@ -25,6 +25,12 @@ public class GameSettings : ScriptableObject
             return "ROUND_NUMBER";
         }
     }
+    public static string FACEOFF_ROUND_NUMBER {
+        get 
+        {
+            return "FACEOFF_ROUND_NUMBER";
+        }
+    }
     public static string PlAYERS_VOTED 
     {
         get
@@ -72,38 +78,43 @@ public class GameSettings : ScriptableObject
     {
         get
         {
-            return 10;
+            return 30;
         }
     }
     public static float FourLetterRoundTime
     {
         get
         {
-            return 10;
+            return 40;
         }
     }
     public static float FiveLetterRoundTime
     {
         get
         {
-            return 10;
+            return 50;
         }
     }
     public static float SixLetterRoundTime
     {
         get
         {
-            return 10;
+            return 60;
         }
     }
     public static float SevenLetterRoundTime
     {
         get
         {
-            return 10;
+            return 70;
         }
     }
-    public static bool gameStarted
+    public static bool normalGame
+    {
+        get;
+        set;
+    }
+    public static bool FaceOffGame
     {
         get;
         set;

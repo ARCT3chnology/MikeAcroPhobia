@@ -97,7 +97,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     }
     #endregion
-
     #region UNITY CALLBACKS
     private void Start()
     {

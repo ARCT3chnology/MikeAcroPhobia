@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
@@ -15,14 +16,37 @@ public class Timer : MonoBehaviour
     [SerializeField] Slider _timeSlider;
     [HideInInspector] float _currenttime;
     [SerializeField] GameManager gameManager;
+    [SerializeField] bool autoStart;
+    [SerializeField] UnityEvent OnTimerEnd;
+    public bool StartTime
+    {
+        get 
+        {
+            return _startTimer;
+        }
+        set
+        {
+            _startTimer = value;
+        }
+    }
 
     private void OnEnable()
     {
+        if (autoStart)
+        {
+            StartTimer();
+        }
+        _timertext.text = "";
         _currenttime = _starttime;
         //Debug.Log(" " + _currenttime.ToString());
         _timeSlider.value = _starttime;
         _timeSlider.minValue = _endtime;
-        _timeSlider.maxValue = _starttime;  
+        _timeSlider.maxValue = _starttime;
+    }
+
+    public void StartTimer()
+    {
+
         _startTimer = true;
     }
 
@@ -39,7 +63,8 @@ public class Timer : MonoBehaviour
             else
             {
                 _startTimer = false;
-                gameManager.OnAnswerTimeComplete();
+                OnTimerEnd.Invoke();
+                //gameManager.OnAnswerTimeComplete();
             }
         }
     }

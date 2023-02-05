@@ -32,7 +32,7 @@ public class UiController : MonoBehaviourPunCallbacks
         {
             photonView.RPC("RPC_ShowWelcomePanel", RpcTarget.All);
         }
-        GameSettings.gameStarted = true;
+        GameSettings.normalGame = true;
     }
 
     public void Start3LetterRound()
@@ -94,18 +94,18 @@ public class UiController : MonoBehaviourPunCallbacks
                         votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
                     }
                 }
+
                 GameManager.updateRoundNumber();
-                Invoke("enableVotingpanel", 3f);
-
+                Invoke("StartNextRound", 3f);
             }
-
         }
     }
 
-    public void enableVotingpanel()
+    public void StartNextRound()
     {
         if(threeLetterRound.activeInHierarchy)
         {
+            Debug.Log("StartNextRound");        
             threeLetterRound.gameObject.SetActive(false);
             votingPanel.gameObject.SetActive(false);
             votingPanel.resetVotesList();
@@ -149,43 +149,62 @@ public class UiController : MonoBehaviourPunCallbacks
             }
             else if(maxCount > 1)
             {
-                int MaxNoOfVotes = allVotes.Max();
-                Debug.Log("More than 1 have same votes. Its time to start the face off round.");
-                var duplicatesWithIndices = allVotes
-                // Associate each name/value with an index
-                .Select((Name, Index) => new { Name, Index })
-                // Group according to name
-                .GroupBy(x => x.Name)
-                // Only care about Name -> {Index1, Index2, ..}
-                .Select(xg => new {
-                Name = xg.Key,
-                Indices = xg.Select(x => x.Index)
-                })
-                .OrderByDescending(x=>x.Name)
-                // And groups with more than one index represent a duplicate key
-                .Where(x => x.Indices.Count() > 1);
+                FaceOffRounds();
+            }
+        }
+    }
+    private List<int> faceOffPlayers;
+    private List<int> faceOffVoters;
+    public void FaceOffRounds()
+    {
+        faceOffPlayers = new List<int>();
+        faceOffVoters = new List<int>();
+        int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        }
+        int MaxNoOfVotes = allVotes.Max();
+        Debug.Log("More than 1 have same votes. Its time to start the face off round.");
+        var duplicatesWithIndices = allVotes
+        // Associate each name/value with an index
+        .Select((Name, Index) => new { Name, Index })
+        // Group according to name
+        .GroupBy(x => x.Name)
+        // Only care about Name -> {Index1, Index2, ..}
+        .Select(xg => new
+        {
+            Name = xg.Key,
+            Indices = xg.Select(x => x.Index)
+        })
+        .OrderByDescending(x => x.Name)
+        // And groups with more than one index represent a duplicate key
+        .Where(x => x.Indices.Count() > 1);
+        foreach (var g in duplicatesWithIndices)
+        {
 
-                foreach (var g in duplicatesWithIndices)
-                {
-
-                    for (int i = 0; i < g.Indices.ToArray().Count(); i++)
-                    {
-                        startFaceOffRound(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
-                    }
-                    //Debug.Log("Have duplicate " + g.Name + " with indices " +
-                    //    string.Join(",", g.Indices.ToArray()));
-                }
-                for (int i = 0; i < allVotes.Length; i++)
-                {
-                    if (allVotes[i] != MaxNoOfVotes)
-                        startFaceOffVoter(PhotonNetwork.PlayerList[i]);
-                }
+            for (int i = 0; i < g.Indices.ToArray().Count(); i++)
+            {
+                faceOffPlayers.Add(g.Indices.ToArray()[i]);
+                startFaceOffRound(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
+            }
+            //Debug.Log("Have duplicate " + g.Name + " with indices " +
+            //    string.Join(",", g.Indices.ToArray()));
+        }
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            if (allVotes[i] != MaxNoOfVotes)
+            {
+                startFaceOffVoter(PhotonNetwork.PlayerList[i]);
+                faceOffVoters.Add(i);
             }
         }
     }
 
     public void startFaceOffRound(Player p)
     {
+        GameSettings.FaceOffGame = true;
+        GameSettings.normalGame = false;
         photonView.RPC("RPC_faceOffRound", p);
     }
     public void startFaceOffVoter(Player p)
@@ -199,6 +218,15 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
         votingPanel.gameObject.SetActive(true);
+    }
+    
+    public void turnOffTextPanelFaceOff()
+    {
+        faceOffMenu.onAnswerSubmission();
+        photonView.RPC("RPC_ShowFaceOffP1Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[0]].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_StartFaceOffVotingTimer", PhotonNetwork.PlayerList[faceOffVoters[0]]);
+        //votingPanel.gameObject.SetActive(true);
     }
 
     [PunRPC]
@@ -258,7 +286,7 @@ public class UiController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_ShowFifthRoundPanel()
     {
-        roundConfigurator.setTitleText("Seve letter Round");
+        roundConfigurator.setTitleText("Seven letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.SevenLetters);
         roundConfigurator.setTimerForRound(GameSettings.SevenLetterRoundTime);
         roundConfigurator.resetAnswerField();
@@ -281,6 +309,21 @@ public class UiController : MonoBehaviourPunCallbacks
         Debug.Log("Starting face-Off Voter round");
         waitingPanel.SetActive(false);
         faceOffMenu.showVotersPanel();
+    }
+    [PunRPC]
+    public void RPC_ShowFaceOffP1Answer(string playerAnswer)
+    {
+        faceOffMenu.updateP1Answer(playerAnswer);
+    }
+    [PunRPC]
+    public void RPC_ShowFaceOffP2Answer(string playerAnswer)
+    {
+        faceOffMenu.updateP2Answer(playerAnswer);
+    }
+    [PunRPC]
+    public void RPC_StartFaceOffVotingTimer()
+    {
+        faceOffMenu.startVoteTimer();
     }
 
 }

@@ -8,18 +8,30 @@ public class WaitingPanel : WelcomePanel
     {
         if (GameManager.getroundNumber() != 5)
         {
+            timer_txt.text = "";
             Invoke("StartGame",1f);
         }
         else
         {
-            UIController.GameCompleted();
-            Debug.Log("5 Levels are completed");
+            if (GameManager.playerGotSameMaxVotes() || GameSettings.FaceOffGame)
+            {
+                if (GameManager.getFaceOffRoundNumber() != 2)
+                {
+                    timer_txt.text = "";
+                    Invoke("StartGame", 1f);
+                }
+            }
+            else
+            {
+                UIController.GameCompleted();
+                Debug.Log("5 Levels are completed");
+            }
         }
     }
 
     private void Update()
     {
-        if (GameSettings.gameStarted && GameManager.getroundNumber() < 5)
+        if (GameSettings.normalGame && GameManager.getroundNumber() < 5)
         {
             if(GameManager.getroundNumber() == 1)
                 Timer("Starting Four Letter Round in: ");
@@ -32,7 +44,17 @@ public class WaitingPanel : WelcomePanel
         }
         else
         {
-            Debug.Log("5 Levels are completed");
+            if (GameSettings.normalGame && GameManager.getFaceOffRoundNumber() < 2)
+            {
+                if (GameManager.getFaceOffRoundNumber() == 0)
+                    Timer("Starting FACE-OFF Round 1 in: ");
+                if (GameManager.getFaceOffRoundNumber() == 1)
+                    Timer("Starting FACE-OFF Round 2 in: ");
+            }
+            else
+            {
+                Debug.Log("5 Levels are completed");
+            }
         }
     }
 }

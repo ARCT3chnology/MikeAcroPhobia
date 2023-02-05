@@ -11,6 +11,12 @@ public class WelcomePanel : MonoBehaviour
     [SerializeField] float CurrentTime, EndTime;
     [SerializeField] bool StartTimer;
     [SerializeField] UiController UiController;
+    public Text timer_txt {get
+        {
+            return TimerTxt;
+        }
+        set { }
+    }
     public UiController UIController 
     { 
         get {
@@ -26,9 +32,9 @@ public class WelcomePanel : MonoBehaviour
     {
         //TimerTxt.gameObject.SetActive(true);
         Debug.Log("StartGame");
+        TimerTxt.text = "";
         CurrentTime = EndTime;
         StartTimer = true;
-        TimerTxt.text = "";
     }
 
     private void Update()
@@ -54,25 +60,42 @@ public class WelcomePanel : MonoBehaviour
 
     public virtual void onTimerComplete()
     {
-        switch (GameManager.getroundNumber())
+        if (GameManager.getroundNumber() < 5)
         {
-            case 0:
-                UiController.Start3LetterRound();
-                break;
-            case 1:
-                UiController.Start4LetterRound();
-                break;
-            case 2:
-                UiController.Start5LetterRound();
-                break;
-            case 3:
-                UiController.Start6LetterRound();
-                break;
-            case 4:
-                UiController.Start7LetterRound();
-                break;
-            default:
-                break;
+            switch (GameManager.getroundNumber())
+            {
+                case 0:
+                    UiController.Start3LetterRound();
+                    break;
+                case 1:
+                    UiController.Start4LetterRound();
+                    break;
+                case 2:
+                    UiController.Start5LetterRound();
+                    break;
+                case 3:
+                    UiController.Start6LetterRound();
+                    break;
+                case 4:
+                    UiController.Start7LetterRound();
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            switch (GameManager.getFaceOffRoundNumber())
+            {
+                case 0:
+                    UiController.FaceOffRounds();
+                    break;
+                case 1:
+                    UiController.FaceOffRounds();
+                    break;
+                default:
+                    break;
+            }
         }
         StartTimer = false;
         this.gameObject.SetActive(false);

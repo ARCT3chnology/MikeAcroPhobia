@@ -22,9 +22,9 @@ public class Vote : MonoBehaviour
 
     public void onClick_VoteButton()
     {
-        UnityEngine.Debug.Log("onClick_VoteButton");
-        int playerVoteCount = 0;
-        int VoteCount = 0;
+        //UnityEngine.Debug.Log("onClick_VoteButton");
+        int playerVoteCount;
+        int VoteCount;
         for (int i = 0;i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
             //UnityEngine.Debug.Log(PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER].ToString());

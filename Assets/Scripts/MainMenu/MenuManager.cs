@@ -1,8 +1,17 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] Menu[] menus;
+    public Menu[] gameMenus 
+    { 
+        get 
+        {
+            return menus;
+        }
+        set { } 
+    }
     public static MenuManager Instance;
 
     private void Awake()
