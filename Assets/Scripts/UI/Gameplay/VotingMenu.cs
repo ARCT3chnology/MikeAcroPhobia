@@ -11,27 +11,54 @@ public class VotingMenu : MonoBehaviour
     [SerializeField] GameObject voteUI;
     public List<Vote> voteList;
     [SerializeField] Text voteStats;
+    public bool submitPressed { get; set; }
 
     private void OnEnable()
     {
-        instantiateAnswers();
+        if (!submitPressed)
+        {
+            Debug.Log("Instantiating from enable");
+            instantiateAnswers();
+            submitPressed = false;
+        }
         voteStats.text = "0/3 Players Voted";
     }
 
     public void instantiateAnswers()
     {
-        
+        Debug.Log("instantiateAnswers");
+        if (voteList.Count > 0)
+        {
+            foreach (var item in voteList)
+            {
+                Debug.Log("Destroying: " + item.ToString());
+                DestroyImmediate(item.gameObject);
+            }
+        }
+        voteList.Clear();
         //Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
-            GameObject vote = Instantiate(voteUI, parentObject);
-            //Debug.Log(PhotonNetwork.CurrentRoom.Players[i].NickName);
-            Vote v = vote.GetComponent<Vote>();
-            voteList.Add(v);
-            vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
+            Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
+            if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
+            {
+                GameObject vote = Instantiate(voteUI, parentObject);
+                Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                Vote v = vote.GetComponent<Vote>();
+                voteList.Add(v);
+                vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
+            }
         }
 
     }
+
+    public void updateAnswers()
+    {
+        Debug.Log("updateAnswers");
+
+        instantiateAnswers();
+    }
+
 
     public void hideAllVoteButton()
     {

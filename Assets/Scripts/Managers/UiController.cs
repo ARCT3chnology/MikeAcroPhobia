@@ -114,6 +114,8 @@ public class UiController : MonoBehaviourPunCallbacks
         }    
     }
 
+
+
     public void resetPlayerVotedCount()
     {
         int VoteCount;
@@ -227,6 +229,19 @@ public class UiController : MonoBehaviourPunCallbacks
         photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
         photonView.RPC("RPC_StartFaceOffVotingTimer", PhotonNetwork.PlayerList[faceOffVoters[0]]);
         //votingPanel.gameObject.SetActive(true);
+    }
+
+
+    public void updateAnswerOnPlayer()
+    {
+        photonView.RPC("RPC_UpdateAnswersForVoting", RpcTarget.All);
+    }
+
+
+    [PunRPC]
+    public void RPC_UpdateAnswersForVoting()
+    {
+        votingPanel.updateAnswers();
     }
 
     [PunRPC]

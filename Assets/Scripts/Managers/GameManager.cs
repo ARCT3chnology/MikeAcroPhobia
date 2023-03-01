@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             stats = new ExitGames.Client.Photon.Hashtable();
             stats[GameSettings.PlAYER_ANSWER] = normalGameInputField.text.ToString();
+            Debug.Log("Text is: " + normalGameInputField.text);
             PhotonNetwork.SetPlayerCustomProperties(stats);
         }
         else
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
         //base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+        //uiController.updateAnswerOnPlayer(targetPlayer);
     }
 
 
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
     }
+
     public static int getFaceOffRoundNumber()
     {
         return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
@@ -64,6 +67,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (GameSettings.normalGame)
         {
+            //for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            //{
+            //    uiController.updateAnswerOnPlayer(PhotonNetwork.PlayerList[i]);
+            //}
             uiController.turnOffTextPanel();
         }
         else
@@ -71,6 +78,28 @@ public class GameManager : MonoBehaviourPunCallbacks
             uiController.turnOffTextPanelFaceOff();
         }
     }
+
+    /// <summary>
+    /// this fucntion is called on submit button in threeletter round panel.
+    /// </summary>
+    public void onClick_SubmitButton()
+    {
+        uiController.votingPanel.submitPressed = true;
+        Debug.Log("Instantiating from submit");
+
+        if (GameSettings.normalGame)
+        {
+            uiController.updateAnswerOnPlayer();
+
+            uiController.turnOffTextPanel();
+        }
+        else
+        {
+            uiController.turnOffTextPanelFaceOff();
+        }
+    }
+
+
     public void OnVotingTimeComplete_FaceOff()
     {
         uiController.faceOffMenu.DisableVotingOption();

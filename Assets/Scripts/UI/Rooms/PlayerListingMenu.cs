@@ -40,40 +40,49 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
     }
 
-    public void StartGame_OnClick()
+    public void StartGame_OnClick( Player player)
     {
-        if (PhotonNetwork.IsMasterClient)
+        photonView.RPC("RPC_LoadLevel", player);
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    //for (int i = 0; i < _playerLists.Count; i++)
+        //    //{
+        //    //    if (_playerLists[i].Player != PhotonNetwork.LocalPlayer)
+        //    //    {
+        //    //        if (!_playerLists[i].Ready)
+        //    //            return;
+        //    //    }
+        //    //}
+        //}
+
+    }
+
+    [PunRPC]
+    public void RPC_LoadLevel()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            for (int i = 0; i < _playerLists.Count; i++)
-            {
-                if (_playerLists[i].Player != PhotonNetwork.LocalPlayer)
-                {
-                    if (!_playerLists[i].Ready)
-                        return;
-                }
-            }
-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
-            {
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-                PhotonNetwork.LoadLevel(1);
-            }
-            else
-            {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.LoadLevel(1);
+        }
+        else
+        {
 #if UNITY_EDITOR
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-                PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.LoadLevel(1);
 #endif
-                Debug.Log("All Players not connected");
-            }
+            Debug.Log("All Players not connected");
         }
     }
+
     #endregion
 
     #region PRIVATE FUNCTIONS
     private void addPlayerlisting(Player player)
     {
+        Debug.Log("addPlayerlisting");
         int index = _playerLists.FindIndex(x => x.Player == player);
         if (index != -1)
         {
@@ -81,6 +90,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
         else
         {
+            Debug.Log("instantiating player list");
             PlayerListing listing = (PlayerListing)Instantiate(_playerListing, content);
             if (listing != null)
             {
@@ -130,6 +140,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        //base.OnPlayerEnteredRoom(newPlayer);
         addPlayerlisting(newPlayer);
         photonView.RPC("RPC_ChangePlayerCount", RpcTarget.All);
     }
@@ -157,6 +168,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
     private void RPC_ChangePlayerCount()
     {
         _mnp.UpdatePlayerCount(PhotonNetwork.CurrentRoom.MaxPlayers, PhotonNetwork.CurrentRoom.PlayerCount);
+        _mnp.SetPlayerCoundAndRoomLogic();
     }
 
     #endregion

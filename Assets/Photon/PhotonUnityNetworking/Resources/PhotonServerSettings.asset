@@ -59,6 +59,8 @@ MonoBehaviour:
   - RPC_ShowFaceOffP1Answer
   - RPC_ShowFaceOffP2Answer
   - RPC_StartFaceOffVotingTimer
+  - RPC_UpdateAnswersForVoting
+  - RPC_LoadLevel
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
