@@ -55,6 +55,14 @@ public class Vote : MonoBehaviour
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER3_VOTES, playerVoteCount } });
                         //UnityEngine.Debug.Log("P3 Voted");
                     }
+                    if(i == 3)
+                    {
+                        playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES];
+                        playerVoteCount++;
+                        //PhotonNetwork.CurrentRoom.CustomProperties["P3Votes"]= playerVoteCount;
+                        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER4_VOTES, playerVoteCount } });
+                        //UnityEngine.Debug.Log("P3 Voted");
+                    }
                 }
 
             }

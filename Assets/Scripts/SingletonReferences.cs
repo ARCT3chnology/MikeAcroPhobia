@@ -5,4 +5,6 @@ using UnityEngine;
 public class SingletonReferences : MonoBehaviour
 {
     [SerializeField] MasterManager _masterManager;
+    public static SingletonReferences instance;
+
 }

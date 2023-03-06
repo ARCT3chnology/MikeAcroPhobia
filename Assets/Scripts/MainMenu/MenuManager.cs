@@ -65,8 +65,8 @@ public class MenuManager : MonoBehaviour
     {
         for (int i = 0; i < menus.Length; i++)
         {
-            Debug.Log("DELETEING SAVED MENU PLAYER PREFS");
-            Debug.Log("Saved Prefs are :" + menus[i].selectMenuName);
+            //Debug.Log("DELETEING SAVED MENU PLAYER PREFS");
+            //Debug.Log("Saved Prefs are :" + menus[i].selectMenuName);
             PlayerPrefs.DeleteKey(menus[i].selectMenuName.ToString());
         }
     }

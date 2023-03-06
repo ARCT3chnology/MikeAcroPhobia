@@ -12,19 +12,25 @@ public class VotingMenu : MonoBehaviour
     public List<Vote> voteList;
     [SerializeField] Text voteStats;
     public bool submitPressed { get; set; }
+    [SerializeField] VoteTimer _voteTimer;
+    public VoteTimer voteTimer
+    {
+        get { return _voteTimer; }
+        set { _voteTimer = value; } 
+    }
 
     private void OnEnable()
     {
         if (!submitPressed)
         {
             Debug.Log("Instantiating from enable");
-            instantiateAnswers();
+            instantiateAnswers(false);
             submitPressed = false;
         }
-        voteStats.text = "0/3 Players Voted";
+        voteStats.text = "0/4 Players Voted";
     }
 
-    public void instantiateAnswers()
+    public void instantiateAnswers(bool playerSubmitted)
     {
         Debug.Log("instantiateAnswers");
         if (voteList.Count > 0)
@@ -37,26 +43,49 @@ public class VotingMenu : MonoBehaviour
         }
         voteList.Clear();
         //Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        if (!playerSubmitted)
         {
-            Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
-            if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
+            for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
             {
-                GameObject vote = Instantiate(voteUI, parentObject);
-                Debug.Log(PhotonNetwork.PlayerList[i].NickName);
-                Vote v = vote.GetComponent<Vote>();
-                voteList.Add(v);
-                vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
+                Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
+                if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
+                {
+                    GameObject vote = Instantiate(voteUI, parentObject);
+                    Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                    Vote v = vote.GetComponent<Vote>();
+                    voteList.Add(v);
+                    vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+            {
+                if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.ANSWER_SUBMITTED] != null)
+                {
+                    Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
+                    if ((bool)PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.ANSWER_SUBMITTED] == true)
+                    {
+                        GameObject vote = Instantiate(voteUI, parentObject);
+                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                        Vote v = vote.GetComponent<Vote>();
+                        voteList.Add(v);
+                        vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
+                    }
+
+                }
             }
         }
 
+        //voteTimer.StartTimer();
     }
 
-    public void updateAnswers()
+    public void updateAnswers(bool playerSubmitted)
     {
         Debug.Log("updateAnswers");
 
-        instantiateAnswers();
+        instantiateAnswers(playerSubmitted);
     }
 
 
@@ -80,7 +109,7 @@ public class VotingMenu : MonoBehaviour
             Destroy(voteList[i].gameObject);
         }    
         voteList.Clear();
-        voteStats.text = "0/3 Players Voted";
+        voteStats.text = "0/4 Players Voted";
     }
 
 

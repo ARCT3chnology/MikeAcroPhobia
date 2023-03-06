@@ -18,6 +18,7 @@ public class Timer : MonoBehaviour
     [SerializeField] GameManager gameManager;
     [SerializeField] bool autoStart;
     [SerializeField] UnityEvent OnTimerEnd;
+    [SerializeField] bool votingTimer;
     public bool StartTime
     {
         get 
@@ -45,26 +46,33 @@ public class Timer : MonoBehaviour
     }
 
     public void StartTimer()
-    {
-
+    {  
         _startTimer = true;
     }
-
+    int NoOfPlayerSumbittedAnswer;
     private void Update()
     {
         if (_startTimer)
         {
-            if (_currenttime > _endtime)
+            if (gameManager.noOfAnswersSubmitted != 4 || votingTimer == true)
             {
-                _currenttime -= Time.deltaTime;
-                _timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
-                _timeSlider.value = _currenttime;
+                if (_currenttime > _endtime)
+                {
+                    _currenttime -= Time.deltaTime;
+                    _timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
+                    _timeSlider.value = _currenttime;
+                }
+                else
+                {
+                    _startTimer = false;
+                    OnTimerEnd.Invoke();
+                    //gameManager.OnAnswerTimeComplete();
+                }
             }
             else
             {
-                _startTimer = false;
-                OnTimerEnd.Invoke();
-                //gameManager.OnAnswerTimeComplete();
+                GameManager.updateAnswersSubmittedNumber(0);
+                _startTimer=false;
             }
         }
     }

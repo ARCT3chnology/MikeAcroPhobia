@@ -75,30 +75,39 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         if (propertiesThatChanged.ContainsKey(GameSettings.PlAYERS_VOTED))
         {
-            votingPanel.updateVotesStats(3, (int)propertiesThatChanged[GameSettings.PlAYERS_VOTED]);
-            if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 3)
+            votingPanel.updateVotesStats(4, (int)propertiesThatChanged[GameSettings.PlAYERS_VOTED]);
+            if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
             {
                 for (int j = 0; j < votingPanel.voteList.Count; j++)
                 {
                     //Debug.Log("P" + (j + 1).ToString() + "Votes");
-                    if(j == 0)
+                    if (j == 0)
                     {
                         votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
                     }
-                    if(j == 1)
+                    if (j == 1)
                     {
                         votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
                     }
-                    if(j == 2)
+                    if (j == 2)
                     {
                         votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
                     }
+                    if (j == 3)
+                    {
+                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
+                    }
                 }
 
-                GameManager.updateRoundNumber();
-                Invoke("StartNextRound", 3f);
+                onVotingTimeEnded();
             }
         }
+    }
+
+    public void onVotingTimeEnded()
+    {
+        GameManager.updateRoundNumber();
+        Invoke("StartNextRound", 3f);
     }
 
     public void StartNextRound()
@@ -214,12 +223,23 @@ public class UiController : MonoBehaviourPunCallbacks
         photonView.RPC("RPC_faceOffVoter", p);
     }
 
-    public void turnOffTextPanel()
+    public void turnOffTextPanel(Player p)
+    {
+
+        photonView.RPC("RPC_TurnOFFTextPanel", p);
+    }
+    public void turnOffTextPanel( bool startVotingTime)
     {
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
         votingPanel.gameObject.SetActive(true);
+        if(startVotingTime)
+            votingPanel.voteTimer.StartTimer();
+        //faceOffMenu.onAnswerSubmission();
+        //photonView.RPC("RPC_ShowFaceOffP1Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[0]].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        //photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        //photonView.RPC("RPC_StartFaceOffVotingTimer", PhotonNetwork.PlayerList[faceOffVoters[0]]);
     }
     
     public void turnOffTextPanelFaceOff()
@@ -232,16 +252,31 @@ public class UiController : MonoBehaviourPunCallbacks
     }
 
 
-    public void updateAnswerOnPlayer()
+    public void updateAnswerOnPlayer(bool playerSubmitted)
     {
-        photonView.RPC("RPC_UpdateAnswersForVoting", RpcTarget.All);
+        RPC_UpdateAnswersForVoting(playerSubmitted);
     }
 
+    [PunRPC]
+    public void RPC_UpdateAnswerOnplayer(Player player, bool answerSubmitted)
+    {
+        photonView.RPC("RPC_UpdateAnswersForVoting", player,answerSubmitted);
+    }
 
     [PunRPC]
-    public void RPC_UpdateAnswersForVoting()
+    public void RPC_TurnOFFTextPanel()
     {
-        votingPanel.updateAnswers();
+        threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
+        threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+        threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
+        votingPanel.gameObject.SetActive(true);
+    }
+
+    [PunRPC]
+    public void RPC_UpdateAnswersForVoting(bool playerSubmitted)
+    {
+        //votingPanel.voteTimer.StartTimer();
+        votingPanel.updateAnswers(playerSubmitted);
     }
 
     [PunRPC]

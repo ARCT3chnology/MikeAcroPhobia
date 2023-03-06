@@ -40,9 +40,12 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         }
     }
 
-    public void StartGame_OnClick( Player player)
+    public void StartGame_OnClick()
     {
-        photonView.RPC("RPC_LoadLevel", player);
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            photonView.RPC("RPC_LoadLevel", PhotonNetwork.PlayerList[i]);
+        }
         //if (PhotonNetwork.IsMasterClient)
         //{
         //    //for (int i = 0; i < _playerLists.Count; i++)
@@ -143,6 +146,10 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         //base.OnPlayerEnteredRoom(newPlayer);
         addPlayerlisting(newPlayer);
         photonView.RPC("RPC_ChangePlayerCount", RpcTarget.All);
+        if(PhotonNetwork.CurrentRoom.PlayerCount ==3)
+        {
+            StartGame_OnClick();
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)

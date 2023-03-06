@@ -12,7 +12,28 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] InputField normalGameInputField;
     [SerializeField] InputField faceOffGameInputField;
     [SerializeField] UiController uiController;
-
+    [SerializeField] Timer _gamePlayTimer;
+    [SerializeField] int _noOfanswerSubmitted;
+    public int noOfAnswersSubmitted
+    {
+        get
+        {
+            return _noOfanswerSubmitted;
+        }
+        set
+        {
+            _noOfanswerSubmitted = value;
+        }
+    }
+    public Timer gamePlayTimer 
+    {
+        get
+        {
+            return _gamePlayTimer;
+        }
+        set { 
+            _gamePlayTimer = value;}
+    }
     
     public void setAnswer()
     {
@@ -20,7 +41,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             stats = new ExitGames.Client.Photon.Hashtable();
             stats[GameSettings.PlAYER_ANSWER] = normalGameInputField.text.ToString();
-            Debug.Log("Text is: " + normalGameInputField.text);
+            stats[GameSettings.ANSWER_SUBMITTED] = false;
+            //Debug.Log("Text is: " + normalGameInputField.text);
             PhotonNetwork.SetPlayerCustomProperties(stats);
         }
         else
@@ -35,9 +57,25 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        //base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
-        //uiController.updateAnswerOnPlayer(targetPlayer);
+        if (changedProps[GameSettings.ANSWER_SUBMITTED]!=null)
+        {
+            bool state = (bool)changedProps[GameSettings.ANSWER_SUBMITTED];
+            Debug.Log("Answer Submitted is: " + state);
+            if (state)
+            {
+                if (targetPlayer.IsLocal)
+                {
+                    uiController.updateAnswerOnPlayer(true);
+                    uiController.turnOffTextPanel(false);
+                }
+                else if ((bool)targetPlayer.CustomProperties[GameSettings.ANSWER_SUBMITTED] == true)
+                {
+                    uiController.updateAnswerOnPlayer(true);
+                }
+            }
+        }
     }
+
 
 
     public static int getroundNumber()
@@ -62,16 +100,39 @@ public class GameManager : MonoBehaviourPunCallbacks
         roundNumber++;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.FACEOFF_ROUND_NUMBER, roundNumber } });
     }
+    public static void updateAnswersSubmittedNumber()
+    {
+        int answersSubmitted = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED];
+        answersSubmitted++;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, answersSubmitted } });
+    }
+    public static void updateAnswersSubmittedNumber(int number)
+    {
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, number } });
+    }
+
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        if(propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
+        {
+            Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+            if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
+                uiController.votingPanel.voteTimer.StartTimer();
+        }
+            
+        base.OnRoomPropertiesUpdate(propertiesThatChanged);
+    }
 
     public void OnAnswerTimeComplete()
     {
         if (GameSettings.normalGame)
         {
-            //for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            //{
-            //    uiController.updateAnswerOnPlayer(PhotonNetwork.PlayerList[i]);
-            //}
-            uiController.turnOffTextPanel();
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                uiController.RPC_UpdateAnswerOnplayer(PhotonNetwork.PlayerList[i],false);
+            }
+            uiController.turnOffTextPanel(true);
+            updateAnswersSubmittedNumber(4);
         }
         else
         {
@@ -89,9 +150,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (GameSettings.normalGame)
         {
-            uiController.updateAnswerOnPlayer();
+            stats = new ExitGames.Client.Photon.Hashtable();
+            stats[GameSettings.ANSWER_SUBMITTED] = true;
+            PhotonNetwork.SetPlayerCustomProperties(stats);
+            updateAnswersSubmittedNumber();
 
-            uiController.turnOffTextPanel();
         }
         else
         {

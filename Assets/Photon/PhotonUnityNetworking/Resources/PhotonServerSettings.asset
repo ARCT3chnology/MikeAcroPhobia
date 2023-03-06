@@ -26,7 +26,7 @@ MonoBehaviour:
     Protocol: 0
     EnableProtocolFallback: 1
     AuthMode: 0
-    EnableLobbyStatistics: 0
+    EnableLobbyStatistics: 1
     NetworkLogging: 1
   DevRegion: asia
   PunLogging: 0
@@ -61,6 +61,14 @@ MonoBehaviour:
   - RPC_StartFaceOffVotingTimer
   - RPC_UpdateAnswersForVoting
   - RPC_LoadLevel
+  - RPC_PlayerJoinedAdultLobby
+  - RPC_PlayerJoinedGeneralLobby
+  - RPC_PlayerJoinedInformationlLobby
+  - RPC_PlayerJoinedScienceLobby
+  - RPC_UpdatePlayerCount
+  - RPC_TurnOFFTextPanel
+  - RPC_UpdateAnswerOnpalyer
+  - RPC_UpdateAnswerOnplayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

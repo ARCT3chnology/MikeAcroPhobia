@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,14 +11,21 @@ public class GameSettings : ScriptableObject
     [SerializeField] string _gameVersion;
     public string GameVersion { get { return _gameVersion; } }
     [SerializeField] string _nickName;
-    public string NickName
+    public static string NickName
     {
         get 
         {
-            int val = Random.Range(0, 999);
-            return _nickName+val.ToString(); 
+            //int val = Random.Range(0, 999);
+            return PlayerPrefs.GetString("Name", "Player"); 
+        }set 
+        { 
+            PlayerPrefs.SetString("Name", value);
         }
     }
+
+    public static List<RoomInfo> CurrentRooms;
+
+    public static bool ConnectedtoMaster { get; set; }
 
     public static string ROUND_NUMBER {
         get 
@@ -29,6 +37,18 @@ public class GameSettings : ScriptableObject
         get 
         {
             return "FACEOFF_ROUND_NUMBER";
+        }
+    }
+    public static string ALL_ANSWERS_SUBMITTED {
+        get 
+        {
+            return "ALL_ANSWERS_SUBMITTED";
+        }
+    }
+    public static string NO_OF_ANSWERS_SUBMITTED {
+        get 
+        {
+            return "NO_OF_ANSWERS_SUBMITTED";
         }
     }
     public static string PlAYERS_VOTED 
@@ -60,11 +80,25 @@ public class GameSettings : ScriptableObject
             return "PlAYER3_VOTES";
         }
     }
+    public static string PlAYER4_VOTES 
+    {
+        get
+        {
+            return "PlAYER4_VOTES";
+        }
+    }
     public static string PlAYER_ANSWER 
     {
         get
         {
             return "PlAYER_ANSWER";
+        }
+    }    
+    public static string ANSWER_SUBMITTED
+    {
+        get
+        {
+            return "ANSWER_SUBMITTED";
         }
     }
     public static int MAX_ROUNDS
@@ -131,5 +165,6 @@ public class GameSettings : ScriptableObject
         PlayerVotesArray.Add(PlAYER1_VOTES);
         PlayerVotesArray.Add(PlAYER2_VOTES);
         PlayerVotesArray.Add(PlAYER3_VOTES);
+        PlayerVotesArray.Add(PlAYER4_VOTES);
     }
 }

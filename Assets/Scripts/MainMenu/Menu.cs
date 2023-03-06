@@ -6,6 +6,9 @@ public enum menuName
     StartPanel,
     CreateRoomPanel,
     Room,
+    PlayPanel,
+    LobbyPanel,
+    RoomPanel
 }
 public class Menu : MonoBehaviour
 {

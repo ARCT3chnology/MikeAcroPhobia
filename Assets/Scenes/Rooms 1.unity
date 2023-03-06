@@ -1602,6 +1602,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31fe9c1ee74cd904f97ba1eb133309b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  generalText: {fileID: 0}
+  adultText: {fileID: 0}
+  scienceText: {fileID: 0}
+  informationText: {fileID: 0}
   nameInput: {fileID: 1388987771}
   _roomName: {fileID: 1886691330}
   _textPlayercount: {fileID: 1597542456}
