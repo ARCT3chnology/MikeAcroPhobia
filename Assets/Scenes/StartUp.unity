@@ -2137,6 +2137,7 @@ MonoBehaviour:
   nameInput: {fileID: 1590688299}
   placeholderText: {fileID: 1355582026}
   PlayButton: {fileID: 491561939}
+  connected: 0
 --- !u!4 &1746611962
 Transform:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (changedProps[GameSettings.ANSWER_SUBMITTED]!=null)
         {
             bool state = (bool)changedProps[GameSettings.ANSWER_SUBMITTED];
-            Debug.Log("Answer Submitted is: " + state);
+            //Debug.Log("Answer Submitted is: " + state);
             if (state)
             {
                 if (targetPlayer.IsLocal)
@@ -75,8 +75,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
     }
-
-
 
     public static int getroundNumber()
     {
@@ -94,6 +92,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         roundNumber++;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.ROUND_NUMBER, roundNumber } });
     }
+    public static void updateRoundNumber(int number)
+    {
+        Debug.Log("Round Number set to: " + number);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.ROUND_NUMBER, number } });
+    }
+
+
+
     public static void updateFaceOffRoundNumber()
     {
         int roundNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
@@ -199,8 +205,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         bool state;
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        //Debug.Log("Players in lobby: " + allVotes.Length);
+        //Debug.Log("Players array count is: " + GameSettings.PlayerVotesArray.Count);
         for (int i = 0; i < allVotes.Length; i++)
         {
+            //Debug.Log("Index: " + i);
             allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
         }
         int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();

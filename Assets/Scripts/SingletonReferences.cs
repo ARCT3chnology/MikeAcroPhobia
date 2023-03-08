@@ -7,4 +7,8 @@ public class SingletonReferences : MonoBehaviour
     [SerializeField] MasterManager _masterManager;
     public static SingletonReferences instance;
 
+    private void Start()
+    {
+        _masterManager._gameSettings.setPlayerVotesArray();
+    }
 }

@@ -43,7 +43,7 @@ public class AcronymSetter : MonoBehaviourPun
     [PunRPC]
     public void RPC_setTextFor3Letters(int[] letters)
     {
-        Debug.Log("RPC_setText3");
+        //Debug.Log("RPC_setText3");
         acroText.text = alphabets[letters[0]].ToString() + alphabets[letters[1]].ToString() + alphabets[letters[2]].ToString(); 
     }
     [PunRPC]

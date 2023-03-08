@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,14 @@ public class Test : MonoBehaviour
     //[SerializeField] List<string> data = new List<string> { "fname", "lname", "home", "home", "company" };
     private void Start()
     {
-        int[] names = new int[] { 1,2,2,4,1 };
+        //testMethod();
+        //allPlayersGotSameVote();
+        OneplayerGotMaxVotes();
+    }
+
+    private static void testMethod()
+    {
+        int[] names = new int[] { 1, 2, 2, 4, 1 };
 
         var duplicatesWithIndices = names
             // Associate each name/value with an index
@@ -18,7 +26,8 @@ public class Test : MonoBehaviour
             .GroupBy(x => x.Name)
             //descending order
             // Only care about Name -> {Index1, Index2, ..}
-            .Select(xg => new {
+            .Select(xg => new
+            {
                 Name = xg.Key,
                 Indices = xg.Select(x => x.Index)
             })
@@ -44,4 +53,48 @@ public class Test : MonoBehaviour
         // > Have duplicate a with indices 0,1,4
         // > Have duplicate b with indices 3,5
     }
+
+    public static bool allPlayersGotSameVote()
+    {
+        bool state;
+        int[] allVotes = new int[4] {1,1,2,1};
+        //for (int i = 0; i < allVotes.Length; i++)
+        //{
+        //    allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        //}
+        state = allVotes.ToList().Distinct().Count() == 1 ? true : false;
+        Debug.Log("all votes are: " + state);
+        return state;
+    }
+
+    public static bool OneplayerGotMaxVotes()
+    {
+        bool state;
+        //int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        int[] allVotes = new int[4] { 1, 1, 2, 1 };
+
+        //for (int i = 0; i < allVotes.Length; i++)
+        //{
+        //    allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        //}
+        int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
+        state = maxCount == 1 ? true : false;
+        Debug.Log("One player got max votes: " + state);
+        return state;
+    }
+
+    public static bool playerGotSameMaxVotes()
+    {
+        bool state;
+        int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        }
+        int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
+        state = maxCount > 1 ? true : false;
+        return state;
+    }
+
+
 }

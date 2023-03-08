@@ -13,13 +13,19 @@ public class WaitingPanel : WelcomePanel
         }
         else
         {
-            if (GameManager.playerGotSameMaxVotes() || GameSettings.FaceOffGame)
+            if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame)
             {
                 if (GameManager.getFaceOffRoundNumber() != 2)
                 {
                     timer_txt.text = "";
                     Invoke("StartGame", 1f);
                 }
+            }
+            else if (GameManager.allPlayersGotSameVote())
+            {
+                GameManager.updateRoundNumber(0);
+                UIController.restartGame();
+                //Invoke("StartGame", 1f);
             }
             else
             {

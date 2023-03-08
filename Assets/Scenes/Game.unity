@@ -3096,7 +3096,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Continue
+  m_Text: Exit Room
 --- !u!222 &918240081
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5502,7 +5502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 547a87637b3e4eb459f7e30b573166d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _starttime: 45
+  _starttime: 10
   _endtime: 0
   _startTimer: 0
   _timertext: {fileID: 64730442}

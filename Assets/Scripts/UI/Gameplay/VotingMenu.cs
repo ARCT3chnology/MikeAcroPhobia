@@ -32,12 +32,12 @@ public class VotingMenu : MonoBehaviour
 
     public void instantiateAnswers(bool playerSubmitted)
     {
-        Debug.Log("instantiateAnswers");
+        //Debug.Log("instantiateAnswers");
         if (voteList.Count > 0)
         {
             foreach (var item in voteList)
             {
-                Debug.Log("Destroying: " + item.ToString());
+                //Debug.Log("Destroying: " + item.ToString());
                 DestroyImmediate(item.gameObject);
             }
         }
@@ -47,11 +47,11 @@ public class VotingMenu : MonoBehaviour
         {
             for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
             {
-                Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
+                //Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
                 if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
                 {
                     GameObject vote = Instantiate(voteUI, parentObject);
-                    Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                    //Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                     Vote v = vote.GetComponent<Vote>();
                     voteList.Add(v);
                     vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
@@ -64,11 +64,11 @@ public class VotingMenu : MonoBehaviour
             {
                 if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.ANSWER_SUBMITTED] != null)
                 {
-                    Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
+                    //Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
                     if ((bool)PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.ANSWER_SUBMITTED] == true)
                     {
                         GameObject vote = Instantiate(voteUI, parentObject);
-                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                        //Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                         Vote v = vote.GetComponent<Vote>();
                         voteList.Add(v);
                         vote.GetComponent<Vote>().setVoteText(PhotonNetwork.PlayerList[i]);
@@ -105,7 +105,7 @@ public class VotingMenu : MonoBehaviour
     {
         for (int i = 0; i < voteList.Count; i++)
         {
-            Debug.Log("Reseting vote list");    
+            //Debug.Log("Reseting vote list");    
             Destroy(voteList[i].gameObject);
         }    
         voteList.Clear();

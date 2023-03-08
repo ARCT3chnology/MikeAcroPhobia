@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ public class UiController : MonoBehaviourPunCallbacks
     [SerializeField] RoundConfigurator _RoundConfigurator;
     [SerializeField] GameEndMenu _GameEndMenu;
     [SerializeField] FaceOffMenu _faceOffMenu;
+    private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
+
     public GameObject welcomePanel { get { return _WelcomePanel; } }
     public GameObject threeLetterRound { get { return _ThreeLetterRoundPanel; } }
     public GameEndMenu gameEndMenu { get { return _GameEndMenu; } }
@@ -73,6 +76,12 @@ public class UiController : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
+        OnPlayerVoted(propertiesThatChanged);
+    }
+
+    //When ever player votes this function is executed.
+    private void OnPlayerVoted(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
         if (propertiesThatChanged.ContainsKey(GameSettings.PlAYERS_VOTED))
         {
             votingPanel.updateVotesStats(4, (int)propertiesThatChanged[GameSettings.PlAYERS_VOTED]);
@@ -98,7 +107,6 @@ public class UiController : MonoBehaviourPunCallbacks
                         votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
                     }
                 }
-
                 onVotingTimeEnded();
             }
         }
@@ -106,8 +114,53 @@ public class UiController : MonoBehaviourPunCallbacks
 
     public void onVotingTimeEnded()
     {
-        GameManager.updateRoundNumber();
-        Invoke("StartNextRound", 3f);
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(GameSettings.PlAYERS_VOTED))
+        {
+            if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED] < 4)
+            {
+                votingPanel.updateVotesStats(4, (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED]);
+                votingPanel.hideAllVoteButton();
+                for (int j = 0; j < votingPanel.voteList.Count; j++)
+                {
+                    //Debug.Log("P" + (j + 1).ToString() + "Votes");
+                    if (j == 0)
+                    {
+                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                    }
+                    if (j == 1)
+                    {
+                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
+                    }
+                    if (j == 2)
+                    {
+                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
+                    }
+                    if (j == 3)
+                    {
+                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
+                    }
+                }
+            }
+        }
+
+        Debug.Log("onVotingTimeEnded");
+        if (PhotonNetwork.IsMasterClient && GameManager.getroundNumber() < 5)
+        {
+            GameManager.updateRoundNumber();
+        }
+        resetPlayerAnswer();
+        Invoke("StartNextRound", 6f);
+    }
+
+
+    /// <summary>
+    /// For reseting player answers to null - for the next round.
+    /// </summary>
+    public void resetPlayerAnswer()
+    {
+        stats = new ExitGames.Client.Photon.Hashtable();
+        stats[GameSettings.PlAYER_ANSWER] = "";
+        PhotonNetwork.SetPlayerCustomProperties(stats);
     }
 
     public void StartNextRound()
@@ -117,20 +170,18 @@ public class UiController : MonoBehaviourPunCallbacks
             Debug.Log("StartNextRound");        
             threeLetterRound.gameObject.SetActive(false);
             votingPanel.gameObject.SetActive(false);
+            votingPanel.voteTimer.StartTime = false;
             votingPanel.resetVotesList();
             resetPlayerVotedCount();
             waitingPanel.SetActive(true);
         }    
     }
 
-
-
     public void resetPlayerVotedCount()
     {
-        int VoteCount;
-        VoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED];
-        VoteCount = 0;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, VoteCount } });
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, 0 } });
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, 0 } });
     }
 
     public void GameCompleted()
@@ -146,10 +197,13 @@ public class UiController : MonoBehaviourPunCallbacks
         {
             //it means that all the player contains the same number of votes.
             Debug.Log("all players get same votes.");
+            //GameManager.updateRoundNumber(0);
+            //Handled in waiting panel script - OnEnable.
         }
         else
         {
             int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
+            Debug.Log("Max count is: " + maxCount);
             if (maxCount == 1)
             {
                 votes = allVotes.Max();
@@ -158,9 +212,17 @@ public class UiController : MonoBehaviourPunCallbacks
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
                 gameEndMenu.setEndPanelStats(PhotonNetwork.PlayerList[maxIndex].NickName,votes);
             }
-            else if(maxCount > 1)
+            else if(maxCount == 2)
             {
                 FaceOffRounds();
+            }
+            else if (maxCount == 3)
+            {
+                Debug.Log("3 persons got same votes.");
+                //remove the one with the lowest score from the game
+                //and start new game with the remaining three.
+                int minimumValueIndex = allVotes.ToList().IndexOf(allVotes.Min());
+                Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
             }
         }
     }
@@ -212,8 +274,15 @@ public class UiController : MonoBehaviourPunCallbacks
         }
     }
 
+    public void restartGame()
+    {
+        waitingPanel.SetActive(false);
+        welcomePanel.SetActive(true);
+    }
+
     public void startFaceOffRound(Player p)
     {
+        Debug.Log("Starting face off round");
         GameSettings.FaceOffGame = true;
         GameSettings.normalGame = false;
         photonView.RPC("RPC_faceOffRound", p);
@@ -260,7 +329,7 @@ public class UiController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_UpdateAnswerOnplayer(Player player, bool answerSubmitted)
     {
-        photonView.RPC("RPC_UpdateAnswersForVoting", player,answerSubmitted);
+        photonView.RPC("RPC_UpdateAnswersForVoting", player, answerSubmitted);
     }
 
     [PunRPC]

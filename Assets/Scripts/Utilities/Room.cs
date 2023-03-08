@@ -11,6 +11,6 @@ public class Room : MonoBehaviour
     public void setRoomStats(string roomName,int PlayerCount)
     {
         Txt_RoomName.text = roomName;
-        Txt_PlayersCount.text = PlayerCount.ToString() + "/" + 4;
+        Txt_PlayersCount.text = PlayerCount.ToString() + "/" + 4 + "Players joined.";
     }
 }

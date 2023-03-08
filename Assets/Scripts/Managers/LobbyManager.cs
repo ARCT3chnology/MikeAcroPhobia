@@ -288,6 +288,51 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
 
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        foreach (var item in GameSettings.CurrentRooms)
+        {
+            switch (item.Name)
+            {
+                case "General":
+                    {
+                        if (item.PlayerCount < 4)
+                        {
+                            generalRoomFull = false;
+                        }
+                        break;
+                    }
+                case "Science":
+                    {
+                        if (item.PlayerCount < 4)
+                        {
+                            scienceRoomFull= false;
+                        }
+                        break;
+                    }                
+                case "Information":
+                    {
+                        if (item.PlayerCount < 4)
+                        {
+                            informationRoomFull = false;
+                        }
+                        break;
+                    }
+                case "Adult":
+                    {
+                        if (item.PlayerCount < 4)
+                        {
+                            adultRoomFull = false;
+                        }
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        
+        base.OnRoomPropertiesUpdate(propertiesThatChanged);
+    }
 
     public void setPlayerCount()
     {

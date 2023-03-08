@@ -64,7 +64,6 @@ public class Vote : MonoBehaviour
                         //UnityEngine.Debug.Log("P3 Voted");
                     }
                 }
-
             }
         }
         VoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED];
@@ -74,9 +73,18 @@ public class Vote : MonoBehaviour
     }
 
 
-    public void setVoteText(Player player )
+    public void setVoteText(Player player)
     {
         answerText.text = (string)player.CustomProperties[GameSettings.PlAYER_ANSWER];
+        //UnityEngine.Debug.Log(PhotonNetwork.LocalPlayer.IsLocal);
+
+        //For testing purpose commenting these 82-87
+        //if (player.IsLocal)
+        //{
+        //    if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)answerText.text)
+        //        votebutton.interactable = false;
+        //}
+
     }
 
     /// <summary>

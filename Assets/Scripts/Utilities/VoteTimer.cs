@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class VoteTimer : MonoBehaviour
 {
-
+    [Tooltip("Set time here for all clients and for all rounds")]
     public float _starttime;
     public float _endtime;
     [SerializeField] bool _startTimer;

@@ -153,15 +153,18 @@ public class GameSettings : ScriptableObject
         get;
         set;
     }
-    public static List<string> PlayerVotesArray = new List<string>();
+    public static List<string> PlayerVotesArray;
 
     private void Awake()
     {
+        PlayerVotesArray = new List<string>();
         setPlayerVotesArray();
     }
 
-    private static void setPlayerVotesArray()
+    public void setPlayerVotesArray()
     {
+        PlayerVotesArray = new List<string>();
+        Debug.Log("setPlayerVotesArray");
         PlayerVotesArray.Add(PlAYER1_VOTES);
         PlayerVotesArray.Add(PlAYER2_VOTES);
         PlayerVotesArray.Add(PlAYER3_VOTES);
