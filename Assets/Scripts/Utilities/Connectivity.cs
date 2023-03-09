@@ -21,6 +21,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
         
         connected = PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.EnableCloseConnection = true;
         placeholderText.text = GameSettings.NickName;
     }
 

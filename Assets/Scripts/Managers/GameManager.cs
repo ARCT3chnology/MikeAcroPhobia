@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] UiController uiController;
     [SerializeField] Timer _gamePlayTimer;
     [SerializeField] int _noOfanswerSubmitted;
+
     public int noOfAnswersSubmitted
     {
         get
@@ -121,7 +122,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
         {
-            Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+            //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
             if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
                 uiController.votingPanel.voteTimer.StartTimer();
         }

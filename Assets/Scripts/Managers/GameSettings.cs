@@ -170,4 +170,8 @@ public class GameSettings : ScriptableObject
         PlayerVotesArray.Add(PlAYER3_VOTES);
         PlayerVotesArray.Add(PlAYER4_VOTES);
     }
+    public static bool PlayerInRoom
+    {
+        get;set;
+    }
 }

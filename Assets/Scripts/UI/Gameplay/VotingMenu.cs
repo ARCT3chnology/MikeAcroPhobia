@@ -83,7 +83,7 @@ public class VotingMenu : MonoBehaviour
 
     public void updateAnswers(bool playerSubmitted)
     {
-        Debug.Log("updateAnswers");
+        //Debug.Log("updateAnswers");
 
         instantiateAnswers(playerSubmitted);
     }

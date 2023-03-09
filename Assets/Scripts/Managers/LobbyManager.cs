@@ -66,6 +66,19 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 value;
         }
     }
+    [SerializeField] GameObject _lobbyPanel;
+    public GameObject LobbyPanel
+    {
+        get
+        {
+            return _lobbyPanel;
+        }
+        set 
+        {
+            _lobbyPanel = 
+                value;
+        }
+    }
 
     public enum Categories 
     {
@@ -162,7 +175,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Room Joined of category: " + PhotonNetwork.CurrentRoom.Name);
         MenuManager.Instance.OpenMenu(menuName.RoomPanel);
-
+        GameSettings.PlayerInRoom = true;
         //Room.setRoomStats(PhotonNetwork.CurrentRoom.Name, PhotonNetwork.CurrentRoom.PlayerCount);
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 4)
@@ -184,6 +197,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     }
 
+    public override void OnLeftRoom()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 4)
+        {
+            generalRoomFull = false;
+        }
+        base.OnLeftRoom();
+    }
+
     [PunRPC]
     public void RPC_UpdatePlayerCount()
     {
@@ -192,6 +214,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_LoadLevel()
     {
+        Debug.Log("Loading level in Lobby system");
         SceneManager.LoadScene(2);
     }
 
@@ -213,6 +236,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        LobbyPanel.SetActive(true);
         Debug.Log("Client is connected to master: " + GameSettings.ConnectedtoMaster);
         PhotonNetwork.AutomaticallySyncScene = true;
         if (!PhotonNetwork.InLobby)

@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UiController : MonoBehaviourPunCallbacks
@@ -223,9 +224,48 @@ public class UiController : MonoBehaviourPunCallbacks
                 //and start new game with the remaining three.
                 int minimumValueIndex = allVotes.ToList().IndexOf(allVotes.Min());
                 Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
+                if (PhotonNetwork.PlayerList[minimumValueIndex] == PhotonNetwork.LocalPlayer)
+                {
+                    DisconnectPlayer();
+                    GameSettings.PlayerInRoom = false;
+                }
             }
         }
     }
+
+    public void DisconnectPlayer()
+    {
+        StartCoroutine(DisconnectAndLoad());
+    }
+
+    IEnumerator DisconnectAndLoad()
+    {
+        PhotonNetwork.Disconnect();
+        while (PhotonNetwork.IsConnected)
+        {
+            yield return null;
+        }
+        SceneManager.LoadScene(1);
+    }
+
+    [PunRPC]
+    public void RPC_LeaveRoom()
+    {
+        Debug.Log("leaving Room");
+        PhotonNetwork.LeaveLobby();
+        SceneManager.LoadScene(1);
+    }
+
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log(otherPlayer.NickName + " Leave Room");
+        if (otherPlayer.NickName == PhotonNetwork.LocalPlayer.NickName)
+            SceneManager.LoadScene(1);
+        base.OnPlayerLeftRoom(otherPlayer);
+    }
+
+
     private List<int> faceOffPlayers;
     private List<int> faceOffVoters;
     public void FaceOffRounds()

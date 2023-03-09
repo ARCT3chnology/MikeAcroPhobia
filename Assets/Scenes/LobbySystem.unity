@@ -1351,6 +1351,7 @@ MonoBehaviour:
     Txt_Count: {fileID: 690391463}
   _Room: {fileID: 1895432774}
   _roomFillPanel: {fileID: 1363611943}
+  _lobbyPanel: {fileID: 2111841794}
   LobbyCategory: 0
 --- !u!114 &706769384
 MonoBehaviour:

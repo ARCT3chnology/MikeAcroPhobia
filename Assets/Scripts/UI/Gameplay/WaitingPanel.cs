@@ -37,29 +37,32 @@ public class WaitingPanel : WelcomePanel
 
     private void Update()
     {
-        if (GameSettings.normalGame && GameManager.getroundNumber() < 5)
+        if (GameSettings.PlayerInRoom)
         {
-            if(GameManager.getroundNumber() == 1)
-                Timer("Starting Four Letter Round in: ");
-            else if (GameManager.getroundNumber() == 2) 
-                Timer("Starting Five Letter Round in: ");
-            else if (GameManager.getroundNumber() == 3) 
-                Timer("Starting Six Letter Round in: ");        
-            else if (GameManager.getroundNumber() == 4) 
-                Timer("Starting Seven Letter Round in: ");
-        }
-        else
-        {
-            if (GameSettings.normalGame && GameManager.getFaceOffRoundNumber() < 2)
+            if (GameSettings.normalGame && GameManager.getroundNumber() < 5)
             {
-                if (GameManager.getFaceOffRoundNumber() == 0)
-                    Timer("Starting FACE-OFF Round 1 in: ");
-                if (GameManager.getFaceOffRoundNumber() == 1)
-                    Timer("Starting FACE-OFF Round 2 in: ");
+                if(GameManager.getroundNumber() == 1)
+                    Timer("Starting Four Letter Round in: ");
+                else if (GameManager.getroundNumber() == 2) 
+                    Timer("Starting Five Letter Round in: ");
+                else if (GameManager.getroundNumber() == 3) 
+                    Timer("Starting Six Letter Round in: ");        
+                else if (GameManager.getroundNumber() == 4) 
+                    Timer("Starting Seven Letter Round in: ");
             }
             else
             {
-                Debug.Log("5 Levels are completed");
+                if (GameSettings.normalGame && GameManager.getFaceOffRoundNumber() < 2)
+                {
+                    if (GameManager.getFaceOffRoundNumber() == 0)
+                        Timer("Starting FACE-OFF Round 1 in: ");
+                    if (GameManager.getFaceOffRoundNumber() == 1)
+                        Timer("Starting FACE-OFF Round 2 in: ");
+                }
+                else
+                {
+                    Debug.Log("5 Levels are completed");
+                }
             }
         }
     }

@@ -69,6 +69,7 @@ MonoBehaviour:
   - RPC_TurnOFFTextPanel
   - RPC_UpdateAnswerOnpalyer
   - RPC_UpdateAnswerOnplayer
+  - RPC_LeaveRoom
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
