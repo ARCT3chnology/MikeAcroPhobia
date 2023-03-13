@@ -8,6 +8,7 @@ using System;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using System.Linq.Expressions;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
@@ -49,6 +50,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private TypedLobby ScienceLobby = new TypedLobby("Science", LobbyType.Default);
     private TypedLobby InformationLobby = new TypedLobby("Information", LobbyType.Default);
     private TypedLobby AdultLobby = new TypedLobby("Adult", LobbyType.Default);
+
+    public bool generalRoomFull { get; set; }
+    public bool scienceRoomFull { get; set; }
+    public bool informationRoomFull { get; set; }
+    public bool adultRoomFull { get; set; }
 
     [SerializeField] Room _Room;
     public Room Room { get { return _Room; }set { } }
@@ -96,26 +102,37 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void OnClick_CategoryButton(int Category)
     {
+        Debug.Log(PhotonNetwork.InLobby);
+        if (!PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
         switch ((Categories)Category)
         {
             case Categories.General:
-                if (PhotonNetwork.InLobby)
                 {
-                    RoomOptions options = new RoomOptions();
-                    options.MaxPlayers = 4;
-                    options.PlayerTtl = 60;
-                    options.EmptyRoomTtl = 60;
-                    options.IsOpen = true;
-                    options.IsVisible = true;
-                    addRoomProperties(options);
-                    if(!generalRoomFull)
-                        PhotonNetwork.JoinOrCreateRoom("General", options, TypedLobby.Default);
-                    else
+                    if (PhotonNetwork.InLobby)
                     {
-                        roomFillPanel.SetActive(true);
+                        RoomOptions options = new RoomOptions();
+                        options.MaxPlayers = 4;
+                        options.PlayerTtl = 0;
+                        options.EmptyRoomTtl = 0;
+                        options.IsOpen = true;
+                        options.IsVisible = true;
+                    
+                        addRoomProperties(options);
+                        Debug.Log("General Room is full: " +generalRoomFull);
+                        if (!generalRoomFull)
+                        {
+                            PhotonNetwork.JoinOrCreateRoom("General", options, TypedLobby.Default);
+                        }
+                        else
+                        {
+                            roomFillPanel.SetActive(true);
+                        }
                     }
+                    break;
                 }
-                break;
             case Categories.Science:
                 if (PhotonNetwork.InLobby)
                 {
@@ -139,36 +156,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+    }
+
     public override void OnJoinedLobby()
     {
         Debug.Log(PhotonNetwork.CurrentLobby.Name + " is joined by player: " + GameSettings.NickName);
-        if (GameSettings.CurrentRooms != null)
+        if (GameSettings.CurrentRooms!=null)
         {
-            foreach (var room in GameSettings.CurrentRooms)
-            {
-                if (room.Name == PhotonNetwork.CurrentLobby.Name)
-                {
-                    Debug.Log("RoomExist");
-                }
-                else
-                {
-                    Debug.Log("Room Do not Exist");
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("List is empty");
-            //RoomOptions options = new RoomOptions();
-            //options.MaxPlayers = 3;
-            //options.PlayerTtl = 60;
-            //options.EmptyRoomTtl = 60;
-            //addRoomProperties(options);
-            //PhotonNetwork.JoinOrCreateRoom(PhotonNetwork.CurrentLobby.Name, options, GeneralLobby);
+            UpdateUi(GameSettings.CurrentRooms);
         }
         
         base.OnJoinedLobby();
     
+    }
+
+    public override void OnLeftLobby()
+    {
+        Debug.Log(GameSettings.NickName + " Left Lobby");
+        base.OnLeftLobby();
     }
 
     public override void OnJoinedRoom() 
@@ -199,17 +207,26 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount < 4)
-        {
-            generalRoomFull = false;
-        }
-        base.OnLeftRoom();
+        Debug.Log(GameSettings.NickName + " Left Room");
+        UpdateUi(GameSettings.CurrentRooms);
+        LobbyPanel.SetActive(true);
+        Room.gameObject.SetActive(false);
+        //photonView.RPC("RPC_UpdatePlayerCount", RpcTarget.All);
+           
+        //base.OnLeftRoom();
+        //if (!PhotonNetwork.InLobby)
+        //{
+        //}
+        SceneManager.LoadScene(0);
     }
 
     [PunRPC]
     public void RPC_UpdatePlayerCount()
     {
-        Room.setRoomStats(PhotonNetwork.CurrentRoom.Name, PhotonNetwork.CurrentRoom.PlayerCount);
+        if (PhotonNetwork.CurrentRoom!=null)
+        {
+            Room.setRoomStats(PhotonNetwork.CurrentRoom.Name, PhotonNetwork.CurrentRoom.PlayerCount);
+        }
     }
     [PunRPC]
     public void RPC_LoadLevel()
@@ -236,32 +253,56 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        
         LobbyPanel.SetActive(true);
         Debug.Log("Client is connected to master: " + GameSettings.ConnectedtoMaster);
         PhotonNetwork.AutomaticallySyncScene = true;
+        
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.GameVersion = MasterManager.GameSettings.GameVersion;
+            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.EnableCloseConnection = true;
+        }
         if (!PhotonNetwork.InLobby)
         {
             PhotonNetwork.JoinLobby();
         }
-        
+        //UpdateUi(GameSettings.CurrentRooms);
         //This function will call onRoomListUpdate if the getcustomRoomList is true.
         //setPlayerCount();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        UpdateUi(GameSettings.CurrentRooms);
+        //base.OnConnectedToMaster();
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("OnR0omListUpdate is called " + roomList.Count);
+
+        foreach (RoomInfo room in roomList)
+        {
+            if(room.Name == "General")
+            {
+                if(room.PlayerCount == 4)
+                    generalRoomFull = true;
+            }
+        }
+
         GameSettings.CurrentRooms = roomList;
         UpdateUi(roomList);
         base.OnRoomListUpdate(roomList);
     }
-    public bool generalRoomFull { get; set; }
-    public bool scienceRoomFull { get; set; }
-    public bool informationRoomFull { get; set; }
-    public bool adultRoomFull { get; set; }
+
     private void UpdateUi(List<RoomInfo> roomList)
     {
-        if (roomList.Count > 0)
+        if (roomList!=null)
+        {
+            if (roomList.Count > 0)
         {
             foreach (var item in roomList)
             {
@@ -271,46 +312,47 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     case "General":
                         {
                             GeneralCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
-                            if(item.PlayerCount == item.MaxPlayers)
-                            {
-                                generalRoomFull = true;
-                            }
 
                             break;
                         }
                     case "Science":
                         {
                             ScienceCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
-                            if (item.PlayerCount == item.MaxPlayers)
-                            {
-                                scienceRoomFull= true;
-                            }
+
                             break;
                         }
                     case "Information":
                         {
                             InformationCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
-                            if (item.PlayerCount == item.MaxPlayers)
-                            {
-                                informationRoomFull = true;
-                            }
+
                             break;
                         }
                     case "Adult":
                         {
                             AdultCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
-                            if (item.PlayerCount == item.MaxPlayers)
-                            {
-                                adultRoomFull = true;
-                            }
+
                             break;
                         }
                 }
 
             }
         }
+
+        }
     }
 
+    public void onClick_onBackButton()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void onClick_LeaveRoomButton()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+    } 
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {

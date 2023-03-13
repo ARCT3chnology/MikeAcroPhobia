@@ -217,4 +217,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount > 1 ? true : false;
         return state;
     }
+
+    public static bool threePlayerGotSameVotes() 
+    {
+        bool state;
+        int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        }
+        int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
+        if(maxCount == 3)
+        {
+            state = true;
+        }
+        else
+        {
+            state = false;
+        }
+        return state;
+    }
 }

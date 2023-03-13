@@ -27,6 +27,10 @@ public class WaitingPanel : WelcomePanel
                 UIController.restartGame();
                 //Invoke("StartGame", 1f);
             }
+            else if (GameManager.threePlayerGotSameVotes())
+            {
+                UIController.onthreePlayerGotSameVotes();
+            }
             else
             {
                 UIController.GameCompleted();
@@ -65,5 +69,10 @@ public class WaitingPanel : WelcomePanel
                 }
             }
         }
+    }
+
+    public void SetText(string text)
+    {
+        timer_txt.text  = text;
     }
 }

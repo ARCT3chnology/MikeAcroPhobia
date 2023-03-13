@@ -219,19 +219,31 @@ public class UiController : MonoBehaviourPunCallbacks
             }
             else if (maxCount == 3)
             {
-                Debug.Log("3 persons got same votes.");
-                //remove the one with the lowest score from the game
-                //and start new game with the remaining three.
-                int minimumValueIndex = allVotes.ToList().IndexOf(allVotes.Min());
-                Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
-                if (PhotonNetwork.PlayerList[minimumValueIndex] == PhotonNetwork.LocalPlayer)
-                {
-                    DisconnectPlayer();
-                    GameSettings.PlayerInRoom = false;
-                }
+                onthreePlayerGotSameVotes();    
             }
         }
     }
+
+    public void onthreePlayerGotSameVotes()
+    {
+        Debug.Log("3 persons got same votes.");
+        //remove the one with the lowest score from the game
+        //and start new game with the remaining three.
+        int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        int minimumValueIndex = allVotes.ToList().IndexOf(allVotes.Min());
+        Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
+        if (PhotonNetwork.PlayerList[minimumValueIndex] == PhotonNetwork.LocalPlayer)
+        {
+            DisconnectPlayer();
+            GameSettings.PlayerInRoom = false;
+        }
+        else
+        {
+
+        }
+
+    }
+
 
     public void DisconnectPlayer()
     {
@@ -260,9 +272,32 @@ public class UiController : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log(otherPlayer.NickName + " Leave Room");
-        if (otherPlayer.NickName == PhotonNetwork.LocalPlayer.NickName)
-            SceneManager.LoadScene(1);
+        if(GameManager.getroundNumber()==5 && GameManager.threePlayerGotSameVotes())
+        {
+            if(PhotonNetwork.IsMasterClient)
+            {
+                GameManager.updateRoundNumber(0);
+            }
+            if (otherPlayer.NickName != PhotonNetwork.LocalPlayer.NickName)
+            {
+                StartCoroutine(startNextRound(otherPlayer));
+            }
+            else
+            {
+                GameSettings.ConnectedtoMaster = false;
+                SceneManager.LoadScene(1);
+            }
+        }
         base.OnPlayerLeftRoom(otherPlayer);
+    }
+
+    public IEnumerator startNextRound(Player otherPlayer)
+    {
+        waitingPanel.GetComponent<WaitingPanel>().SetText(otherPlayer.NickName + " is kicked");
+        yield return new WaitForSeconds(1);
+        waitingPanel.SetActive(false);
+        yield return new WaitForSeconds(1);
+        waitingPanel.SetActive(false);
     }
 
 

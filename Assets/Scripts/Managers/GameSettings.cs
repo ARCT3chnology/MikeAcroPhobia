@@ -17,7 +17,8 @@ public class GameSettings : ScriptableObject
         {
             //int val = Random.Range(0, 999);
             return PlayerPrefs.GetString("Name", "Player"); 
-        }set 
+        }
+        set 
         { 
             PlayerPrefs.SetString("Name", value);
         }

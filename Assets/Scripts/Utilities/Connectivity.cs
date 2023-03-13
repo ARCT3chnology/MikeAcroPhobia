@@ -13,6 +13,13 @@ public class Connectivity : MonoBehaviourPunCallbacks
     [SerializeField] Text placeholderText;
     [SerializeField] Button PlayButton;
     [SerializeField] bool connected;
+    [SerializeField] Menu LoginMenu;
+    [SerializeField] Menu SplashMenu;
+    private void Awake()
+    {
+        //PlayerPrefs.DeleteAll();
+    }
+
     private void Start()
     {
         Debug.Log("Connecting to server");
@@ -22,7 +29,17 @@ public class Connectivity : MonoBehaviourPunCallbacks
         connected = PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.EnableCloseConnection = true;
+        
         placeholderText.text = GameSettings.NickName;
+
+        if(GameSettings.NickName != "Player")
+        {
+            MenuManager.Instance.CloseMenu(LoginMenu);
+            MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        }
+
+        if (PhotonNetwork.IsConnected)
+            PlayButton.interactable = true;
     }
 
     public override void OnConnectedToMaster()
