@@ -32,11 +32,11 @@ public class Connectivity : MonoBehaviourPunCallbacks
         
         placeholderText.text = GameSettings.NickName;
 
-        if(GameSettings.NickName != "Player")
-        {
-            MenuManager.Instance.CloseMenu(LoginMenu);
-            MenuManager.Instance.OpenMenu(menuName.PlayPanel);
-        }
+        //if(GameSettings.NickName != "Player")
+        //{
+        //    MenuManager.Instance.CloseMenu(LoginMenu);
+        //    MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        //}
 
         if (PhotonNetwork.IsConnected)
             PlayButton.interactable = true;

@@ -1368,6 +1368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 680293643}
   - component: {fileID: 680293644}
+  - component: {fileID: 680293645}
   m_Layer: 5
   m_Name: LoginPanel
   m_TagString: Untagged
@@ -1410,6 +1411,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectMenuName: 0
   open: 1
+--- !u!114 &680293645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680293642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1269b4ddf268a7c4fbee1f48016a6179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightObjects:
+    rectTransforms:
+    - {fileID: 534106852}
+    positions:
+    - {x: 0, y: 61.434982}
+    ease: 31
+    delay: 0.5
+    speed: 0.5
+  leftObjects:
+    rectTransforms:
+    - {fileID: 1590688298}
+    positions:
+    - {x: -11.834, y: -29}
+    ease: 31
+    delay: 0.5
+    speed: 0.5
+  topObjects:
+    rectTransforms: []
+    positions: []
+    ease: 0
+    delay: 0
+    speed: 0
+  BottomObjects:
+    rectTransforms:
+    - {fileID: 5775468}
+    positions:
+    - {x: 0, y: -129}
+    ease: 31
+    delay: 0.5
+    speed: 0.5
+  scaleObjects:
+    transforms: []
+    scaleTo: []
+    scalefrom: []
+    scaleSpeed: 0
+    delay: 0
+    ease: 0
+  isRight: 1
+  isLeft: 1
+  isTop: 0
+  isBottom: 1
+  isScale: 0
 --- !u!1 &704740586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,6 +1592,7 @@ GameObject:
   - component: {fileID: 800814277}
   - component: {fileID: 800814275}
   - component: {fileID: 800814278}
+  - component: {fileID: 800814279}
   m_Layer: 5
   m_Name: PlayPanel
   m_TagString: Untagged
@@ -1618,6 +1674,62 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &800814279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800814273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1269b4ddf268a7c4fbee1f48016a6179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightObjects:
+    rectTransforms: []
+    positions: []
+    ease: 0
+    delay: 0
+    speed: 0
+  leftObjects:
+    rectTransforms: []
+    positions: []
+    ease: 0
+    delay: 0
+    speed: 0
+  topObjects:
+    rectTransforms:
+    - {fileID: 159474252}
+    positions:
+    - {x: 0, y: -242}
+    ease: 31
+    delay: 0.5
+    speed: 0.5
+  BottomObjects:
+    rectTransforms:
+    - {fileID: 491561938}
+    - {fileID: 1202487609}
+    - {fileID: 1228056090}
+    positions:
+    - {x: 0, y: 0}
+    - {x: 0, y: -72}
+    - {x: 0, y: -144}
+    ease: 31
+    delay: 0.5
+    speed: 0.5
+  scaleObjects:
+    transforms: []
+    scaleTo: []
+    scalefrom: []
+    scaleSpeed: 0
+    delay: 0
+    ease: 0
+  isRight: 0
+  isLeft: 0
+  isTop: 1
+  isBottom: 1
+  isScale: 0
 --- !u!1 &1018041460
 GameObject:
   m_ObjectHideFlags: 0
