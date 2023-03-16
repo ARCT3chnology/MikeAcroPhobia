@@ -34,6 +34,12 @@ public class GameSettings : ScriptableObject
             return "ROUND_NUMBER";
         }
     }
+    public static string TOURNAMENT_NUMBER {
+        get 
+        {
+            return "TOURNAMENT_NUMBER";
+        }
+    }
     public static string FACEOFF_ROUND_NUMBER {
         get 
         {

@@ -60,7 +60,7 @@ public class WelcomePanel : MonoBehaviour
 
     public virtual void onTimerComplete()
     {
-        if (GameManager.getroundNumber() < 5)
+        if ((GameSettings.normalGame) && GameManager.getroundNumber() < 5)
         {
             switch (GameManager.getroundNumber())
             {
@@ -102,10 +102,10 @@ public class WelcomePanel : MonoBehaviour
             switch (GameManager.getFaceOffRoundNumber())
             {
                 case 0:
-                    UiController.FaceOffRounds();
+                    UiController.StartFaceOffRounds();
                     break;
                 case 1:
-                    UiController.FaceOffRounds();
+                    UiController.StartFaceOffRounds();
                     break;
                 default:
                     break;

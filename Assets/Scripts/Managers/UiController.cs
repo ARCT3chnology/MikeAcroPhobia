@@ -86,29 +86,59 @@ public class UiController : MonoBehaviourPunCallbacks
         if (propertiesThatChanged.ContainsKey(GameSettings.PlAYERS_VOTED))
         {
             votingPanel.updateVotesStats(4, (int)propertiesThatChanged[GameSettings.PlAYERS_VOTED]);
-            if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
+            if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 0)
             {
-                for (int j = 0; j < votingPanel.voteList.Count; j++)
+                if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
                 {
-                    //Debug.Log("P" + (j + 1).ToString() + "Votes");
-                    if (j == 0)
+                    for (int j = 0; j < votingPanel.voteList.Count; j++)
                     {
-                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                        //Debug.Log("P" + (j + 1).ToString() + "Votes");
+                        if (j == 0)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                        }
+                        if (j == 1)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
+                        }
+                        if (j == 2)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
+                        }
+                        if (j == 3)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
+                        }
                     }
-                    if (j == 1)
-                    {
-                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
-                    }
-                    if (j == 2)
-                    {
-                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
-                    }
-                    if (j == 3)
-                    {
-                        votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
-                    }
+                    onVotingTimeEnded();
                 }
-                onVotingTimeEnded();
+            }
+            else if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 1)
+            {
+                if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 3)
+                {
+                    for (int j = 0; j < votingPanel.voteList.Count; j++)
+                    {
+                        //Debug.Log("P" + (j + 1).ToString() + "Votes");
+                        if (j == 0)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                        }
+                        if (j == 1)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
+                        }
+                        if (j == 2)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
+                        }
+                        if (j == 3)
+                        {
+                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
+                        }
+                    }
+                    onVotingTimeEnded();
+                }
             }
         }
     }
@@ -219,7 +249,8 @@ public class UiController : MonoBehaviourPunCallbacks
             }
             else if (maxCount == 3)
             {
-                onthreePlayerGotSameVotes();    
+                onthreePlayerGotSameVotes();
+
             }
         }
     }
@@ -230,6 +261,10 @@ public class UiController : MonoBehaviourPunCallbacks
         //remove the one with the lowest score from the game
         //and start new game with the remaining three.
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        }
         int minimumValueIndex = allVotes.ToList().IndexOf(allVotes.Min());
         Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
         if (PhotonNetwork.PlayerList[minimumValueIndex] == PhotonNetwork.LocalPlayer)
@@ -260,13 +295,13 @@ public class UiController : MonoBehaviourPunCallbacks
         SceneManager.LoadScene(1);
     }
 
-    [PunRPC]
-    public void RPC_LeaveRoom()
-    {
-        Debug.Log("leaving Room");
-        PhotonNetwork.LeaveLobby();
-        SceneManager.LoadScene(1);
-    }
+    //[PunRPC]
+    //public void RPC_LeaveRoom()
+    //{
+    //    Debug.Log("leaving Room");
+    //    PhotonNetwork.LeaveLobby();
+    //    SceneManager.LoadScene(1);
+    //}
 
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -274,12 +309,9 @@ public class UiController : MonoBehaviourPunCallbacks
         Debug.Log(otherPlayer.NickName + " Leave Room");
         if(GameManager.getroundNumber()==5 && GameManager.threePlayerGotSameVotes())
         {
-            if(PhotonNetwork.IsMasterClient)
-            {
-                GameManager.updateRoundNumber(0);
-            }
             if (otherPlayer.NickName != PhotonNetwork.LocalPlayer.NickName)
             {
+                Debug.Log("starting next round");
                 StartCoroutine(startNextRound(otherPlayer));
             }
             else
@@ -293,11 +325,15 @@ public class UiController : MonoBehaviourPunCallbacks
 
     public IEnumerator startNextRound(Player otherPlayer)
     {
+        Debug.Log("Round Starting: "+ GameManager.getroundNumber());
         waitingPanel.GetComponent<WaitingPanel>().SetText(otherPlayer.NickName + " is kicked");
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(3);
         waitingPanel.SetActive(false);
+        GameManager.updateRoundNumber(0);
+        GameManager.updateTournamentNumber(1);
         yield return new WaitForSeconds(1);
-        waitingPanel.SetActive(false);
+        welcomePanel.SetActive(true);
+        //waitingPanel.GetComponent<WaitingPanel>().StartGame();
     }
 
 
@@ -395,6 +431,11 @@ public class UiController : MonoBehaviourPunCallbacks
         //votingPanel.gameObject.SetActive(true);
     }
 
+    public void StartFaceOffRounds()
+    {
+        faceOffMenu.showPlayerPanel();
+        faceOffMenu.showVotersPanel();
+    }
 
     public void updateAnswerOnPlayer(bool playerSubmitted)
     {
@@ -494,15 +535,16 @@ public class UiController : MonoBehaviourPunCallbacks
     public void RPC_faceOffRound()
     {
         Debug.Log("Starting face-Off round");
-        waitingPanel.SetActive(false);
-        faceOffMenu.showPlayerPanel();
+        waitingPanel.SetActive(true);
+        waitingPanel.GetComponent<WaitingPanel>().StartGame();
+        //faceOffMenu.showPlayerPanel();
     }
     [PunRPC]
     public void RPC_faceOffVoter()
     {
         Debug.Log("Starting face-Off Voter round");
-        waitingPanel.SetActive(false);
-        faceOffMenu.showVotersPanel();
+        waitingPanel.SetActive(true);
+        //faceOffMenu.showVotersPanel();
     }
     [PunRPC]
     public void RPC_ShowFaceOffP1Answer(string playerAnswer)

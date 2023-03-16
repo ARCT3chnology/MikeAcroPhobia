@@ -32,8 +32,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             return _gamePlayTimer;
         }
-        set { 
-            _gamePlayTimer = value;}
+        set 
+        { 
+            _gamePlayTimer = value;
+        }
     }
     
     public void setAnswer()
@@ -81,12 +83,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
     }
-
     public static int getFaceOffRoundNumber()
     {
         return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
     }
-
     public static void updateRoundNumber()
     {
         int roundNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
@@ -98,9 +98,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("Round Number set to: " + number);
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.ROUND_NUMBER, number } });
     }
-
-
-
+    public static void updateTournamentNumber(int number)
+    {
+        Debug.Log("Tournament Number set to: " + number);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.TOURNAMENT_NUMBER, number } });
+    }
     public static void updateFaceOffRoundNumber()
     {
         int roundNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
@@ -125,11 +127,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
             if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
                 uiController.votingPanel.voteTimer.StartTimer();
-        }
-            
+        } 
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
     }
-
     public void OnAnswerTimeComplete()
     {
         if (GameSettings.normalGame)
@@ -146,7 +146,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             uiController.turnOffTextPanelFaceOff();
         }
     }
-
     /// <summary>
     /// this fucntion is called on submit button in threeletter round panel.
     /// </summary>
@@ -168,15 +167,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             uiController.turnOffTextPanelFaceOff();
         }
     }
-
-
     public void OnVotingTimeComplete_FaceOff()
     {
         uiController.faceOffMenu.DisableVotingOption();
         //uiController.turnOffTextPanelFaceOff();
-
     }
-
     public static bool allPlayersGotSameVote()
     {
         bool state;
@@ -188,7 +183,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = allVotes.ToList().Distinct().Count() == 1 ? true : false;
         return state;
     }
-
     public static bool OneplayerGotMaxVotes() 
     {
         bool state;
@@ -201,7 +195,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount == 1? true: false;
         return state;
     }
-
     public static bool playerGotSameMaxVotes()
     {
         bool state;
@@ -217,7 +210,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount > 1 ? true : false;
         return state;
     }
-
     public static bool threePlayerGotSameVotes() 
     {
         bool state;

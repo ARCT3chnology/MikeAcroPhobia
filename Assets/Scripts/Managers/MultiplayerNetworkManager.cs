@@ -528,6 +528,7 @@ public class MultiplayerNetworkManager : MonoBehaviourPunCallbacks
         roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
+        roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);
         roomProps.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
         options.CustomRoomProperties = roomProps;
     }
