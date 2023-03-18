@@ -60,24 +60,57 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        if (changedProps[GameSettings.ANSWER_SUBMITTED]!=null)
+        if (changedProps[GameSettings.ANSWER_SUBMITTED] != null)
         {
             bool state = (bool)changedProps[GameSettings.ANSWER_SUBMITTED];
             //Debug.Log("Answer Submitted is: " + state);
-            if (state)
+            if (GameSettings.normalGame)
             {
-                if (targetPlayer.IsLocal)
+                if (state)
                 {
-                    uiController.updateAnswerOnPlayer(true);
-                    uiController.turnOffTextPanel(false);
+                    if (targetPlayer.IsLocal)
+                    {
+                        uiController.updateAnswerOnPlayer(true);
+                        uiController.turnOffTextPanel(false);
+                    }
+                    else if ((bool)targetPlayer.CustomProperties[GameSettings.ANSWER_SUBMITTED] == true)
+                    {
+                        uiController.updateAnswerOnPlayer(true);
+                    }
                 }
-                else if ((bool)targetPlayer.CustomProperties[GameSettings.ANSWER_SUBMITTED] == true)
+            }
+            else
+            {
+                Debug.Log("Player submitted answer in faceOff.");
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2)
                 {
-                    uiController.updateAnswerOnPlayer(true);
+                    //makePlayerWaitinFaceOff(targetPlayer);
+                    makePlayerWaitForFaceOffVoting(targetPlayer);
+                }
+                else
+                {
                 }
             }
         }
     }
+
+
+    public void makePlayerWaitinFaceOff(Player p)
+    {
+        if (p == PhotonNetwork.LocalPlayer)
+        {
+            uiController.makePlayerWaitInFaceOff(p);
+        }
+    }
+    public void makePlayerWaitForFaceOffVoting(Player p)
+    {
+        if (p == PhotonNetwork.LocalPlayer)
+        {
+            uiController.makePlayerWaitForFaceOffVoting(p);
+        }
+
+    }
+
 
     public static int getroundNumber()
     {
@@ -122,12 +155,42 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        if(propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
+        if (GameSettings.normalGame)
         {
-            //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
-            if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
-                uiController.votingPanel.voteTimer.StartTimer();
-        } 
+            if(propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
+            {
+                //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+                if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
+                    uiController.votingPanel.voteTimer.StartTimer();
+            }
+        }
+        else
+        {
+            if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
+            {
+                Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+                if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 1)
+                {
+                    //Time to make player Wait.
+                    Debug.Log("Please Wait");
+                    //uiController.votingPanel.voteTimer.StartTimer();
+                }
+                else if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 2)
+                {
+                    //Time to get votes from other players.
+                    Debug.Log("Give votes.");
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        for (int i = 0; i < uiController.faceOffVoters.Count; i++)
+                        {
+                            uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
+                            //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
+                        }
+
+                    }
+                }
+            }
+        }
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
     }
     public void OnAnswerTimeComplete()
@@ -143,7 +206,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            uiController.turnOffTextPanelFaceOff();
+            for (int i = 0; i < uiController.faceOffVoters.Count; i++)
+            {
+                uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
+                //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
+            }
+
+            //uiController.turnOffTextPanelFaceOff();
         }
     }
     /// <summary>
@@ -154,19 +223,22 @@ public class GameManager : MonoBehaviourPunCallbacks
         uiController.votingPanel.submitPressed = true;
         Debug.Log("Instantiating from submit");
 
+        stats = new ExitGames.Client.Photon.Hashtable();
+        stats[GameSettings.ANSWER_SUBMITTED] = true;
+        PhotonNetwork.SetPlayerCustomProperties(stats);
+        
+        updateAnswersSubmittedNumber();
+
         if (GameSettings.normalGame)
         {
-            stats = new ExitGames.Client.Photon.Hashtable();
-            stats[GameSettings.ANSWER_SUBMITTED] = true;
-            PhotonNetwork.SetPlayerCustomProperties(stats);
-            updateAnswersSubmittedNumber();
-
         }
         else
         {
-            uiController.turnOffTextPanelFaceOff();
+            //uiController.turnOffTextPanelFaceOff_Voter1();
         }
     }
+
+
     public void OnVotingTimeComplete_FaceOff()
     {
         uiController.faceOffMenu.DisableVotingOption();

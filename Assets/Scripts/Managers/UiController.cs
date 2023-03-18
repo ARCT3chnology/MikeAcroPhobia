@@ -86,34 +86,36 @@ public class UiController : MonoBehaviourPunCallbacks
         if (propertiesThatChanged.ContainsKey(GameSettings.PlAYERS_VOTED))
         {
             votingPanel.updateVotesStats(4, (int)propertiesThatChanged[GameSettings.PlAYERS_VOTED]);
-            if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 0)
+            if (GameSettings.normalGame)
             {
-                if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 0)
                 {
-                    for (int j = 0; j < votingPanel.voteList.Count; j++)
+                    if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
                     {
-                        //Debug.Log("P" + (j + 1).ToString() + "Votes");
-                        if (j == 0)
+                        for (int j = 0; j < votingPanel.voteList.Count; j++)
                         {
-                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                            //Debug.Log("P" + (j + 1).ToString() + "Votes");
+                            if (j == 0)
+                            {
+                                votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES]);
+                            }
+                            if (j == 1)
+                            {
+                                votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
+                            }
+                            if (j == 2)
+                            {
+                                votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
+                            }
+                            if (j == 3)
+                            {
+                                votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
+                            }
                         }
-                        if (j == 1)
-                        {
-                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES]);
-                        }
-                        if (j == 2)
-                        {
-                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES]);
-                        }
-                        if (j == 3)
-                        {
-                            votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
-                        }
+                        onVotingTimeEnded();
                     }
-                    onVotingTimeEnded();
                 }
-            }
-            else if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 1)
+                else if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 1)
             {
                 if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 3)
                 {
@@ -138,6 +140,27 @@ public class UiController : MonoBehaviourPunCallbacks
                         }
                     }
                     onVotingTimeEnded();
+                }
+            }
+            }
+            else
+            {
+                //Both the two players submitted their votes
+                if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 2)
+                {
+                    for (int i = 0; i < faceOffVoters.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            faceOffMenu.showP1Votes((string)faceOffVoters[i].CustomProperties[GameSettings.PLAYER_VOTES]);
+                        }
+                        else if(i == 1)
+                        {
+                            faceOffMenu.showP2Votes((string)faceOffVoters[i].CustomProperties[GameSettings.PLAYER_VOTES]);
+                        }
+                        
+                    }
+                    Debug.Log("All two sumbitted their votes");       
                 }
             }
         }
@@ -180,7 +203,7 @@ public class UiController : MonoBehaviourPunCallbacks
             GameManager.updateRoundNumber();
         }
         resetPlayerAnswer();
-        Invoke("StartNextRound", 6f);
+        Invoke("StartNextRound", 5f);
     }
 
 
@@ -337,12 +360,20 @@ public class UiController : MonoBehaviourPunCallbacks
     }
 
 
-    private List<int> faceOffPlayers;
-    private List<int> faceOffVoters;
+    public List<Player> faceOffPlayers 
+    {
+        get;
+        set;
+    }
+    public List<Player> faceOffVoters 
+    {
+        get;
+        set;
+    }
     public void FaceOffRounds()
     {
-        faceOffPlayers = new List<int>();
-        faceOffVoters = new List<int>();
+        faceOffPlayers = new List<Player>();
+        faceOffVoters = new List<Player>();
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
         for (int i = 0; i < allVotes.Length; i++)
         {
@@ -369,7 +400,7 @@ public class UiController : MonoBehaviourPunCallbacks
 
             for (int i = 0; i < g.Indices.ToArray().Count(); i++)
             {
-                faceOffPlayers.Add(g.Indices.ToArray()[i]);
+                faceOffPlayers.Add(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
                 startFaceOffRound(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
             }
             //Debug.Log("Have duplicate " + g.Name + " with indices " +
@@ -380,7 +411,7 @@ public class UiController : MonoBehaviourPunCallbacks
             if (allVotes[i] != MaxNoOfVotes)
             {
                 startFaceOffVoter(PhotonNetwork.PlayerList[i]);
-                faceOffVoters.Add(i);
+                faceOffVoters.Add(PhotonNetwork.PlayerList[i]);
             }
         }
     }
@@ -396,11 +427,13 @@ public class UiController : MonoBehaviourPunCallbacks
         Debug.Log("Starting face off round");
         GameSettings.FaceOffGame = true;
         GameSettings.normalGame = false;
-        photonView.RPC("RPC_faceOffRound", p);
+        RPC_ShowWaitingPanel();
+        //photonView.RPC("RPC_faceOffRound", p);
     }
     public void startFaceOffVoter(Player p)
     {
-        photonView.RPC("RPC_faceOffVoter", p);
+        //photonView.RPC("RPC_faceOffVoter", p);
+        RPC_ShowWaitingPanel();
     }
 
     public void turnOffTextPanel(Player p)
@@ -421,56 +454,100 @@ public class UiController : MonoBehaviourPunCallbacks
         //photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
         //photonView.RPC("RPC_StartFaceOffVotingTimer", PhotonNetwork.PlayerList[faceOffVoters[0]]);
     }
-    
-    public void turnOffTextPanelFaceOff()
+    public void RPC_OnFaceOffAnswerSubmit(Player p)
+    {
+        Debug.Log("Name: " + p.NickName);
+        photonView.RPC("turnOffTextPanelFaceOff_Voter1", p);
+        photonView.RPC("turnOffTextPanelFaceOff_Voter2", p);
+    }
+
+
+    [PunRPC]
+    private void turnOffTextPanelFaceOff_Voter1()
     {
         faceOffMenu.onAnswerSubmission();
-        photonView.RPC("RPC_ShowFaceOffP1Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[0]].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_StartFaceOffVotingTimer", PhotonNetwork.PlayerList[faceOffVoters[0]]);
+        faceOffMenu.setVoteButtonState(true);
+        photonView.RPC("RPC_ShowFaceOffP1Answer", faceOffVoters[0], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_ShowFaceOffP2Answer", faceOffVoters[0], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_StartFaceOffVotingTimer", faceOffVoters[0]);
+        faceOffMenu.Vote_Timer.StartTimer();
         //votingPanel.gameObject.SetActive(true);
     }
+    [PunRPC]
+    private void turnOffTextPanelFaceOff_Voter2()
+    {
+        faceOffMenu.onAnswerSubmission();
+        faceOffMenu.setVoteButtonState(true);
+        photonView.RPC("RPC_ShowFaceOffP1Answer", faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_ShowFaceOffP2Answer", faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC("RPC_StartFaceOffVotingTimer", faceOffVoters[0]);
+        //faceOffMenu.Vote_Timer.StartTimer();
+        //votingPanel.gameObject.SetActive(true);
+    }
+    public void makePlayerWaitInFaceOff(Player P)
+    {
+        //photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        RPC_MakePlayerWaitinFaceOff();
+    }
+    public void makePlayerWaitForFaceOffVoting(Player P)
+    {
+        //photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        RPC_MakePlayerWaitinFaceOff();
+    }
+    [PunRPC]
+    private void RPC_MakePlayerWaitinFaceOff()
+    {
+        faceOffMenu.showWaitingForVoting();
+    }
+
 
     public void StartFaceOffRounds()
     {
-        faceOffMenu.showPlayerPanel();
-        faceOffMenu.showVotersPanel();
+
+        for (int i = 0; i < faceOffPlayers.Count; i++)
+        {
+            photonView.RPC("RPC_faceOffPlayer", faceOffPlayers[i]);
+        }
+        for (int i = 0; i < faceOffVoters.Count; i++)
+        {
+            photonView.RPC("RPC_faceOffVoter", faceOffVoters[i]);
+        }
+
+        //faceOffMenu.showPlayerPanel();
+        //.showVotersPanel();
     }
+
 
     public void updateAnswerOnPlayer(bool playerSubmitted)
     {
         RPC_UpdateAnswersForVoting(playerSubmitted);
     }
-
     [PunRPC]
     public void RPC_UpdateAnswerOnplayer(Player player, bool answerSubmitted)
     {
         photonView.RPC("RPC_UpdateAnswersForVoting", player, answerSubmitted);
     }
-
     [PunRPC]
-    public void RPC_TurnOFFTextPanel()
+    private void RPC_TurnOFFTextPanel()
     {
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
         votingPanel.gameObject.SetActive(true);
     }
-
     [PunRPC]
-    public void RPC_UpdateAnswersForVoting(bool playerSubmitted)
+    private void RPC_UpdateAnswersForVoting(bool playerSubmitted)
     {
         //votingPanel.voteTimer.StartTimer();
         votingPanel.updateAnswers(playerSubmitted);
     }
-
     [PunRPC]
-    public void RPC_ShowWelcomePanel()
+    private void RPC_ShowWelcomePanel()
     {
         welcomePanel.SetActive(true);
     }
     [PunRPC]
-    public void RPC_ShowFirstRoundPanel()
+    private void RPC_ShowFirstRoundPanel()
     {
         roundConfigurator.setTitleText("Three letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.ThreeLetters);
@@ -482,7 +559,7 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
-    public void RPC_ShowSecondRoundPanel()
+    private void RPC_ShowSecondRoundPanel()
     {
         roundConfigurator.setTitleText("Four letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.FourLetters);
@@ -495,7 +572,7 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
-    public void RPC_ShowThirdRoundPanel()
+    private void RPC_ShowThirdRoundPanel()
     {
         roundConfigurator.setTitleText("Five letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.FiveLetters);
@@ -507,7 +584,7 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
-    public void RPC_ShowFourthRoundPanel()
+    private void RPC_ShowFourthRoundPanel()
     {
         roundConfigurator.setTitleText("Six letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.SixLetters);
@@ -519,7 +596,7 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
-    public void RPC_ShowFifthRoundPanel()
+    private void RPC_ShowFifthRoundPanel()
     {
         roundConfigurator.setTitleText("Seven letter Round");
         roundConfigurator.setAcronymType(AcronymSetter.acronyms.SevenLetters);
@@ -530,9 +607,8 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
-
     [PunRPC]
-    public void RPC_faceOffRound()
+    private void RPC_ShowWaitingPanel()
     {
         Debug.Log("Starting face-Off round");
         waitingPanel.SetActive(true);
@@ -540,24 +616,31 @@ public class UiController : MonoBehaviourPunCallbacks
         //faceOffMenu.showPlayerPanel();
     }
     [PunRPC]
-    public void RPC_faceOffVoter()
+    private void RPC_faceOffVoter()
     {
         Debug.Log("Starting face-Off Voter round");
-        waitingPanel.SetActive(true);
-        //faceOffMenu.showVotersPanel();
+        //waitingPanel.SetActive(true);
+        faceOffMenu.showVotersPanel();
     }
     [PunRPC]
-    public void RPC_ShowFaceOffP1Answer(string playerAnswer)
+    private void RPC_faceOffPlayer()
+    {
+        Debug.Log("Starting face-Off Player round");
+        //waitingPanel.SetActive(true);
+        faceOffMenu.showPlayerPanel();
+    }
+    [PunRPC]
+    private void RPC_ShowFaceOffP1Answer(string playerAnswer)
     {
         faceOffMenu.updateP1Answer(playerAnswer);
     }
     [PunRPC]
-    public void RPC_ShowFaceOffP2Answer(string playerAnswer)
+    private void RPC_ShowFaceOffP2Answer(string playerAnswer)
     {
         faceOffMenu.updateP2Answer(playerAnswer);
     }
     [PunRPC]
-    public void RPC_StartFaceOffVotingTimer()
+    private void RPC_StartFaceOffVotingTimer()
     {
         faceOffMenu.startVoteTimer();
     }

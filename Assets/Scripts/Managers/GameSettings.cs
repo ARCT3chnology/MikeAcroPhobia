@@ -108,6 +108,16 @@ public class GameSettings : ScriptableObject
             return "ANSWER_SUBMITTED";
         }
     }
+    /// <summary>
+    /// The amount of votes player would get;
+    /// </summary>
+    public static string PLAYER_VOTES
+    {
+        get
+        {
+            return "PLAYER_VOTES";
+        }
+    }
     public static int MAX_ROUNDS
     {
         get
