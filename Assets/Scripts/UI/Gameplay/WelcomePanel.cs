@@ -58,6 +58,13 @@ public class WelcomePanel : MonoBehaviour
         }
     }
 
+    public void resetTimer()
+    {
+        Debug.Log("resetTimer");
+        StartTimer = false;
+        CurrentTime = EndTime;
+    }
+
     public virtual void onTimerComplete()
     {
         if ((GameSettings.normalGame) && GameManager.getroundNumber() < 5)

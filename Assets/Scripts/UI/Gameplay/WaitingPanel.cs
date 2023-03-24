@@ -62,8 +62,8 @@ public class WaitingPanel : WelcomePanel
             }
             else
             {
-                //Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.getFaceOffRoundNumber());
-                if ((!GameSettings.normalGame) && GameManager.getFaceOffRoundNumber() < 2)
+                Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.getFaceOffRoundNumber());
+                if ((!GameSettings.normalGame) && GameManager.getFaceOffRoundNumber() < 3)
                 {
                     if (GameManager.getFaceOffRoundNumber() == 0)
                         Timer("Starting FACE-OFF Round 1 in: ");

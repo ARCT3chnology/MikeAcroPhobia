@@ -19,6 +19,7 @@ public class Vote : MonoBehaviour
     {
         votingMenu = transform.GetComponentInParent<VotingMenu>();
     }
+    private ExitGames.Client.Photon.Hashtable _PlayerProperties = new ExitGames.Client.Photon.Hashtable();
 
     public void onClick_VoteButton()
     {
@@ -40,34 +41,44 @@ public class Vote : MonoBehaviour
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES];
                         playerVoteCount++;    
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER1_VOTES, playerVoteCount } });
-                        PhotonNetwork.LocalPlayer.CustomProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                        _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                        //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
+                        PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+
+
                     }
-                    if(i == 1)
+                    if (i == 1)
                     {
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER2_VOTES, playerVoteCount } });
-                        PhotonNetwork.LocalPlayer.CustomProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                        //PhotonNetwork.CurrentRoom.CustomProperties["P2Votes"] =  playerVoteCount;
-                        //UnityEngine.Debug.Log("P2 Voted");
+                        _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                        //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
+                        //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
+                        PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+
                     }
-                    if(i == 2)
+                    if (i == 2)
                     {
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER3_VOTES, playerVoteCount } });
-                        PhotonNetwork.LocalPlayer.CustomProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                        //PhotonNetwork.CurrentRoom.CustomProperties["P3Votes"]= playerVoteCount;
-                        //UnityEngine.Debug.Log("P3 Voted");
+                        _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                        //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
+                        //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
+                        PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+
                     }
-                    if(i == 3)
+                    if (i == 3)
                     {
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER4_VOTES, playerVoteCount } });
-                        PhotonNetwork.LocalPlayer.CustomProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                        //PhotonNetwork.CurrentRoom.CustomProperties["P3Votes"]= playerVoteCount;
-                        //UnityEngine.Debug.Log("P3 Voted");
+                        _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                        //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
+                        //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
+                        PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+
                     }
                 }
             }

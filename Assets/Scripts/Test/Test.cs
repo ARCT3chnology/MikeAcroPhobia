@@ -10,14 +10,14 @@ public class Test : MonoBehaviour
     //[SerializeField] List<string> data = new List<string> { "fname", "lname", "home", "home", "company" };
     private void Start()
     {
-        //testMethod();
+        testMethod();
         //allPlayersGotSameVote();
-        OneplayerGotMaxVotes();
+        //OneplayerGotMaxVotes();
     }
 
     private static void testMethod()
     {
-        int[] names = new int[] { 1, 2, 2, 4, 1 };
+        int[] names = new int[] { 1, 1, 0, 0 };
 
         var duplicatesWithIndices = names
             // Associate each name/value with an index
@@ -40,13 +40,17 @@ public class Test : MonoBehaviour
         // Let's say we print out the duplicates (the ToArray is for .NET 3.5):
         foreach (var g in duplicatesWithIndices)
         {
-            if (duplicatesWithIndices.First() == g)
+            //Debug.Log("Players: " + g.Indices.ToArray().Count());
+
+            for (int i = 0; i < g.Indices.ToArray().Count(); i++)
             {
-                Debug.Log("Have duplicate " + g.Name + " with indices " +
-                string.Join(",", g.Indices.ToArray()));
+                if (g.Name == names.Max())
+                {
+                    //faceOffPlayers.Add(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
+                    Debug.Log("Players: " + g.Indices.ToArray()[i]);
+                    //startFaceOffRound(PhotonNetwork.PlayerList[g.Indices.ToArray()[i]]);
+                }
             }
-            else
-                break;
         }
 
         // The output for the above input is:

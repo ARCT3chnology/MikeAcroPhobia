@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.Log("Player submitted answer in faceOff.");
+                Debug.Log("Player submitted answer in faceOff." + (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
                 if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2)
                 {
                     //makePlayerWaitinFaceOff(targetPlayer);
@@ -179,14 +179,10 @@ public class GameManager : MonoBehaviourPunCallbacks
                 {
                     //Time to get votes from other players.
                     Debug.Log("Give votes.");
-                    if (PhotonNetwork.IsMasterClient)
+                    for (int i = 0; i < uiController.faceOffVoters.Count; i++)
                     {
-                        for (int i = 0; i < uiController.faceOffVoters.Count; i++)
-                        {
-                            uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
-                            //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
-                        }
-
+                        uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
+                        //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
                     }
                 }
             }
@@ -241,9 +237,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void OnVotingTimeComplete_FaceOff()
     {
-        uiController.faceOffMenu.DisableVotingOption();
+        uiController.DisableFaceoffVoteMenuFromAll();
+        //uiController.faceOffMenu.DisableVotingOption();
         //uiController.turnOffTextPanelFaceOff();
     }
+
     public static bool allPlayersGotSameVote()
     {
         bool state;

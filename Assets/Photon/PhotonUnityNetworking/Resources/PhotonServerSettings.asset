@@ -77,6 +77,8 @@ MonoBehaviour:
   - turnOffTextPanelFaceOff_Voter1
   - turnOffTextPanelFaceOff_Voter2
   - RPC_MakePlayerWaitinFaceOff
+  - RPC_ShowLevelComplete
+  - RPC_DisableFaceOffVoteMenu
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
