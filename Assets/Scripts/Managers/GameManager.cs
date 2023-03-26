@@ -1,7 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,18 +24,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             _noOfanswerSubmitted = value;
         }
     }
-    public Timer gamePlayTimer 
+    public Timer gamePlayTimer
     {
         get
         {
             return _gamePlayTimer;
         }
-        set 
-        { 
+        set
+        {
             _gamePlayTimer = value;
         }
     }
-    
+
     public void setAnswer()
     {
         if (GameSettings.normalGame)
@@ -85,10 +83,13 @@ public class GameManager : MonoBehaviourPunCallbacks
                 if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2)
                 {
                     //makePlayerWaitinFaceOff(targetPlayer);
-                    makePlayerWaitForFaceOffVoting(targetPlayer);
-                }
-                else
-                {
+                    for (int i = 0; i < uiController.faceOffPlayers.Count; i++)
+                    {
+                        if (targetPlayer == uiController.faceOffPlayers[i])
+                            makePlayerWaitForFaceOffVoting(targetPlayer);
+                        else
+                            continue;
+                    }
                 }
             }
         }
@@ -97,16 +98,16 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void makePlayerWaitinFaceOff(Player p)
     {
+        uiController.makePlayerWaitInFaceOff(p);
         if (p == PhotonNetwork.LocalPlayer)
         {
-            uiController.makePlayerWaitInFaceOff(p);
         }
     }
     public void makePlayerWaitForFaceOffVoting(Player p)
     {
+        uiController.makePlayerWaitForFaceOffVoting(p);
         if (p == PhotonNetwork.LocalPlayer)
         {
-            uiController.makePlayerWaitForFaceOffVoting(p);
         }
 
     }
@@ -157,10 +158,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (GameSettings.normalGame)
         {
-            if(propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
+            if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
             {
                 //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
-                if((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
+                if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
                     uiController.votingPanel.voteTimer.StartTimer();
             }
         }
@@ -189,13 +190,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
     }
+
+
     public void OnAnswerTimeComplete()
     {
         if (GameSettings.normalGame)
         {
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
-                uiController.RPC_UpdateAnswerOnplayer(PhotonNetwork.PlayerList[i],false);
+                uiController.RPC_UpdateAnswerOnplayer(PhotonNetwork.PlayerList[i], false);
             }
             uiController.turnOffTextPanel(true);
             updateAnswersSubmittedNumber(4);
@@ -222,7 +225,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         stats = new ExitGames.Client.Photon.Hashtable();
         stats[GameSettings.ANSWER_SUBMITTED] = true;
         PhotonNetwork.SetPlayerCustomProperties(stats);
-        
+
         updateAnswersSubmittedNumber();
 
         if (GameSettings.normalGame)
@@ -253,7 +256,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = allVotes.ToList().Distinct().Count() == 1 ? true : false;
         return state;
     }
-    public static bool OneplayerGotMaxVotes() 
+    public static bool OneplayerGotMaxVotes()
     {
         bool state;
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
@@ -262,7 +265,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
         }
         int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
-        state = maxCount == 1? true: false;
+        state = maxCount == 1 ? true : false;
         return state;
     }
     public static bool playerGotSameMaxVotes()
@@ -280,7 +283,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount > 1 ? true : false;
         return state;
     }
-    public static bool threePlayerGotSameVotes() 
+    public static bool threePlayerGotSameVotes()
     {
         bool state;
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
@@ -289,7 +292,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
         }
         int maxCount = allVotes.ToList().Where(x => x == allVotes.Max()).Count();
-        if(maxCount == 3)
+        if (maxCount == 3)
         {
             state = true;
         }

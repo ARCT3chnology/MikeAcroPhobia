@@ -637,13 +637,13 @@ public class UiController : MonoBehaviourPunCallbacks
     }
     public void makePlayerWaitInFaceOff(Player P)
     {
-        //photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
-        RPC_MakePlayerWaitinFaceOff();
+        photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        //RPC_MakePlayerWaitinFaceOff();
     }
     public void makePlayerWaitForFaceOffVoting(Player P)
     {
-        //photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
-        RPC_MakePlayerWaitinFaceOff();
+        photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        //RPC_MakePlayerWaitinFaceOff();
     }
     [PunRPC]
     private void RPC_MakePlayerWaitinFaceOff()
