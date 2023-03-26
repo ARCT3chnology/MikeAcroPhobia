@@ -114,6 +114,9 @@ public class WelcomePanel : MonoBehaviour
                 case 1:
                     UiController.StartFaceOffRounds();
                     break;
+                case 2:
+                    UiController.StartFaceOffRounds();
+                    break;
                 default:
                     break;
             }

@@ -12,7 +12,7 @@ public class WaitingPanel : WelcomePanel
             timer_txt.text = "";
             Invoke("StartGame",1f);
         }
-        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 2))
+        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3))
         {
             timer_txt.text = "";
             Invoke("StartGame", 1f);
@@ -21,7 +21,7 @@ public class WaitingPanel : WelcomePanel
         {
             if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame)
             {
-                if (GameManager.getFaceOffRoundNumber() != 2)
+                if (GameManager.getFaceOffRoundNumber() != 3)
                 {
                     timer_txt.text = "";
                     Invoke("StartGame", 1f);
@@ -69,6 +69,8 @@ public class WaitingPanel : WelcomePanel
                         Timer("Starting FACE-OFF Round 1 in: ");
                     if (GameManager.getFaceOffRoundNumber() == 1)
                         Timer("Starting FACE-OFF Round 2 in: ");
+                    if (GameManager.getFaceOffRoundNumber() == 2)
+                        Timer("Starting FACE-OFF Round 3 in: ");
                 }
                 else
                 {

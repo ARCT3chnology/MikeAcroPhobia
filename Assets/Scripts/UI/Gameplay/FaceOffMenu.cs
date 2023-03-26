@@ -73,6 +73,7 @@ public class FaceOffMenu : MonoBehaviour
         this.gameObject.SetActive(true);
         VoterPanel.SetActive(true);
         setVoteButtonInteractableState(false);
+        setVoteButtonState(true);
         setAnsterText("");
         ProgressPanel.SetActive(false);
     }
@@ -104,13 +105,10 @@ public class FaceOffMenu : MonoBehaviour
     {
         Debug.Log("Disable Voting Option");
         setVoteButtonInteractableState(false);
-        if(PhotonNetwork.IsMasterClient)
-        {
-            GameManager.updateFaceOffRoundNumber();
-            GameManager.updateAnswersSubmittedNumber(0);
-        }
+        VoteTimer.resetTimer();
         ProgressPanel.SetActive(true);
         inforPanel.gameObject.SetActive(false);
+
     }
 
     private ExitGames.Client.Photon.Hashtable _PlayerProperties1 = new ExitGames.Client.Photon.Hashtable();

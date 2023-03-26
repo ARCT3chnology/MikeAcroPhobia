@@ -14,7 +14,7 @@ public class Timer : MonoBehaviour
     [SerializeField] bool _startTimer;
     [SerializeField] Text _timertext;
     [SerializeField] Slider _timeSlider;
-    [HideInInspector] float _currenttime;
+    [SerializeField] float _currenttime;
     [SerializeField] GameManager gameManager;
     [SerializeField] bool autoStart;
     [SerializeField] UnityEvent OnTimerEnd;
@@ -33,10 +33,14 @@ public class Timer : MonoBehaviour
 
     private void OnEnable()
     {
+        resetTimer  ();
         if (autoStart)
         {
             StartTimer();
         }
+    }
+    public void resetTimer()
+    {
         _timertext.text = "";
         _currenttime = _starttime;
         //Debug.Log(" " + _currenttime.ToString());
@@ -44,7 +48,6 @@ public class Timer : MonoBehaviour
         _timeSlider.minValue = _endtime;
         _timeSlider.maxValue = _starttime;
     }
-
     public void StartTimer()
     {  
         _startTimer = true;

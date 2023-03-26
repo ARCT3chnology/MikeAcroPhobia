@@ -241,6 +241,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void OnVotingTimeComplete_FaceOff()
     {
         uiController.DisableFaceoffVoteMenuFromAll();
+        updateAnswersSubmittedNumber(0);
         //uiController.faceOffMenu.DisableVotingOption();
         //uiController.turnOffTextPanelFaceOff();
     }

@@ -198,6 +198,11 @@ public class UiController : MonoBehaviourPunCallbacks
                         }
 
                     }
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        GameManager.updateFaceOffRoundNumber();
+
+                    }
                     Debug.Log("All two sumbitted their votes");       
                 }
             }
@@ -209,6 +214,7 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         Debug.Log("DisableFaceoffVoteMenuFromAll");
         photonView.RPC("RPC_DisableFaceOffVoteMenu", RpcTarget.All);
+        resetPlayerVotedCount();
     }
 
     [PunRPC]
@@ -336,6 +342,7 @@ public class UiController : MonoBehaviourPunCallbacks
         {
             GameManager.updateRoundNumber();
         }
+        GameManager.updateAnswersSubmittedNumber(0);
         resetPlayerAnswer();
         Invoke("StartNextRound", 5f);
     }
@@ -369,7 +376,7 @@ public class UiController : MonoBehaviourPunCallbacks
     {
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, 0 } });
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, 0 } });
+        //PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, 0 } });
     }
 
     public void GameCompleted()
