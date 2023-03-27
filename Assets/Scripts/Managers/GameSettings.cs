@@ -34,30 +34,35 @@ public class GameSettings : ScriptableObject
             return "ROUND_NUMBER";
         }
     }
+
     public static string TOURNAMENT_NUMBER {
         get 
         {
             return "TOURNAMENT_NUMBER";
         }
     }
+
     public static string FACEOFF_ROUND_NUMBER {
         get 
         {
             return "FACEOFF_ROUND_NUMBER";
         }
     }
+
     public static string ALL_ANSWERS_SUBMITTED {
         get 
         {
             return "ALL_ANSWERS_SUBMITTED";
         }
     }
+
     public static string NO_OF_ANSWERS_SUBMITTED {
         get 
         {
             return "NO_OF_ANSWERS_SUBMITTED";
         }
     }
+
     public static string PlAYERS_VOTED 
     {
         get
@@ -65,6 +70,7 @@ public class GameSettings : ScriptableObject
             return "PlAYERS_VOTED";
         }
     }
+
     public static string PlAYER1_VOTES 
     {
         get
@@ -72,6 +78,7 @@ public class GameSettings : ScriptableObject
             return "PlAYER1_VOTES";
         }
     }
+
     public static string PlAYER2_VOTES 
     {
         get
@@ -94,6 +101,7 @@ public class GameSettings : ScriptableObject
             return "PlAYER4_VOTES";
         }
     }
+
     public static string PlAYER_ANSWER 
     {
         get
@@ -101,6 +109,7 @@ public class GameSettings : ScriptableObject
             return "PlAYER_ANSWER";
         }
     }    
+
     public static string ANSWER_SUBMITTED
     {
         get

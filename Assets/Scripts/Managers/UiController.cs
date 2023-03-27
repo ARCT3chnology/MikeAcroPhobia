@@ -201,7 +201,6 @@ public class UiController : MonoBehaviourPunCallbacks
                     if (PhotonNetwork.IsMasterClient)
                     {
                         GameManager.updateFaceOffRoundNumber();
-
                     }
                     Debug.Log("All two sumbitted their votes");       
                 }
@@ -410,7 +409,15 @@ public class UiController : MonoBehaviourPunCallbacks
             }
             else if(maxCount == 2)
             {
-                FaceOffRounds();
+                if (GameManager.getFaceOffRoundNumber() < 3)
+                {
+                    FaceOffRounds();
+                }
+                else
+                {
+                    //show tie panel.
+                    Debug.Log("Game tied");
+                }
             }
             else if (maxCount == 3)
             {

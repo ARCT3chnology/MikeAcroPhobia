@@ -7,6 +7,7 @@ public class WaitingPanel : WelcomePanel
     private void OnEnable()
     {
         Debug.Log("Round number is: " + GameManager.getroundNumber());  
+        Debug.Log("Round number is: " + GameManager.getFaceOffRoundNumber());  
         if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 1))
         {
             timer_txt.text = "";
@@ -27,7 +28,7 @@ public class WaitingPanel : WelcomePanel
                     Invoke("StartGame", 1f);
                 }
             }
-            else if (GameManager.allPlayersGotSameVote())
+            else if (GameManager.allPlayersGotSameVote() && GameManager.getFaceOffRoundNumber() < 3)
             {
                 GameManager.updateRoundNumber(0);
                 UIController.restartGame();
@@ -40,7 +41,7 @@ public class WaitingPanel : WelcomePanel
             else
             {
                 UIController.GameCompleted();
-                Debug.Log("5 Levels are completed");
+                Debug.Log("Game completed");
             }
         }
     }
