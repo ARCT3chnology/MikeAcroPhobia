@@ -102,6 +102,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void OnClick_CategoryButton(int Category)
     {
+        AudioManager.Instance.Play("Room");
         Debug.Log(PhotonNetwork.InLobby);
         if (!PhotonNetwork.InLobby)
         {
@@ -134,21 +135,78 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     break;
                 }
             case Categories.Science:
-                if (PhotonNetwork.InLobby)
                 {
-                    //PhotonNetwork.JoinLobby(ScienceLobby);
+                    if (PhotonNetwork.InLobby)
+                    {
+                        RoomOptions options = new RoomOptions();
+                        options.MaxPlayers = 4;
+                        options.PlayerTtl = 0;
+                        options.EmptyRoomTtl = 0;
+                        options.IsOpen = true;
+                        options.IsVisible = true;
+
+                        addRoomProperties(options);
+                        Debug.Log("Science Room is full: " + scienceRoomFull);
+                        if (!scienceRoomFull)
+                        {
+                            PhotonNetwork.JoinOrCreateRoom("Science", options, TypedLobby.Default);
+                        }
+                        else
+                        {
+                            roomFillPanel.SetActive(true);
+                        }
+                    }
+
                 }
                 break;
             case Categories.Information:
-                if (PhotonNetwork.InLobby)
                 {
-                    //PhotonNetwork.JoinLobby(InformationLobby);
+                    if (PhotonNetwork.InLobby)
+                    {
+                        RoomOptions options = new RoomOptions();
+                        options.MaxPlayers = 4;
+                        options.PlayerTtl = 0;
+                        options.EmptyRoomTtl = 0;
+                        options.IsOpen = true;
+                        options.IsVisible = true;
+
+                        addRoomProperties(options);
+                        Debug.Log("Information Room is full: " + informationRoomFull);
+                        if (!informationRoomFull)
+                        {
+                            PhotonNetwork.JoinOrCreateRoom("Information", options, TypedLobby.Default);
+                        }
+                        else
+                        {
+                            roomFillPanel.SetActive(true);
+                        }
+                    }
+
                 }
                 break;
             case Categories.Adult:
-                if (PhotonNetwork.InLobby)
                 {
-                    //PhotonNetwork.JoinLobby(AdultLobby);
+                    if (PhotonNetwork.InLobby)
+                    {
+                        RoomOptions options = new RoomOptions();
+                        options.MaxPlayers = 4;
+                        options.PlayerTtl = 0;
+                        options.EmptyRoomTtl = 0;
+                        options.IsOpen = true;
+                        options.IsVisible = true;
+
+                        addRoomProperties(options);
+                        Debug.Log("Adult Room is full: " + adultRoomFull);
+                        if (!adultRoomFull)
+                        {
+                            PhotonNetwork.JoinOrCreateRoom("Adult", options, TypedLobby.Default);
+                        }
+                        else
+                        {
+                            roomFillPanel.SetActive(true);
+                        }
+                    }
+
                 }
                 break;
             default:
@@ -292,6 +350,21 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 if(room.PlayerCount == 4)
                     generalRoomFull = true;
             }
+            else if (room.Name == "Science")
+            {
+                if (room.PlayerCount == 4)
+                    scienceRoomFull = true;
+            }
+            else if (room.Name == "Information")
+            {
+                if (room.PlayerCount == 4)
+                    informationRoomFull = true;
+            }
+            else if (room.Name == "Adult")
+            {
+                if (room.PlayerCount == 4)
+                    adultRoomFull = true;
+            }
         }
 
         GameSettings.CurrentRooms = roomList;
@@ -345,6 +418,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void onClick_onBackButton()
     {
         SceneManager.LoadScene(0);
+        AudioManager.Instance.Play("MenuButton");
     }
 
     public void onClick_LeaveRoomButton()

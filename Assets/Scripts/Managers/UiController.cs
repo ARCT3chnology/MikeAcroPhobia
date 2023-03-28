@@ -19,6 +19,7 @@ public class UiController : MonoBehaviourPunCallbacks
     [SerializeField] RoundConfigurator _RoundConfigurator;
     [SerializeField] GameEndMenu _GameEndMenu;
     [SerializeField] FaceOffMenu _faceOffMenu;
+    [SerializeField] GameTieMenu _gameTieMenu;
     private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
 
     public GameObject welcomePanel { get { return _WelcomePanel; } }
@@ -29,6 +30,7 @@ public class UiController : MonoBehaviourPunCallbacks
     public GameObject waitingPanel { get { return _waitingPanel; } }
     public RoundConfigurator roundConfigurator { get { return _RoundConfigurator; } }
     public FaceOffMenu faceOffMenu { get { return _faceOffMenu; } }
+    public GameTieMenu GameTieMenu { get { return _gameTieMenu; } }
 
     private void Start()
     {
@@ -417,6 +419,8 @@ public class UiController : MonoBehaviourPunCallbacks
                 {
                     //show tie panel.
                     Debug.Log("Game tied");
+                    GameTieMenu.gameObject.SetActive(true);
+                    GameTieMenu.showPlayers();
                 }
             }
             else if (maxCount == 3)

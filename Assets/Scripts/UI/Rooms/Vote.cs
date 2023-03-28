@@ -27,7 +27,7 @@ public class Vote : MonoBehaviour
         int playerVoteCount;
         int VoteCount;
 
-
+        AudioManager.Instance.Play("VoteButton");
 
         for (int i = 0;i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {

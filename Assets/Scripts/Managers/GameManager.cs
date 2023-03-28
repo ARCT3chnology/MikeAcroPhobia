@@ -227,7 +227,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.SetPlayerCustomProperties(stats);
 
         updateAnswersSubmittedNumber();
-
+        AudioManager.Instance.Play("Submit");
         if (GameSettings.normalGame)
         {
         }
