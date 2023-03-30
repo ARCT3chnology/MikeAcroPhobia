@@ -1696,7 +1696,6 @@ MonoBehaviour:
   _textBtn: {fileID: 0}
   content: {fileID: 362589448}
   _roomListing: {fileID: 7967306021038240095, guid: 80a33ee9270d6974a9605e862da0afb3, type: 3}
-  _playerListingMenu: {fileID: 1270057535}
 --- !u!4 &303662272
 Transform:
   m_ObjectHideFlags: 0

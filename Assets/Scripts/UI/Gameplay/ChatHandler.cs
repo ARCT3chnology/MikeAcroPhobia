@@ -5,24 +5,28 @@ using UnityEngine.UI;
 
 public class ChatHandler : MonoBehaviour
 {
-    [SerializeField] Text ButtonText;
+    //[SerializeField] Text ButtonText;
     [SerializeField] bool chatOpened;
     [SerializeField] GameObject GlobalChatPanel;
     [SerializeField] GameObject PersonalChatPanel;
+    [SerializeField] bool isPublic;
+    [SerializeField] Image icon;
+    [SerializeField] Sprite ChatIcon;
+    [SerializeField] Sprite CrossIcon;
     public void OnClick_ChatButton()
     {
-        if (MenuManager.Instance.gameMenus[2].gameObject.activeInHierarchy)
+        if (isPublic)
         {
             if (chatOpened)
             {
                 GlobalChatPanel.SetActive(false);
                 chatOpened = false;
-                ButtonText.text = "CHAT";
+                icon.sprite = ChatIcon;
             }
             else
             {
                 GlobalChatPanel.SetActive(true);
-                ButtonText.text = "BACK";
+                icon.sprite = CrossIcon;
                 chatOpened = true;
             }
         }
@@ -32,12 +36,12 @@ public class ChatHandler : MonoBehaviour
             {
                 PersonalChatPanel.SetActive(false);
                 chatOpened= false;
-                ButtonText.text = "CHAT";
+                icon.sprite = ChatIcon;
             }
             else
             {
-                PersonalChatPanel.SetActive(true); 
-                ButtonText.text = "BACK";
+                PersonalChatPanel.SetActive(true);
+                icon.sprite = CrossIcon;
                 chatOpened = true;
             }
         }
