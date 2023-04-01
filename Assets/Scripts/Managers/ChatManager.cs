@@ -51,8 +51,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         for (int i = 0; i < senders.Length; i++)
         {
-            _uim.textArea.text += senders[i] + " : " + "<mark=#FF800050> " + messages[i] + " </mark>" + "\n";
-
+            _uim.textArea.text += "<b>"+senders[i]+"</b>" + " : " + messages[i] + "\n";
 
             Debug.Log(senders[i]);
         }
@@ -70,20 +69,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnSubscribed(string[] channels, bool[] results)
     {
-        foreach (var channel in channels)
-        {
-            this.chatClient.PublishMessage(channel, "Joined");
-        }
+        //foreach (var channel in channels)
+        //{
+            this.chatClient.PublishMessage(personalChat, "Joined");
+        //}
         _uim.SendMsgField.SetActive(true);
 
     }
 
     public void OnUnsubscribed(string[] channels)
     {
-        foreach (var channel in channels)
-        {
-            this.chatClient.PublishMessage(channel, "Left");
-        }
+        //foreach (var channel in channels)
+        //{
+            this.chatClient.PublishMessage(personalChat, "Left");
+        //}
         //_uim.SendMsgField.SetActive(false);
     }
 
