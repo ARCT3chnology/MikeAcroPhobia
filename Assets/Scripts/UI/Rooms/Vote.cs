@@ -100,11 +100,11 @@ public class Vote : MonoBehaviour
         //UnityEngine.Debug.Log(PhotonNetwork.LocalPlayer.IsLocal);
 
         //For testing purpose commenting these 82-87
-        //if (player.IsLocal)
-        //{
-        //    if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)answerText.text)
-        //        votebutton.interactable = false;
-        //}
+        if (player.IsLocal)
+        {
+            if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)answerText.text)
+                votebutton.interactable = false;
+        }
 
     }
 

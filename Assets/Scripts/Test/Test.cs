@@ -15,6 +15,11 @@ public class Test : MonoBehaviour
         //OneplayerGotMaxVotes();
     }
 
+    private void Update()
+    {
+        Debug.Log("11");
+    }
+
     private static void testMethod()
     {
         int[] names = new int[] { 1, 1, 0, 0 };

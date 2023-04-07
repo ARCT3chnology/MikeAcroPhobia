@@ -9,6 +9,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
+using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
@@ -85,6 +86,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 value;
         }
     }
+    [SerializeField] Button HomeButton;
 
     public enum Categories 
     {
@@ -239,6 +241,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom() 
     {
+        HomeButton.gameObject.SetActive(false);
         Debug.Log("Room Joined of category: " + PhotonNetwork.CurrentRoom.Name);
         MenuManager.Instance.OpenMenu(menuName.RoomPanel);
         GameSettings.PlayerInRoom = true;
@@ -250,8 +253,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             {
                 photonView.RPC("RPC_LoadLevel", PhotonNetwork.PlayerList[i]);
             }
-      
-            //PhotonNetwork.LoadLevel(2);  
         }
         else
         {
@@ -269,13 +270,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         UpdateUi(GameSettings.CurrentRooms);
         LobbyPanel.SetActive(true);
         Room.gameObject.SetActive(false);
+        HomeButton.gameObject.SetActive(true);
+        Invoke(nameof(joinLobbyAfterDelay), 1);
         //photonView.RPC("RPC_UpdatePlayerCount", RpcTarget.All);
-           
         //base.OnLeftRoom();
         //if (!PhotonNetwork.InLobby)
         //{
         //}
-        SceneManager.LoadScene(0);
+        //SceneManager.LoadScene(0);
+    }
+
+    public void joinLobbyAfterDelay()
+    {
+        if (PhotonNetwork.InLobby == false)
+            PhotonNetwork.JoinLobby();
     }
 
     [PunRPC]
@@ -290,18 +298,19 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void RPC_LoadLevel()
     {
         Debug.Log("Loading level in Lobby system");
+        AudioManager.Instance.Stop("MainMenuSound");
         SceneManager.LoadScene(2);
     }
 
     private static void addRoomProperties(RoomOptions options)
     {
-
         Hashtable roomProps = new Hashtable();
         roomProps.Add(GameSettings.PlAYER1_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
+        roomProps.Add(GameSettings.PlAYERS_LEFT, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
         roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);
         roomProps.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
@@ -328,7 +337,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.JoinLobby();
         }
-        //UpdateUi(GameSettings.CurrentRooms);
+        UpdateUi(GameSettings.CurrentRooms);
         //This function will call onRoomListUpdate if the getcustomRoomList is true.
         //setPlayerCount();
     }
@@ -425,7 +434,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LeaveRoom(false);
         }
     } 
 

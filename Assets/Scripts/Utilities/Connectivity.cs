@@ -30,7 +30,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.EnableCloseConnection = true;
         
-        placeholderText.text = GameSettings.NickName;
+        //placeholderText.text = GameSettings.NickName;
 
         //if(GameSettings.NickName != "Player")
         //{
@@ -57,6 +57,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.NickName = nameInput.text;
         GameSettings.NickName = nameInput.text;
+        AudioManager.Instance.Play("MainMenuSound");
         MenuManager.Instance.OpenMenu(menuName.PlayPanel);
     }
 

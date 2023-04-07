@@ -62,6 +62,7 @@ public class VoteTimer : MonoBehaviour
             else
             {
                 _startTimer = false;
+                
                 OnTimerEnd.Invoke();
                 //gameManager.OnAnswerTimeComplete();
             }

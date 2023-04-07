@@ -73,7 +73,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         //{
             this.chatClient.PublishMessage(personalChat, "Joined");
         //}
-        _uim.SendMsgField.SetActive(true);
+        if(_uim.SendMsgField!=null)
+            _uim.SendMsgField.SetActive(true);
 
     }
 

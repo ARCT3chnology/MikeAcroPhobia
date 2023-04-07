@@ -92,7 +92,7 @@ public class UiController : MonoBehaviourPunCallbacks
             {
                 if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.TOURNAMENT_NUMBER] == 0)
                 {
-                    if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == 4)
+                    if ((int)propertiesThatChanged[GameSettings.PlAYERS_VOTED] == PhotonNetwork.CurrentRoom.PlayerCount)
                     {
                         for (int j = 0; j < votingPanel.voteList.Count; j++)
                         {
@@ -114,6 +114,7 @@ public class UiController : MonoBehaviourPunCallbacks
                                 votingPanel.voteList[j].showVotes((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES]);
                             }
                         }
+                        votingPanel.voteTimer.gameObject.SetActive(false);
                         onVotingTimeEnded();
                     }
                 }
@@ -309,9 +310,10 @@ public class UiController : MonoBehaviourPunCallbacks
 
     public void onVotingTimeEnded()
     {
+        Debug.Log("onVotingTimeEnded");
         if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(GameSettings.PlAYERS_VOTED))
         {
-            if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED] < 4)
+            if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED] < PhotonNetwork.CurrentRoom.PlayerCount)
             {
                 votingPanel.updateVotesStats(4, (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED]);
                 votingPanel.hideAllVoteButton();
@@ -337,15 +339,13 @@ public class UiController : MonoBehaviourPunCallbacks
                 }
             }
         }
-
-        Debug.Log("onVotingTimeEnded");
         if (PhotonNetwork.IsMasterClient && GameManager.getroundNumber() < 5)
         {
             GameManager.updateRoundNumber();
         }
         GameManager.updateAnswersSubmittedNumber(0);
         resetPlayerAnswer();
-        Invoke("StartNextRound", 5f);
+        Invoke(nameof(StartNextRound), 5f);
     }
 
 
@@ -404,6 +404,7 @@ public class UiController : MonoBehaviourPunCallbacks
             {
                 votes = allVotes.Max();
                 maxIndex = allVotes.ToList().IndexOf(votes);
+                gameEndMenu.StartTimer();
                 gameEndMenu.gameObject.SetActive(true);
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
                 photonView.RPC("RPC_ShowLevelComplete", RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
@@ -462,34 +463,43 @@ public class UiController : MonoBehaviourPunCallbacks
 
     }
 
-
     public void DisconnectPlayer()
     {
+        AudioManager.Instance.Play("MenuButton");
         StartCoroutine(DisconnectAndLoad());
     }
 
     IEnumerator DisconnectAndLoad()
     {
-        PhotonNetwork.Disconnect();
-        while (PhotonNetwork.IsConnected)
+        PhotonNetwork.LeaveRoom();
+        while (PhotonNetwork.InRoom)
         {
             yield return null;
         }
         SceneManager.LoadScene(1);
     }
 
-    //[PunRPC]
-    //public void RPC_LeaveRoom()
-    //{
-    //    Debug.Log("leaving Room");
-    //    PhotonNetwork.LeaveLobby();
-    //    SceneManager.LoadScene(1);
-    //}
+    public void loadLobby()
+    {
+        photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All);
+    }
 
 
+    [PunRPC]
+    public void RPC_LeaveRoom()
+    {
+        Debug.Log("leaving Room");
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(1);
+    }
+
+    //public int playerleft;
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log(otherPlayer.NickName + " Leave Room");
+        //playerleft = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_LEFT];
+        //playerleft++;
+        //PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_LEFT,playerleft} });
+        Debug.Log(otherPlayer.NickName + " Left the Room");
         if(GameManager.getroundNumber()==5 && GameManager.threePlayerGotSameVotes())
         {
             if (otherPlayer.NickName != PhotonNetwork.LocalPlayer.NickName)
@@ -503,6 +513,7 @@ public class UiController : MonoBehaviourPunCallbacks
                 SceneManager.LoadScene(1);
             }
         }
+
         base.OnPlayerLeftRoom(otherPlayer);
     }
 

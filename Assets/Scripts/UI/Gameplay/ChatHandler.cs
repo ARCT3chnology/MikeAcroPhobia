@@ -15,6 +15,8 @@ public class ChatHandler : MonoBehaviour
     [SerializeField] Sprite CrossIcon;
     public void OnClick_ChatButton()
     {
+        AudioManager.Instance.Play("MenuButton");
+
         if (isPublic)
         {
             if (chatOpened)

@@ -70,6 +70,13 @@ public class GameSettings : ScriptableObject
             return "PlAYERS_VOTED";
         }
     }
+    public static string PlAYERS_LEFT 
+    {
+        get
+        {
+            return "PlAYERS_LEFT";
+        }
+    }
 
     public static string PlAYER1_VOTES 
     {

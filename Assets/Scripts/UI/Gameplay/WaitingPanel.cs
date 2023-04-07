@@ -6,7 +6,7 @@ public class WaitingPanel : WelcomePanel
 {
     private void OnEnable()
     {
-        Debug.Log("Round number is: " + GameManager.getroundNumber());  
+        Debug.Log("Round number is: " + GameManager.getroundNumber());
         Debug.Log("Round number is: " + GameManager.getFaceOffRoundNumber());  
         if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
         {
@@ -76,6 +76,7 @@ public class WaitingPanel : WelcomePanel
                 else
                 {
                     Debug.Log("5 Levels are completed");
+                    this.gameObject.SetActive(false);  
                 }
             }
         }

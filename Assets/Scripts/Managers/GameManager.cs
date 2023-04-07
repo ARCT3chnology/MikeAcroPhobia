@@ -126,6 +126,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         int roundNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
         roundNumber++;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.ROUND_NUMBER, roundNumber } });
+        Debug.Log("Round Number Updated to: " + roundNumber);
     }
     public static void updateRoundNumber(int number)
     {
@@ -161,8 +162,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
             {
                 //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
-                if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 4)
+                if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    uiController.votingPanel.voteTimer.gameObject.SetActive(true);
                     uiController.votingPanel.voteTimer.StartTimer();
+                }
             }
         }
         else
