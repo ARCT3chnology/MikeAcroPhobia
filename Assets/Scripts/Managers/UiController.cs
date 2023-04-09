@@ -36,7 +36,7 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowWelcomePanel", RpcTarget.All);
+            photonView.RPC( nameof(RPC_ShowWelcomePanel), RpcTarget.All);
         }
         GameSettings.normalGame = true;
     }
@@ -45,35 +45,35 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowFirstRoundPanel", RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowFirstRoundPanel), RpcTarget.All);
         }
     }
     public void Start4LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowSecondRoundPanel", RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowSecondRoundPanel), RpcTarget.All);
         }
     }
     public void Start5LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowThirdRoundPanel", RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowThirdRoundPanel), RpcTarget.All);
         }
     }
     public void Start6LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowFourthRoundPanel", RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowFourthRoundPanel), RpcTarget.All);
         }
     }    
     public void Start7LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("RPC_ShowFifthRoundPanel", RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowFifthRoundPanel), RpcTarget.All);
         }
     }
 
@@ -215,7 +215,7 @@ public class UiController : MonoBehaviourPunCallbacks
     public void DisableFaceoffVoteMenuFromAll()
     {
         Debug.Log("DisableFaceoffVoteMenuFromAll");
-        photonView.RPC("RPC_DisableFaceOffVoteMenu", RpcTarget.All);
+        photonView.RPC(nameof(RPC_DisableFaceOffVoteMenu), RpcTarget.All);
         resetPlayerVotedCount();
     }
 
@@ -407,7 +407,7 @@ public class UiController : MonoBehaviourPunCallbacks
                 gameEndMenu.StartTimer();
                 gameEndMenu.gameObject.SetActive(true);
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
-                photonView.RPC("RPC_ShowLevelComplete", RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
+                photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
                 //gameEndMenu.setEndPanelStats(PhotonNetwork.PlayerList[maxIndex].NickName,votes);
             }
             else if(maxCount == 2)
@@ -513,7 +513,8 @@ public class UiController : MonoBehaviourPunCallbacks
                 SceneManager.LoadScene(1);
             }
         }
-
+        if(PhotonNetwork.CurrentRoom.PlayerCount == 0)
+            PhotonNetwork.CurrentRoom.IsOpen = true;
         base.OnPlayerLeftRoom(otherPlayer);
     }
 
@@ -604,20 +605,20 @@ public class UiController : MonoBehaviourPunCallbacks
         GameSettings.FaceOffGame = true;
         GameSettings.normalGame = false;
         //RPC_ShowWaitingPanel();
-        photonView.RPC("RPC_ShowWaitingPanel", p);
+        photonView.RPC(nameof(RPC_ShowWaitingPanel), p);
     }
     public void startFaceOffVoter(Player p)
     {
         GameSettings.FaceOffGame = true;
         GameSettings.normalGame = false;
-        photonView.RPC("RPC_ShowWaitingPanel", p);
+        photonView.RPC(nameof(RPC_ShowWaitingPanel), p);
         //RPC_ShowWaitingPanel();
     }
 
     public void turnOffTextPanel(Player p)
     {
 
-        photonView.RPC("RPC_TurnOFFTextPanel", p);
+        photonView.RPC(nameof(RPC_TurnOFFTextPanel), p);
     }
     public void turnOffTextPanel( bool startVotingTime)
     {
@@ -635,8 +636,8 @@ public class UiController : MonoBehaviourPunCallbacks
     public void RPC_OnFaceOffAnswerSubmit(Player p)
     {
         Debug.Log("FaceOff - answer Submit Name: " + p.NickName);
-        photonView.RPC("turnOffTextPanelFaceOff_Voter1", p);
-        photonView.RPC("turnOffTextPanelFaceOff_Voter2", p);
+        photonView.RPC(nameof(turnOffTextPanelFaceOff_Voter1), p);
+        photonView.RPC(nameof(turnOffTextPanelFaceOff_Voter2), p);
     }
 
 
@@ -646,9 +647,9 @@ public class UiController : MonoBehaviourPunCallbacks
         faceOffMenu.onAnswerSubmission();
         faceOffMenu.setVoteButtonInteractableState(true);
         faceOffMenu.setVoteButtonState(true);
-        photonView.RPC("RPC_ShowFaceOffP1Answer", faceOffVoters[0], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_ShowFaceOffP2Answer", faceOffVoters[0], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_StartFaceOffVotingTimer", faceOffVoters[0]);
+        photonView.RPC(nameof(RPC_ShowFaceOffP1Answer), faceOffVoters[0], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[0], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[0]);
         faceOffMenu.Vote_Timer.StartTimer();
         //votingPanel.gameObject.SetActive(true);
     }
@@ -658,20 +659,20 @@ public class UiController : MonoBehaviourPunCallbacks
         faceOffMenu.onAnswerSubmission();
         faceOffMenu.setVoteButtonInteractableState(true);
         faceOffMenu.setVoteButtonState(true);
-        photonView.RPC("RPC_ShowFaceOffP1Answer", faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_ShowFaceOffP2Answer", faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC("RPC_StartFaceOffVotingTimer", faceOffVoters[0]);
+        photonView.RPC(nameof(RPC_ShowFaceOffP1Answer), faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
+        photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[0]);
         //faceOffMenu.Vote_Timer.StartTimer();
         //votingPanel.gameObject.SetActive(true);
     }
     public void makePlayerWaitInFaceOff(Player P)
     {
-        photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        photonView.RPC(nameof(RPC_MakePlayerWaitinFaceOff), P);
         //RPC_MakePlayerWaitinFaceOff();
     }
     public void makePlayerWaitForFaceOffVoting(Player P)
     {
-        photonView.RPC("RPC_MakePlayerWaitinFaceOff", P);
+        photonView.RPC(nameof(RPC_MakePlayerWaitinFaceOff), P);
         //RPC_MakePlayerWaitinFaceOff();
     }
     [PunRPC]
@@ -689,13 +690,18 @@ public class UiController : MonoBehaviourPunCallbacks
             for (int i = 0; i < faceOffPlayers.Count; i++)
             {
                 if (faceOffPlayers[i] == PhotonNetwork.LocalPlayer)
-                    photonView.RPC("RPC_faceOffPlayer", faceOffPlayers[i]);
+                {
+                    photonView.RPC(nameof(RPC_faceOffPlayer), faceOffPlayers[i]);
+
+                }
             }
 
             for (int i = 0; i < faceOffVoters.Count; i++)
             {
                 if (faceOffVoters[i] == PhotonNetwork.LocalPlayer)
-                    photonView.RPC("RPC_faceOffVoter", faceOffVoters[i]);
+                {
+                    photonView.RPC(nameof(RPC_faceOffVoter), faceOffVoters[i]);
+                }
             }
         }
 
@@ -711,7 +717,7 @@ public class UiController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_UpdateAnswerOnplayer(Player player, bool answerSubmitted)
     {
-        photonView.RPC("RPC_UpdateAnswersForVoting", player, answerSubmitted);
+        photonView.RPC(nameof(RPC_UpdateAnswersForVoting), player, answerSubmitted);
     }
     [PunRPC]
     private void RPC_TurnOFFTextPanel()

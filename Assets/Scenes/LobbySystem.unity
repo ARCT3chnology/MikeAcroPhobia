@@ -689,7 +689,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1363611943}
+      - m_Target: {fileID: 152430808}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -1950,10 +1950,14 @@ MonoBehaviour:
   _adultCategory:
     Txt_Count: {fileID: 690391463}
   _Room: {fileID: 1895432774}
-  _roomFillPanel: {fileID: 1363611943}
+  _roomFillPanel: {fileID: 152430808}
   _lobbyPanel: {fileID: 2111841794}
   HomeButton: {fileID: 454597378}
+  _roomFillString: PLEASE TRY ANOTHER ROOM THIS ROOM IS OPCCUPIED
+  _gameinProgressString: PLEASE TRY ANOTHER ROOM. THE GAME IS IN PROGRESS.
+  _cautionText: {fileID: 309104250}
   LobbyCategory: 0
+  GameRunning: 0
 --- !u!114 &706769384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1976,6 +1980,43 @@ MonoBehaviour:
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!1 &752900786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 752900787}
+  m_Layer: 5
+  m_Name: TopBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &752900787
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752900786}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1291015101}
+  m_Father: {fileID: 1398102670}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &802425354
 GameObject:
   m_ObjectHideFlags: 0
@@ -3519,18 +3560,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291015100}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2000002, y: 1.2000002, z: 1.2000002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1522236341}
-  m_Father: {fileID: 2089350106}
-  m_RootOrder: 2
+  m_Father: {fileID: 752900787}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -24, y: -35.2}
+  m_AnchoredPosition: {x: -28.783875, y: -52.239952}
   m_SizeDelta: {x: 144.74, y: 137.7}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1291015102
@@ -3577,17 +3618,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2089350107}
-        m_TargetAssemblyTypeName: ChatHandler, Assembly-CSharp
-        m_MethodName: OnClick_ChatButton
-        m_Mode: 1
+      - m_Target: {fileID: 1848739940}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1291015103
 MonoBehaviour:
@@ -4006,6 +4047,7 @@ GameObject:
   - component: {fileID: 1398102670}
   - component: {fileID: 1398102672}
   - component: {fileID: 1398102671}
+  - component: {fileID: 1398102673}
   m_Layer: 5
   m_Name: Chats
   m_TagString: Untagged
@@ -4027,6 +4069,7 @@ RectTransform:
   m_Children:
   - {fileID: 1848739941}
   - {fileID: 617662840547554788}
+  - {fileID: 752900787}
   m_Father: {fileID: 1036167485}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4073,6 +4116,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398102669}
   m_CullTransparentMesh: 1
+--- !u!114 &1398102673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1398102669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 105a57096874ded4ca5c68b2de3e884b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chatOpened: 0
+  GlobalChatPanel: {fileID: 1848739940}
+  PersonalChatPanel: {fileID: 617662840547554789}
+  isPublic: 1
+  icon: {fileID: 1522236342}
+  ChatIcon: {fileID: 21300000, guid: 7412e30568f9e834bbf06c9467306864, type: 3}
+  CrossIcon: {fileID: 21300000, guid: 151e2350a5532a5429d4c9af44e4e1ab, type: 3}
 --- !u!1 &1400175495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6432,7 +6494,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2089350106}
-  - component: {fileID: 2089350107}
   m_Layer: 5
   m_Name: TopBar
   m_TagString: Untagged
@@ -6454,7 +6515,6 @@ RectTransform:
   m_Children:
   - {fileID: 1385493849}
   - {fileID: 454597377}
-  - {fileID: 1291015101}
   m_Father: {fileID: 1036167485}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6463,25 +6523,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &2089350107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2089350105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 105a57096874ded4ca5c68b2de3e884b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chatOpened: 0
-  GlobalChatPanel: {fileID: 1848739940}
-  PersonalChatPanel: {fileID: 617662840547554789}
-  isPublic: 1
-  icon: {fileID: 1522236342}
-  ChatIcon: {fileID: 21300000, guid: 7412e30568f9e834bbf06c9467306864, type: 3}
-  CrossIcon: {fileID: 21300000, guid: 151e2350a5532a5429d4c9af44e4e1ab, type: 3}
 --- !u!1 &2111841794
 GameObject:
   m_ObjectHideFlags: 0

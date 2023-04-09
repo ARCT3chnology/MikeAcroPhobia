@@ -39,7 +39,9 @@ public class Connectivity : MonoBehaviourPunCallbacks
         //}
 
         if (PhotonNetwork.IsConnected)
+        {
             PlayButton.interactable = true;
+        }
     }
 
     public override void OnConnectedToMaster()
@@ -47,7 +49,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
         Debug.Log("Connected to Master");
         GameSettings.ConnectedtoMaster = true;
         PlayButton.interactable = true;
-        
+        //ConnectionCanvas.instance.showConnectedPanel(true);
         //base.OnConnectedToMaster();
     }
 
