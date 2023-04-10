@@ -46,7 +46,7 @@ public class ConnectionCanvas : MonoBehaviour
     {
         iconImage.color = Color.red;
         TextImage.sprite = disconnectedSprite;
-        Panel.DOAnchorPosX(-10, 0.5f).From().SetEase(Ease.InOutBounce);
+        Panel.DOAnchorPosX(10, 0.5f).SetEase(Ease.InOutBounce);
     }
 
 

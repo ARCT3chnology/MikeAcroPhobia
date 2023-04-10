@@ -37,7 +37,10 @@ public class UiController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             photonView.RPC( nameof(RPC_ShowWelcomePanel), RpcTarget.All);
+            
         }
+        AudioManager.Instance.Play("Welcome");
+        AudioManager.Instance.Play("Gameplay");
         GameSettings.normalGame = true;
     }
 
@@ -476,6 +479,7 @@ public class UiController : MonoBehaviourPunCallbacks
         {
             yield return null;
         }
+        AudioManager.Instance.Stop("Gameplay");
         SceneManager.LoadScene(1);
     }
 

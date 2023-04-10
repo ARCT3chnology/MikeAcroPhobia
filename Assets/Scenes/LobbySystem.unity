@@ -3618,10 +3618,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1848739940}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1398102673}
+        m_TargetAssemblyTypeName: ChatHandler, Assembly-CSharp
+        m_MethodName: OnClick_ChatButton
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5321,7 +5321,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 618292886}
   m_HandleRect: {fileID: 618292885}
   m_Direction: 2
-  m_Value: -0.00000013041924
+  m_Value: -0.0000001594013
   m_Size: 0.16347948
   m_NumberOfSteps: 0
   m_OnValueChanged:

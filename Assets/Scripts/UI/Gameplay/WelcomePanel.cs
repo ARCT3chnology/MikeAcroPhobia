@@ -11,7 +11,9 @@ public class WelcomePanel : MonoBehaviour
     [SerializeField] float CurrentTime, EndTime;
     [SerializeField] bool StartTimer;
     [SerializeField] UiController UiController;
-    public Text timer_txt {get
+    public Text timer_txt 
+    {
+        get
         {
             return TimerTxt;
         }
@@ -19,7 +21,8 @@ public class WelcomePanel : MonoBehaviour
     }
     public UiController UIController 
     { 
-        get {
+        get 
+        {
             return UiController;
         }
     }

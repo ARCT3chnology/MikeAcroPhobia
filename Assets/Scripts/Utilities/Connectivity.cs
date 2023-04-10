@@ -29,7 +29,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
         connected = PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.EnableCloseConnection = true;
-        
+        Debug.Log(connected);
         //placeholderText.text = GameSettings.NickName;
 
         //if(GameSettings.NickName != "Player")
@@ -37,12 +37,15 @@ public class Connectivity : MonoBehaviourPunCallbacks
         //    MenuManager.Instance.CloseMenu(LoginMenu);
         //    MenuManager.Instance.OpenMenu(menuName.PlayPanel);
         //}
-
-        if (PhotonNetwork.IsConnected)
+        if (!PhotonNetwork.IsConnected)
         {
-            PlayButton.interactable = true;
+            if (connected)
+            {
+                PlayButton.interactable = true;
+            }
         }
     }
+
 
     public override void OnConnectedToMaster()
     {

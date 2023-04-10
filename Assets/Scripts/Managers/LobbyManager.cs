@@ -473,11 +473,71 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnConnected()
+    {
+        ConnectionCanvas.instance.Hidepanel();
+        base.OnConnected();
+    }
+
+
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log(cause);
-
-        ConnectionCanvas.instance.showConnectedPanel(false);
+        switch (cause)
+        {
+            case DisconnectCause.None:
+                break;
+            case DisconnectCause.ExceptionOnConnect:
+                break;
+            case DisconnectCause.DnsExceptionOnConnect:
+                {
+                    ConnectionCanvas.instance.showDisConnectedPanel();
+                    PhotonNetwork.ReconnectAndRejoin();
+                }
+                break;
+            case DisconnectCause.ServerAddressInvalid:
+                break;
+            case DisconnectCause.Exception:
+                break;
+            case DisconnectCause.ServerTimeout:
+                {
+                    ConnectionCanvas.instance.showDisConnectedPanel();
+                    PhotonNetwork.ReconnectAndRejoin();
+                    break;
+                }
+            case DisconnectCause.ClientTimeout:
+                {
+                    ConnectionCanvas.instance.showDisConnectedPanel();
+                    PhotonNetwork.ReconnectAndRejoin();
+                    break;
+                }
+            case DisconnectCause.DisconnectByServerLogic:
+                break;
+            case DisconnectCause.DisconnectByServerReasonUnknown:
+                break;
+            case DisconnectCause.InvalidAuthentication:
+                break;
+            case DisconnectCause.CustomAuthenticationFailed:
+                break;
+            case DisconnectCause.AuthenticationTicketExpired:
+                break;
+            case DisconnectCause.MaxCcuReached:
+                break;
+            case DisconnectCause.InvalidRegion:
+                break;
+            case DisconnectCause.OperationNotAllowedInCurrentState:
+                break;
+            case DisconnectCause.DisconnectByClientLogic:
+                break;
+            case DisconnectCause.DisconnectByOperationLimit:
+                break;
+            case DisconnectCause.DisconnectByDisconnectMessage:
+                break;
+            case DisconnectCause.ApplicationQuit:
+                break;
+            default:
+                break;
+        }
         
         base.OnDisconnected(cause);
     }

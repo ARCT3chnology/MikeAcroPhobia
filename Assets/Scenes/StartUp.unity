@@ -1738,7 +1738,7 @@ RectTransform:
   m_GameObject: {fileID: 547296306}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.67296, y: 0.67296, z: 0.67296}
+  m_LocalScale: {x: 0.4231303, y: 0.4231303, z: 0.4231303}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 283556868}
@@ -4920,7 +4920,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1529354156
 RectTransform:
@@ -5203,6 +5203,18 @@ MonoBehaviour:
   - name: MainMenuSound
     clip: {fileID: 8300000, guid: d02dec29334193941b3649746850ae10, type: 3}
     volume: 0.2
+    pitch: 1
+    source: {fileID: 0}
+    loop: 1
+  - name: Welcome
+    clip: {fileID: 8300000, guid: 28b5510280939fc4fad4bebdaed4dbcc, type: 3}
+    volume: 0.2
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: Gameplay
+    clip: {fileID: 8300000, guid: 09616845d7d32a1468d1ba292d46ff63, type: 3}
+    volume: 0.1
     pitch: 1
     source: {fileID: 0}
     loop: 1
