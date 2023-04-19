@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,9 @@ public class VotingMenu : MonoBehaviour
     [SerializeField] Text voteStats;
     public bool submitPressed { get; set; }
     [SerializeField] VoteTimer _voteTimer;
+    public bool PlayerVoted;
+    private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
+
     public VoteTimer voteTimer
     {
         get { return _voteTimer; }
@@ -29,6 +33,18 @@ public class VotingMenu : MonoBehaviour
         }
         voteStats.text = "0/4 Players Voted";
     }
+
+    private void OnDisable()
+    {
+        PlayerVoted = false;
+        if (PhotonNetwork.LocalPlayer.IsLocal)
+        {
+            stats = new ExitGames.Client.Photon.Hashtable();
+            stats[GameSettings.ANSWER_SUBMITTED] = false;
+            PhotonNetwork.SetPlayerCustomProperties(stats);
+        }
+    }
+
 
     public void instantiateAnswers(bool playerSubmitted)
     {

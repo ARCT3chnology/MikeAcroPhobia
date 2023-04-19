@@ -11,8 +11,11 @@ public class FaceOffMenu : MonoBehaviour
     [SerializeField] GameObject ProgressPanel;
     [SerializeField] InfoPanel inforPanel;
     [SerializeField] Timer VoteTimer;
+    [SerializeField] Timer _AnswerTimer;
     [SerializeField] Text P1Answer;
     [SerializeField] Text P2Answer;
+    [SerializeField] Text LevelNamePlayer;
+    [SerializeField] Text LevelNameVoter;
     [SerializeField] Button[] VoteButtons;
     [SerializeField] Text[] Votes_Txt;
     [SerializeField] InputField P1TextInput;
@@ -22,6 +25,17 @@ public class FaceOffMenu : MonoBehaviour
         get 
         {
             return VoteTimer;
+        }
+        set 
+        { 
+            VoteTimer = value;
+        }
+    }
+    public Timer Answer_Timer
+    {
+        get 
+        {
+            return _AnswerTimer;
         }
         set 
         { 
@@ -58,8 +72,10 @@ public class FaceOffMenu : MonoBehaviour
         PlayerPanel.SetActive(true);
         P1TextInput.SetTextWithoutNotify("");
         submitButton.interactable = true;
+        LevelNamePlayer.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber + 1).ToString();
         ProgressPanel.SetActive(false);
     }
+
     public void hidePlayerPanel()
     {
         PlayerPanel.SetActive(false);
@@ -73,6 +89,7 @@ public class FaceOffMenu : MonoBehaviour
         this.gameObject.SetActive(true);
         VoterPanel.SetActive(true);
         setVoteButtonInteractableState(false);
+        LevelNameVoter.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber+1).ToString();
         setVoteButtonState(true);
         setAnsterText("");
         ProgressPanel.SetActive(false);
@@ -85,6 +102,7 @@ public class FaceOffMenu : MonoBehaviour
         PlayerPanel.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(false);
         PlayerPanel.transform.GetChild(1).transform.GetChild(2).gameObject.SetActive(true);
     }
+
 
     public void updateP1Answer(string p1)
     {
@@ -117,6 +135,8 @@ public class FaceOffMenu : MonoBehaviour
     {
         int playerVoteCount = 0;
         int VoteCount = 0;
+        AudioManager.Instance.Play("VoteButton");
+
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
             if ((string)PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != "")
@@ -126,19 +146,14 @@ public class FaceOffMenu : MonoBehaviour
                     if (i == 0)
                     {
                         //Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName);
-
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER1_VOTES, playerVoteCount } });
                         _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
-
                     }
                     if (i == 1)
                     {
@@ -148,9 +163,7 @@ public class FaceOffMenu : MonoBehaviour
                         _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
                     if (i == 2)
@@ -160,10 +173,8 @@ public class FaceOffMenu : MonoBehaviour
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER3_VOTES, playerVoteCount } });
                         _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
                     if (i == 3)
@@ -173,14 +184,11 @@ public class FaceOffMenu : MonoBehaviour
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER4_VOTES, playerVoteCount } });
                         _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
                 }
-
             }
         }
         VoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED];
@@ -193,6 +201,8 @@ public class FaceOffMenu : MonoBehaviour
     {
         int playerVoteCount = 0;
         int VoteCount = 0;
+        AudioManager.Instance.Play("VoteButton");
+
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
             if ((string)PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != "")
@@ -201,21 +211,21 @@ public class FaceOffMenu : MonoBehaviour
                 {
                     if (i == 0)
                     {
+
                         //Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName);
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER1_VOTES, playerVoteCount } });
                         _PlayerProperties1[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
-
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
 
                     }
                     if (i == 1)
                     {
+
                         //Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName);
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES];
                         playerVoteCount++;
@@ -229,13 +239,13 @@ public class FaceOffMenu : MonoBehaviour
                     }
                     if (i == 2)
                     {
+
                         //Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName);
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER3_VOTES, playerVoteCount } });
                         _PlayerProperties1[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
-
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
@@ -243,6 +253,7 @@ public class FaceOffMenu : MonoBehaviour
                     }
                     if (i == 3)
                     {
+
                         playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES];
                         playerVoteCount++;
                         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER4_VOTES, playerVoteCount } });
@@ -258,7 +269,6 @@ public class FaceOffMenu : MonoBehaviour
             }
         }
         setVoteButtonInteractableState(false);
-
         VoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED];
         VoteCount++;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, VoteCount } });

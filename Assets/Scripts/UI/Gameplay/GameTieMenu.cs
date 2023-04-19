@@ -9,7 +9,19 @@ public class GameTieMenu : MonoBehaviour
 
     [SerializeField] Transform ContentParent;
     [SerializeField] GameObject PlayerDetail;
-    
+
+
+    private void OnEnable()
+    {
+        StartCoroutine(DisconnectOnStart());
+    }
+
+    private IEnumerator DisconnectOnStart()
+    {
+        yield return new WaitForSeconds(2);
+        if (PhotonNetwork.LocalPlayer.IsLocal)
+            PhotonNetwork.Disconnect();
+    }
 
     public void showPlayers()
     {

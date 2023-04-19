@@ -18,6 +18,17 @@ public class GameEndMenu : MonoBehaviour
         NameText.text = name;
         VotesText.text = votes.ToString();
     }
+    private void OnEnable()
+    {
+        StartCoroutine(DisconnectOnStart());
+    }
+
+    private IEnumerator DisconnectOnStart()
+    {
+        yield return new WaitForSeconds(2);
+        if(PhotonNetwork.LocalPlayer.IsLocal)
+            PhotonNetwork.Disconnect();
+    }
 
     public void onClick_ContinueButton()
     {
@@ -43,7 +54,7 @@ public class GameEndMenu : MonoBehaviour
             }
             else
             {
-                StartCoroutine(DisconnectAndLoad());
+                //StartCoroutine(DisconnectAndLoad());
                 starttimer = false;
                 timeToLeave = 6;
             }
@@ -60,6 +71,7 @@ public class GameEndMenu : MonoBehaviour
         //}
         Debug.Log("Disconnect and leaving room");
         //SceneManager.LoadScene(1);
-        uiController.loadLobby();
+        if(PhotonNetwork.IsMasterClient)
+            uiController.loadLobby();
     }
 }

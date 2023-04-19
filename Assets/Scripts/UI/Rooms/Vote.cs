@@ -19,8 +19,8 @@ public class Vote : MonoBehaviour
     {
         votingMenu = transform.GetComponentInParent<VotingMenu>();
     }
-    private ExitGames.Client.Photon.Hashtable _PlayerProperties = new ExitGames.Client.Photon.Hashtable();
 
+    private ExitGames.Client.Photon.Hashtable _PlayerProperties = new ExitGames.Client.Photon.Hashtable();
     public void onClick_VoteButton()
     {
         //UnityEngine.Debug.Log("onClick_VoteButton");
@@ -28,11 +28,10 @@ public class Vote : MonoBehaviour
         int VoteCount;
 
         AudioManager.Instance.Play("VoteButton");
-
         for (int i = 0;i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
             //UnityEngine.Debug.Log(PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER].ToString());
-            if ((string)PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != "")
+            if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
             {
                 if (answerText.text!=null)
                 {
@@ -46,8 +45,6 @@ public class Vote : MonoBehaviour
                             _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
                             //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
-
                         }
                         if (i == 1)
                         {
@@ -58,7 +55,6 @@ public class Vote : MonoBehaviour
                             //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                             //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         }
                         if (i == 2)
                         {
@@ -69,7 +65,6 @@ public class Vote : MonoBehaviour
                             //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                             //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
-
                         }
                         if (i == 3)
                         {
@@ -90,6 +85,8 @@ public class Vote : MonoBehaviour
         VoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED];
         VoteCount++;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, VoteCount } });
+        votingMenu.PlayerVoted = true;
+
         votingMenu.hideAllVoteButton();
     }
 
@@ -97,15 +94,30 @@ public class Vote : MonoBehaviour
     public void setVoteText(Player player)
     {
         answerText.text = (string)player.CustomProperties[GameSettings.PlAYER_ANSWER];
-        //UnityEngine.Debug.Log(PhotonNetwork.LocalPlayer.IsLocal);
+        UnityEngine.Debug.Log("Setting vote text");
 
         //For testing purpose commenting these 82-87
         if (player.IsLocal)
         {
             if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)answerText.text)
+            {
                 votebutton.interactable = false;
-        }
+            }
 
+        }
+        Invoke(nameof(setVoteStates), 0.5f);
+    }
+
+    public void setVoteStates()
+    {
+        if (votingMenu != null)
+        {
+            if (votingMenu.PlayerVoted)
+            {
+                votebutton.interactable = false;
+            }
+
+        }
     }
 
     /// <summary>

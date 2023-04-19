@@ -8,6 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "manager/GameSetting")]
 public class GameSettings : ScriptableObject
 {
+
     [SerializeField] string _gameVersion;
     public string GameVersion { get { return _gameVersion; } }
     [SerializeField] string _nickName;
@@ -24,7 +25,7 @@ public class GameSettings : ScriptableObject
         }
     }
 
-    public static List<RoomInfo> CurrentRooms;
+    public static List<LocalRoomInfo> CurrentRooms;
 
     public static bool ConnectedtoMaster { get; set; }
 
@@ -207,4 +208,9 @@ public class GameSettings : ScriptableObject
     {
         get;set;
     }
+}
+public class LocalRoomInfo
+{
+    public string roomName;
+    public int playerCount;
 }

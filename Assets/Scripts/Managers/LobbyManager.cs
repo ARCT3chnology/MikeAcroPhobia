@@ -362,7 +362,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        
+        Debug.Log("State :" + PhotonNetwork.NetworkClientState);
         LobbyPanel.SetActive(true);
         Debug.Log("Client is connected to master: " + GameSettings.ConnectedtoMaster);
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -424,13 +424,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     adultRoomFull = false;
             }
         }
-
-        GameSettings.CurrentRooms = roomList;
-        UpdateUi(roomList);
+        GameSettings.CurrentRooms = new List<LocalRoomInfo>();
+        for (int i = 0; i < roomList.Count; i++)
+        {
+            LocalRoomInfo localRoomInfo = new LocalRoomInfo();
+            localRoomInfo.roomName = roomList[i].Name;
+            localRoomInfo.playerCount = roomList[i].PlayerCount;
+            GameSettings.CurrentRooms.Add(localRoomInfo);
+        }
+        //GameSettings.CurrentRooms = roomList;
+        UpdateUi(GameSettings.CurrentRooms);
         base.OnRoomListUpdate(roomList);
     }
 
-    private void UpdateUi(List<RoomInfo> roomList)
+    private void UpdateUi(List<LocalRoomInfo> roomList)
     {
         if (roomList!=null)
         {
@@ -438,30 +445,30 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             foreach (var item in roomList)
             {
-                Debug.Log("Room Name: " + item.Name);
-                switch (item.Name)
+                Debug.Log("Room Name: " + item.roomName);
+                switch (item.roomName)
                 {
                     case "General":
                         {
-                            GeneralCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
+                            GeneralCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + 4;
 
                             break;
                         }
                     case "Science":
                         {
-                            ScienceCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
+                            ScienceCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + 4;
 
                             break;
                         }
                     case "Information":
                         {
-                            InformationCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
+                            InformationCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + 4;
 
                             break;
                         }
                     case "Adult":
                         {
-                            AdultCategoryPanel.Txt_Count.text = item.PlayerCount.ToString() + "/" + 4;
+                            AdultCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + 4;
 
                             break;
                         }
@@ -488,11 +495,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             case DisconnectCause.None:
                 break;
             case DisconnectCause.ExceptionOnConnect:
+                {
+                    ConnectionCanvas.instance.showDisConnectedPanel();
+                    PhotonNetwork.ConnectUsingSettings();
+                }
                 break;
             case DisconnectCause.DnsExceptionOnConnect:
                 {
                     ConnectionCanvas.instance.showDisConnectedPanel();
-                    PhotonNetwork.ReconnectAndRejoin();
+                    PhotonNetwork.ConnectUsingSettings();
                 }
                 break;
             case DisconnectCause.ServerAddressInvalid:
@@ -545,6 +556,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void onClick_onBackButton()
     {
+        PhotonNetwork.LeaveLobby();
         SceneManager.LoadScene(0);
         AudioManager.Instance.Play("MenuButton");
     }
@@ -559,45 +571,49 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        foreach (var item in GameSettings.CurrentRooms)
+        if (GameSettings.CurrentRooms != null)
         {
-            switch (item.Name)
+            foreach (var item in GameSettings.CurrentRooms)
             {
-                case "General":
-                    {
-                        if (item.PlayerCount < 4)
+                switch (item.roomName)
+                {
+                    case "General":
                         {
-                            generalRoomFull = false;
+                            if (item.playerCount < 4)
+                            {
+                                generalRoomFull = false;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case "Science":
-                    {
-                        if (item.PlayerCount < 4)
+                    case "Science":
                         {
-                            scienceRoomFull= false;
-                        }
-                        break;
-                    }                
-                case "Information":
-                    {
-                        if (item.PlayerCount < 4)
+                            if (item.playerCount < 4)
+                            {
+                                scienceRoomFull= false;
+                            }
+                            break;
+                        }                
+                    case "Information":
                         {
-                            informationRoomFull = false;
+                            if (item.playerCount < 4)
+                            {
+                                informationRoomFull = false;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case "Adult":
-                    {
-                        if (item.PlayerCount < 4)
+                    case "Adult":
                         {
-                            adultRoomFull = false;
+                            if (item.playerCount < 4)
+                            {
+                                adultRoomFull = false;
+                            }
+                            break;
                         }
+                    default:
                         break;
-                    }
-                default:
-                    break;
+                }
             }
+
         }
         
         base.OnRoomPropertiesUpdate(propertiesThatChanged);

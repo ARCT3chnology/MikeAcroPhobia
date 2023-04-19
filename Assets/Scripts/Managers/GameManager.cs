@@ -119,7 +119,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public static int getFaceOffRoundNumber()
     {
-        return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
+        //return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
+        return faceOffRoundNumber;
     }
     public static void updateRoundNumber()
     {
@@ -212,9 +213,21 @@ public class GameManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < uiController.faceOffVoters.Count; i++)
             {
                 uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
+
                 //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
             }
+            for (int i = 0; i < uiController.faceOffPlayers.Count; i++)
+            {
+                //uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
+                makePlayerWaitForFaceOffVoting(uiController.faceOffPlayers[i]);
 
+                //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
+            }
+            if (!faceOffRoundNumberIncreased)
+            {
+                faceOffRoundNumber++;
+                faceOffRoundNumberIncreased = true;
+            }
             //uiController.turnOffTextPanelFaceOff();
         }
     }
@@ -223,6 +236,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void onClick_SubmitButton()
     {
+        Debug.Log("On Player Submitted");
         uiController.votingPanel.submitPressed = true;
         Debug.Log("Instantiating from submit");
 
@@ -241,13 +255,30 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-
+    public static int faceOffRoundNumber { get; set; }
+    public static bool faceOffRoundNumberIncreased { get; set; }
     public void OnVotingTimeComplete_FaceOff()
     {
+        Debug.Log("On Voting time complete faceOff");
+        if (!faceOffRoundNumberIncreased)
+        {
+            faceOffRoundNumber++;
+            faceOffRoundNumberIncreased = true;
+        }
         uiController.DisableFaceoffVoteMenuFromAll();
         updateAnswersSubmittedNumber(0);
+        //RPC_UpdateFaceOffnumber();    
         //uiController.faceOffMenu.DisableVotingOption();
         //uiController.turnOffTextPanelFaceOff();
+    }
+
+    [PunRPC]
+    public void RPC_UpdateFaceOffnumber()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //updateFaceOffRoundNumber();
+        }
     }
 
     public static bool allPlayersGotSameVote()
@@ -261,6 +292,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = allVotes.ToList().Distinct().Count() == 1 ? true : false;
         return state;
     }
+
     public static bool OneplayerGotMaxVotes()
     {
         bool state;
@@ -273,6 +305,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount == 1 ? true : false;
         return state;
     }
+
     public static bool playerGotSameMaxVotes()
     {
         bool state;
@@ -288,6 +321,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         state = maxCount > 1 ? true : false;
         return state;
     }
+
     public static bool threePlayerGotSameVotes()
     {
         bool state;

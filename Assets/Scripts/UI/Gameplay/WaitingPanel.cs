@@ -6,21 +6,22 @@ public class WaitingPanel : WelcomePanel
 {
     private void OnEnable()
     {
+        GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
-        Debug.Log("Round number is: " + GameManager.getFaceOffRoundNumber());  
+        Debug.Log("Round number is: " + GameManager.faceOffRoundNumber);  
         if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
         {
             timer_txt.text = "";
             Invoke("StartGame",1f);
         }
-        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3))
+        else if ((!GameSettings.normalGame) && (GameManager.faceOffRoundNumber < 3))
         {
             timer_txt.text = "";
             Invoke("StartGame", 1f);
         }
         else
         {
-            if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.getFaceOffRoundNumber() != 3)
+            if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.faceOffRoundNumber != 3)
             {
                 timer_txt.text = "";
                 Invoke("StartGame", 1f);
@@ -28,7 +29,7 @@ public class WaitingPanel : WelcomePanel
                 {
                 }
             }
-            else if (GameManager.allPlayersGotSameVote() && GameManager.getFaceOffRoundNumber() < 3)
+            else if (GameManager.allPlayersGotSameVote() && GameManager.faceOffRoundNumber < 3)
             {
                 GameManager.updateRoundNumber(0);
                 UIController.restartGame();
@@ -41,6 +42,7 @@ public class WaitingPanel : WelcomePanel
             else
             {
                 UIController.GameCompleted();
+                //AudioManager.Instance.Stop("Gameplay");
                 Debug.Log("Game completed");
             }
         }
@@ -63,14 +65,14 @@ public class WaitingPanel : WelcomePanel
             }
             else
             {
-                //Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.getFaceOffRoundNumber());
-                if ((!GameSettings.normalGame) && GameManager.getFaceOffRoundNumber() < 3)
+                Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.faceOffRoundNumber);
+                if ((!GameSettings.normalGame) && GameManager.faceOffRoundNumber < 3)
                 {
-                    if (GameManager.getFaceOffRoundNumber() == 0)
+                    if (GameManager.faceOffRoundNumber == 0)
                         Timer("Starting FACE-OFF Round 1 in: ");
-                    if (GameManager.getFaceOffRoundNumber() == 1)
+                    if (GameManager.faceOffRoundNumber == 1)
                         Timer("Starting FACE-OFF Round 2 in: ");
-                    if (GameManager.getFaceOffRoundNumber() == 2)
+                    if (GameManager.faceOffRoundNumber == 2)
                         Timer("Starting FACE-OFF Round 3 in: ");
                 }
                 else

@@ -204,9 +204,14 @@ public class UiController : MonoBehaviourPunCallbacks
                         }
 
                     }
-                    if (PhotonNetwork.IsMasterClient)
+                    //if (PhotonNetwork.IsMasterClient)
+                    //{
+                    //    GameManager.updateFaceOffRoundNumber();
+                    //}
+                    if (!GameManager.faceOffRoundNumberIncreased)
                     {
-                        GameManager.updateFaceOffRoundNumber();
+                        GameManager.faceOffRoundNumber++;
+                        GameManager.faceOffRoundNumberIncreased = true;
                     }
                     Debug.Log("All two sumbitted their votes");       
                 }
@@ -405,12 +410,23 @@ public class UiController : MonoBehaviourPunCallbacks
             Debug.Log("Max count is: " + maxCount);
             if (maxCount == 1)
             {
+                AudioManager.Instance.Stop("Gameplay");
                 votes = allVotes.Max();
                 maxIndex = allVotes.ToList().IndexOf(votes);
-                gameEndMenu.StartTimer();
-                gameEndMenu.gameObject.SetActive(true);
-                Debug.Log("GameCompleted: " + maxIndex.ToString());
+                //gameEndMenu.StartTimer();
+                PhotonNetwork.AutomaticallySyncScene = false;
                 photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
+                Debug.Log("GameCompleted: " + maxIndex.ToString());
+                GameSettings.PlayerInRoom = false;
+                if (GameSettings.CurrentRooms != null)
+                {
+                    foreach (var item in GameSettings.CurrentRooms)
+                    {
+                        if(item.roomName == PhotonNetwork.CurrentRoom.Name)
+                            item.playerCount = 0;
+                    }
+                }
+
                 //gameEndMenu.setEndPanelStats(PhotonNetwork.PlayerList[maxIndex].NickName,votes);
             }
             else if(maxCount == 2)
@@ -425,6 +441,16 @@ public class UiController : MonoBehaviourPunCallbacks
                     Debug.Log("Game tied");
                     GameTieMenu.gameObject.SetActive(true);
                     GameTieMenu.showPlayers();
+                    GameTieMenu.showPlayers();
+                    GameSettings.PlayerInRoom = false;
+                    if (GameSettings.CurrentRooms != null)
+                    {
+                        foreach (var item in GameSettings.CurrentRooms)
+                        {
+                            if (item.roomName == PhotonNetwork.CurrentRoom.Name)
+                                item.playerCount = 0;
+                        }
+                    }
                 }
             }
             else if (maxCount == 3)
@@ -435,11 +461,18 @@ public class UiController : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void RPC_GameCompleted() 
+    {
+        GameCompleted();
+    }
 
     [PunRPC]
     public void RPC_ShowLevelComplete(string nickname, int votes)
     {
+        gameEndMenu.gameObject.SetActive(true);
         gameEndMenu.setEndPanelStats(nickname, votes);
+        //PhotonNetwork.Disconnect();
     }
 
     public void onthreePlayerGotSameVotes()
@@ -456,7 +489,10 @@ public class UiController : MonoBehaviourPunCallbacks
         Debug.Log("Player with the lowest vote is: " + PhotonNetwork.PlayerList[minimumValueIndex].NickName);
         if (PhotonNetwork.PlayerList[minimumValueIndex] == PhotonNetwork.LocalPlayer)
         {
-            DisconnectPlayer();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                DisconnectPlayer();
+            }
             GameSettings.PlayerInRoom = false;
         }
         else
@@ -474,27 +510,52 @@ public class UiController : MonoBehaviourPunCallbacks
 
     IEnumerator DisconnectAndLoad()
     {
-        PhotonNetwork.LeaveRoom();
-        while (PhotonNetwork.InRoom)
+        //PhotonNetwork.CloseConnection(PhotonNetwork.LocalPlayer);
+        if(PhotonNetwork.NetworkClientState != ClientState.Disconnected)
         {
-            yield return null;
+            PhotonNetwork.LeaveRoom();
+            while (PhotonNetwork.InRoom)
+            {
+                yield return null;
+            }
+            AudioManager.Instance.Stop("Gameplay");
+            PhotonNetwork.Disconnect(); // Disconnect from Photon network
+            SceneManager.LoadScene(1);
         }
-        AudioManager.Instance.Stop("Gameplay");
-        SceneManager.LoadScene(1);
+        else
+        {
+            SceneManager.LoadScene(1);
+        }
+    
     }
 
     public void loadLobby()
     {
-        photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All);
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            if (PhotonNetwork.PlayerList[i]!= PhotonNetwork.MasterClient)
+            {
+                photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All, PhotonNetwork.PlayerList[i]);
+            }
+                //RPC_LeaveRoom(PhotonNetwork.PlayerList[i]);
+        }
+        if(PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(DisconnectAndLoad());
+        }
+        //photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All);
     }
 
+    
 
     [PunRPC]
-    public void RPC_LeaveRoom()
+    public void RPC_LeaveRoom(Player p)
     {
-        Debug.Log("leaving Room");
-        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.CloseConnection(p);
         SceneManager.LoadScene(1);
+        Debug.Log("leaving Room");
+        //PhotonNetwork.LeaveRoom();
+        //SceneManager.LoadScene(1);
     }
 
     //public int playerleft;
@@ -519,6 +580,10 @@ public class UiController : MonoBehaviourPunCallbacks
         }
         if(PhotonNetwork.CurrentRoom.PlayerCount == 0)
             PhotonNetwork.CurrentRoom.IsOpen = true;
+        //if(PhotonNetwork.LocalPlayer == otherPlayer)
+        //{
+        //    SceneManager.LoadScene(1);
+        //}
         base.OnPlayerLeftRoom(otherPlayer);
     }
 
@@ -541,11 +606,13 @@ public class UiController : MonoBehaviourPunCallbacks
         get;
         set;
     }
+
     public List<Player> faceOffVoters 
     {
         get;
         set;
     }
+
     public void FaceOffRounds()
     {
         faceOffPlayers = new List<Player>();
@@ -621,17 +688,19 @@ public class UiController : MonoBehaviourPunCallbacks
 
     public void turnOffTextPanel(Player p)
     {
-
         photonView.RPC(nameof(RPC_TurnOFFTextPanel), p);
     }
+
     public void turnOffTextPanel( bool startVotingTime)
     {
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
         votingPanel.gameObject.SetActive(true);
+        
         if(startVotingTime)
             votingPanel.voteTimer.StartTimer();
+        
         //faceOffMenu.onAnswerSubmission();
         //photonView.RPC("RPC_ShowFaceOffP1Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[0]].CustomProperties[GameSettings.PlAYER_ANSWER]);
         //photonView.RPC("RPC_ShowFaceOffP2Answer", PhotonNetwork.PlayerList[faceOffVoters[0]], (string)PhotonNetwork.PlayerList[faceOffPlayers[1]].CustomProperties[GameSettings.PlAYER_ANSWER]);
@@ -665,8 +734,8 @@ public class UiController : MonoBehaviourPunCallbacks
         faceOffMenu.setVoteButtonState(true);
         photonView.RPC(nameof(RPC_ShowFaceOffP1Answer), faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
         photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[0]);
-        //faceOffMenu.Vote_Timer.StartTimer();
+        photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[1]);
+        faceOffMenu.Vote_Timer.StartTimer();
         //votingPanel.gameObject.SetActive(true);
     }
     public void makePlayerWaitInFaceOff(Player P)
