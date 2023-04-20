@@ -15,8 +15,10 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     ChatClient chatClient;
 
     //CHANNEL IDS
-    [SerializeField] string personalChat;
-    bool isConnected = false;
+    public string personalChat { get; set; }
+    
+    
+    public bool isConnected = false;
 
     #region CHAT CALL BACKS
     public void DebugReturn(DebugLevel level, string message)
@@ -26,13 +28,13 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnChatStateChange(ChatState state)
     {
-
+        Debug.Log("Chat State: " + state);
     }
 
     public void OnConnected()
     {
         Debug.Log("CHAT CONNECTED");
-
+        isConnected = true;
         this.chatClient.Subscribe(new string[] { personalChat });
         this.chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
@@ -40,7 +42,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void OnDisconnected()
     {
         Debug.Log("CHAT DISCONNECTED");
-
+        isConnected = false;
         this.chatClient.Unsubscribe(new string[] { personalChat });
         this.chatClient.SetOnlineStatus(ChatUserStatus.Offline);
         //_uim.SendMsgField.SetActive(false);
@@ -108,14 +110,18 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     }
 
 
-    private void OnEnable()
-    {
-        ConnectChat();
-    }
+    //private void OnEnable()
+    //{
+    //    if(isConnected == false)
+    //        ConnectChat();
+    //}
 
     private void OnDisable()
     {
-        if (chatClient != null) { this.chatClient.Disconnect(); }
+        //if (chatClient != null) 
+        //{ 
+        //    this.chatClient.Disconnect(); 
+        //}
     }
     private void Update()
     {
@@ -162,7 +168,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     #region PUBLIC CALLBACKS
     public void ConnectChat()
     {
-        ConnectChat(PhotonNetwork.NickName);
+        ConnectChat(GameSettings.NickName);
+    }
+    public void DisconnectChat()
+    {
+        Debug.Log("Disconnecting");
+        this.chatClient.Disconnect();
     }
 
     #endregion

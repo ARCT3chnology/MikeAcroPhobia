@@ -6595,6 +6595,7 @@ MonoBehaviour:
   uiController: {fileID: 849566237}
   _gamePlayTimer: {fileID: 117619098}
   _noOfanswerSubmitted: 0
+  chatHandler: {fileID: 2095513229}
 --- !u!4 &1277796568
 Transform:
   m_ObjectHideFlags: 0
@@ -9474,7 +9475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uim: {fileID: 1848739943}
-  personalChat: Lobby
+  isConnected: 0
 --- !u!114 &1848739943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10272,6 +10273,7 @@ MonoBehaviour:
   voteList: []
   voteStats: {fileID: 1527704390}
   _voteTimer: {fileID: 1649976725}
+  PlayerVoted: 0
 --- !u!1 &2014409990
 GameObject:
   m_ObjectHideFlags: 0
@@ -11359,6 +11361,8 @@ MonoBehaviour:
   icon: {fileID: 407251151}
   ChatIcon: {fileID: 21300000, guid: 7412e30568f9e834bbf06c9467306864, type: 3}
   CrossIcon: {fileID: 21300000, guid: 151e2350a5532a5429d4c9af44e4e1ab, type: 3}
+  _lobbyChatManager: {fileID: 1848739942}
+  _roomChatManager: {fileID: 617662840547554790}
 --- !u!4 &2095513230
 Transform:
   m_ObjectHideFlags: 0
@@ -12742,7 +12746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uim: {fileID: 617662840547554791}
-  personalChat: chating
+  isConnected: 0
 --- !u!114 &617662840547554791
 MonoBehaviour:
   m_ObjectHideFlags: 0

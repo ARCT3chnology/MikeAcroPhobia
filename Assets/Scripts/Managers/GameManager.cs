@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] UiController uiController;
     [SerializeField] Timer _gamePlayTimer;
     [SerializeField] int _noOfanswerSubmitted;
+    [SerializeField] ChatHandler chatHandler;
+
+    private void Start()
+    {
+        chatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
+    }
 
     public int noOfAnswersSubmitted
     {

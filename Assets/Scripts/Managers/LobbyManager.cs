@@ -119,6 +119,21 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public Categories LobbyCategory;
 
+    [SerializeField] ChatHandler _chatHandler;
+    public ChatHandler ChatHandler
+    {
+        get
+        {
+            return _chatHandler;
+        }
+        set 
+        {
+            _chatHandler = value;
+        }
+    }
+
+
+
     public bool GameRunning;
     /// <summary>
     /// this fucntion is called on each category button in lobby system scene-lobbies panel.
@@ -244,6 +259,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             default:
                 break;
         }
+
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -259,6 +275,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             UpdateUi(GameSettings.CurrentRooms);
         }
+        ChatHandler.JoinLobbyChat("lobby");
         //Debug.Log("Lobby Property" + PhotonNetwork.CurrentRoom.PropertiesListedInLobby[0]);
         base.OnJoinedLobby();
     
@@ -294,7 +311,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 photonView.RPC(nameof(RPC_UpdatePlayerCount), PhotonNetwork.PlayerList[i]);
             }
         }
-
+        ChatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -567,7 +584,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LeaveRoom(false);
         }
-    } 
+        ChatHandler.JoinLobbyChat("lobby");
+
+    }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
