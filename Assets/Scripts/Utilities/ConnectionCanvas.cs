@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ConnectionCanvas : MonoBehaviour
 {
+
     [SerializeField] RectTransform Panel;
     [SerializeField] Image TextImage;
     [SerializeField] Image iconImage;
@@ -48,6 +49,5 @@ public class ConnectionCanvas : MonoBehaviour
         TextImage.sprite = disconnectedSprite;
         Panel.DOAnchorPosX(10, 0.5f).SetEase(Ease.InOutBounce);
     }
-
 
 }

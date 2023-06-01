@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,6 +17,14 @@ public class VotingMenu : MonoBehaviour
     [SerializeField] VoteTimer _voteTimer;
     public bool PlayerVoted;
     private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
+    [SerializeField] UiController _uiController;
+    public UiController UiController
+    {
+        get
+        {
+            return _uiController;
+        }
+    }
 
     public VoteTimer voteTimer
     {
@@ -132,5 +141,10 @@ public class VotingMenu : MonoBehaviour
     public void updateVotesStats(int maxPlayers, int playerVoted)
     {
         voteStats.text = playerVoted.ToString() + "/" + maxPlayers + "Players Voted";
+    }
+
+    public void UpdateStarOfSpecficPlayer(Player targetPlayer)
+    {
+        UiController.updateStars(targetPlayer);
     }
 }

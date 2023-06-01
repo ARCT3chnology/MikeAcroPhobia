@@ -14,3 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameVersion: 0.0.1
   _nickName: Mike
+  _maxPlayerForLobby: 4
+  gameLevels:
+  - minStars: 1
+    maxStars: 10
+  - minStars: 11
+    maxStars: 17
+  - minStars: 18
+    maxStars: 28
+  - minStars: 29
+    maxStars: 40
+  - minStars: 41
+    maxStars: 60
+  - minStars: 61
+    maxStars: 70
+  - minStars: 71
+    maxStars: 80
+  - minStars: 81
+    maxStars: 90
+  - minStars: 91
+    maxStars: 100
+  - minStars: 101
+    maxStars: 110

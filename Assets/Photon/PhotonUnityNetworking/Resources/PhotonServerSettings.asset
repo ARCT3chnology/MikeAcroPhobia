@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 7dca7bf3-4272-41ef-ba01-18eed2557400
+    AppIdRealtime: 2d390d96-5ca0-4a19-9620-a5acc94a1e06
     AppIdFusion: 
-    AppIdChat: fe8f59b1-fa9b-4836-9760-bc7516443c7a
+    AppIdChat: 2d390d96-5ca0-4a19-9620-a5acc94a1e06
     AppIdVoice: 
     AppVersion: 0.0.1
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: asia
     Server: 
     Port: 0
     ProxyServer: 
@@ -81,6 +81,7 @@ MonoBehaviour:
   - RPC_DisableFaceOffVoteMenu
   - RPC_GameCompleted
   - RPC_UpdateFaceOffnumber
+  - RPC_UpdateStars
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

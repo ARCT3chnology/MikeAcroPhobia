@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Realtime;
+using DanielLochner.Assets.SimpleScrollSnap;
 
 public class Connectivity : MonoBehaviourPunCallbacks
 {
@@ -16,10 +17,11 @@ public class Connectivity : MonoBehaviourPunCallbacks
     [SerializeField] bool connected;
     [SerializeField] Menu LoginMenu;
     [SerializeField] Menu SplashMenu;
-    private void Awake()
-    {
-        //PlayerPrefs.DeleteAll();
-    }
+    [SerializeField] GameObject ageInput;
+    //private void Awake()
+    //{
+    //    PlayerPrefs.DeleteAll();
+    //}
 
     private void Start()
     {
@@ -35,11 +37,16 @@ public class Connectivity : MonoBehaviourPunCallbacks
         Debug.Log(connected);
         //placeholderText.text = GameSettings.NickName;
 
-        if (GameSettings.NickName != "Player")
-        {
-            MenuManager.Instance.CloseMenu(LoginMenu);
-            MenuManager.Instance.OpenMenu(menuName.PlayPanel);
-        }
+        //if (GameSettings.NickName != "Player")
+        //{
+        //    MenuManager.Instance.CloseMenu(LoginMenu);
+        //    MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        //    PlayerStatsMenu.Instance.setName();
+        //    PlayerStatsMenu.Instance.setLevel();
+        //    PlayerStatsMenu.Instance.setImage();
+        //    PlayerStatsMenu.Instance.setExperienceSlider();
+        //    PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
+        //}
         if (PhotonNetwork.IsConnected)
         {
             PlayButton.interactable = true;
@@ -176,18 +183,93 @@ public class Connectivity : MonoBehaviourPunCallbacks
         //base.OnConnectedToMaster();
     }
 
-
-
     public void SettingNickName_OnClick()
     {
         PhotonNetwork.NickName = nameInput.text;
         GameSettings.NickName = nameInput.text;
         AudioManager.Instance.Play("MainMenuSound");
-        MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        nameInput.gameObject.SetActive(false);
+        ImageInput.SetActive(true);
     }
 
     public void onCLick_PlayButton()
     {
+        SceneManager.LoadScene(2);
+    }
+
+    public void onCLick_JoinRoom()
+    {
         SceneManager.LoadScene(1);
     }
+
+
+    [SerializeField] SimpleScrollSnap ageScroll;
+    [SerializeField] RawImage UserProfile;
+    [SerializeField] GameObject ImageInput;
+    public void OnClick_AgeScroller()
+    {
+        string age = ageScroll.Panels[ageScroll.CenteredPanel].GetComponent<Text>().text;
+        PlayerStats.BirthYear = int.Parse(age);
+        Debug.Log(age);
+        Debug.Log("Selected Panel: " + ageScroll.SelectedPanel);
+    }
+
+
+    public void OnClick_AgeSelected()
+    {
+        Debug.Log("Player age is:" + PlayerStats.BirthYear);
+        MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        PlayerStatsMenu.Instance.setName();
+        PlayerStatsMenu.Instance.setLevel();
+        PlayerStatsMenu.Instance.setImage();
+        PlayerStatsMenu.Instance.setExperienceSlider();
+        PlayerStatsMenu.Instance.UpdateStarsText();
+        PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
+    }
+
+    public void OnCLick_ImageSelected() 
+    {
+        ImageInput.SetActive(false);
+        ageInput.SetActive(true);
+        
+    }
+
+    public void OnClick_SelectImage()
+    {
+        NativeGallery.GetImageFromGallery((path) =>
+        {
+            Debug.Log("Image path: " + path);
+            if (path != null)
+            {
+                // Create Texture from selected image
+                Texture2D texture = NativeGallery.LoadImageAtPath(path, 512);
+                if (texture == null)
+                {
+                    Debug.Log("Couldn't load texture from " + path);
+                    return;
+                }
+
+                // Assign texture to a temporary quad and destroy it after 5 seconds
+                //GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                //quad.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2.5f;
+                //quad.transform.forward = Camera.main.transform.forward;
+                //quad.transform.localScale = new Vector3(1f, texture.height / (float)texture.width, 1f);
+
+                //Material material = SingleInterface.ProfilePic.GetComponent<Image>().material;
+                UserProfile.texture = texture;
+                PlayerStats.PlayerImage = texture;
+                //if (!material.shader.isSupported) // happens when Standard shader is not included in the build
+                //    material.shader = Shader.Find("Legacy Shaders/Diffuse");
+
+                //material.mainTexture = texture;
+
+                //Destroy(quad, 5f);
+
+                // If a procedural texture is not destroyed manually, 
+                // it will only be freed after a scene change
+                //Destroy(texture, 5f);
+            }
+        }, imageName);
+    }
+    string imageName;
 }

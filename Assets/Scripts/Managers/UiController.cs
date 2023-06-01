@@ -37,7 +37,6 @@ public class UiController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             photonView.RPC( nameof(RPC_ShowWelcomePanel), RpcTarget.All);
-            
         }
         AudioManager.Instance.Play("Welcome");
         AudioManager.Instance.Play("Gameplay");
@@ -695,7 +694,8 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
+        threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         votingPanel.gameObject.SetActive(true);
         
         if(startVotingTime)
@@ -797,7 +797,8 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(false);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Voting Round";
+        threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
         votingPanel.gameObject.SetActive(true);
     }
     [PunRPC]
@@ -904,10 +905,24 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         faceOffMenu.updateP2Answer(playerAnswer);
     }
+
     [PunRPC]
     private void RPC_StartFaceOffVotingTimer()
     {
         faceOffMenu.startVoteTimer();
     }
+
+    [PunRPC]
+    private void RPC_UpdateStars()
+    {
+        PlayerStats.CurrentStars++;
+        //PlayerStatsMenu.Instance.setExperienceSlider();
+    }
+
+    public void updateStars(Player targetPlayer)
+    {
+        photonView.RPC(nameof(RPC_UpdateStars), targetPlayer);
+    }
+
 
 }

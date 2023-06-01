@@ -1,4 +1,5 @@
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -12,18 +13,48 @@ public class GameSettings : ScriptableObject
     [SerializeField] string _gameVersion;
     public string GameVersion { get { return _gameVersion; } }
     [SerializeField] string _nickName;
+    [SerializeField] byte _maxPlayerForLobby;
+    public List<levels> gameLevels;
+
+    [Serializable]
+    public struct levels
+    {
+        public int minStars;
+        public int maxStars;
+    }
+    public byte maxPlayerForLobby
+    {
+        get
+        {
+            return _maxPlayerForLobby;
+        }
+        set 
+        { 
+            _maxPlayerForLobby = value; 
+        }
+    }
+
+    static int val;
+
+    private void OnEnable()
+    {
+        val = UnityEngine.Random.Range(0, 999);
+    }
+
     public static string NickName
     {
         get 
         {
-            //int val = Random.Range(0, 999);
-            return PlayerPrefs.GetString("Name", "Player"); 
+            return PlayerPrefs.GetString("Name"+val.ToString(), "Player");
+           
         }
         set 
         { 
-            PlayerPrefs.SetString("Name", value);
+            PlayerPrefs.SetString("Name"+val.ToString(), value);
         }
     }
+
+
 
     public static List<LocalRoomInfo> CurrentRooms;
 
@@ -146,21 +177,21 @@ public class GameSettings : ScriptableObject
     {
         get
         {
-            return 30;
+            return 60;
         }
     }
     public static float FourLetterRoundTime
     {
         get
         {
-            return 40;
+            return 60;
         }
     }
     public static float FiveLetterRoundTime
     {
         get
         {
-            return 50;
+            return 60;
         }
     }
     public static float SixLetterRoundTime
