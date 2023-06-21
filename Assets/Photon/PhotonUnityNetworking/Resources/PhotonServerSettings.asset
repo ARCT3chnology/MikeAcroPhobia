@@ -15,7 +15,7 @@ MonoBehaviour:
   AppSettings:
     AppIdRealtime: 2d390d96-5ca0-4a19-9620-a5acc94a1e06
     AppIdFusion: 
-    AppIdChat: 2d390d96-5ca0-4a19-9620-a5acc94a1e06
+    AppIdChat: 8b614763-4d9f-4912-ac51-6cf11686e121
     AppIdVoice: 
     AppVersion: 0.0.1
     UseNameServer: 1
@@ -82,6 +82,8 @@ MonoBehaviour:
   - RPC_GameCompleted
   - RPC_UpdateFaceOffnumber
   - RPC_UpdateStars
+  - RPV_StartVotingPanel
+  - RPC_StartVotingPanel
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

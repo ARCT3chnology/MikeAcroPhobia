@@ -66,6 +66,18 @@ public class GameSettings : ScriptableObject
             return "ROUND_NUMBER";
         }
     }
+    public static string ROUND_TIME {
+        get 
+        {
+            return "ROUND_TIME";
+        }
+    }
+    public static string VOTING_IN_PROGRESS {
+        get 
+        {
+            return "VOTING_IN_PROGRESS";
+        }
+    }
 
     public static string TOURNAMENT_NUMBER {
         get 

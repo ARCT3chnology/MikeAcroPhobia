@@ -189,7 +189,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         Debug.Log("Science Room is full: " + scienceRoomFull);
                         if (!scienceRoomFull)
                         {
-                            
                             PhotonNetwork.JoinOrCreateRoom("Science", options, TypedLobby.Default);
                         }
                         else
@@ -300,7 +299,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             {
                 photonView.RPC(nameof(RPC_LoadLevel), PhotonNetwork.PlayerList[i]);
             }
-            PhotonNetwork.CurrentRoom.IsOpen = false;
+            //PhotonNetwork.CurrentRoom.IsOpen = false;
         }
         else
         {
@@ -309,9 +308,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 photonView.RPC(nameof(RPC_UpdatePlayerCount), PhotonNetwork.PlayerList[i]);
             }
         }
-        ChatHandler.JoinRoomChat
-            
-            (PhotonNetwork.CurrentRoom.Name);
+        ChatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -350,6 +347,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom!=null)
         {
             Room.setRoomStats(PhotonNetwork.CurrentRoom.Name, PhotonNetwork.CurrentRoom.PlayerCount);
+            if(PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                Room.StartTimer();
+            }
         }
     }
     [PunRPC]
@@ -370,8 +371,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
         roomProps.Add(GameSettings.PlAYERS_LEFT, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
+        roomProps.Add(GameSettings.ROUND_TIME, 0);
         roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);
         roomProps.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
+        roomProps.Add(GameSettings.VOTING_IN_PROGRESS, false);
         roomProps.Add(GameSettings.ALL_ANSWERS_SUBMITTED, false);
         roomProps.Add(GameSettings.NO_OF_ANSWERS_SUBMITTED, 0);
         options.CustomRoomProperties = roomProps;
@@ -410,37 +413,37 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnR0omListUpdate is called " + roomList.Count);
 
-        foreach (RoomInfo room in roomList)
-        {
-            if(room.Name == "General")
-            {
-                if(room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-                    generalRoomFull = true;
-                else
-                    generalRoomFull = false;
-            }
-            else if (room.Name == "Science")
-            {
-                if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-                    scienceRoomFull = true;
-                else
-                    scienceRoomFull = false;
-            }
-            else if (room.Name == "Information")
-            {
-                if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-                    informationRoomFull = true;
-                else
-                    informationRoomFull = false;
-            }
-            else if (room.Name == "Adult")
-            {
-                if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-                    adultRoomFull = true;
-                else
-                    adultRoomFull = false;
-            }
-        }
+        //foreach (RoomInfo room in roomList)
+        //{
+        //    if(room.Name == "General")
+        //    {
+        //        if(room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+        //            generalRoomFull = true;
+        //        else
+        //            generalRoomFull = false;
+        //    }
+        //    else if (room.Name == "Science")
+        //    {
+        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+        //            scienceRoomFull = true;
+        //        else
+        //            scienceRoomFull = false;
+        //    }
+        //    else if (room.Name == "Information")
+        //    {
+        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+        //            informationRoomFull = true;
+        //        else
+        //            informationRoomFull = false;
+        //    }
+        //    else if (room.Name == "Adult")
+        //    {
+        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+        //            adultRoomFull = true;
+        //        else
+        //            adultRoomFull = false;
+        //    }
+        //}
         GameSettings.CurrentRooms = new List<LocalRoomInfo>();
         for (int i = 0; i < roomList.Count; i++)
         {

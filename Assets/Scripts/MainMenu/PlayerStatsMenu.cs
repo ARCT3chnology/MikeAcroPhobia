@@ -63,7 +63,7 @@ public class PlayerStatsMenu : MonoBehaviour
             fillValue = 0;
         }
         PlayerStats.Experience = fillValue;
-        Debug.Log("Experience: " + fillValue.ToString());
+        //Debug.Log("Experience: " + fillValue.ToString());
         ExperienceSlider.fillAmount = PlayerStats.Experience;
     }
 

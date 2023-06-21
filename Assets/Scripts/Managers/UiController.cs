@@ -1,5 +1,7 @@
+using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,8 @@ public class UiController : MonoBehaviourPunCallbacks
     [SerializeField] GameEndMenu _GameEndMenu;
     [SerializeField] FaceOffMenu _faceOffMenu;
     [SerializeField] GameTieMenu _gameTieMenu;
+    [SerializeField] ChatHandler chatHandler;
+    [SerializeField] GameObject SingleWaitingPanel; 
     private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
 
     public GameObject welcomePanel { get { return _WelcomePanel; } }
@@ -36,7 +40,7 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC( nameof(RPC_ShowWelcomePanel), RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowWelcomePanel), RpcTarget.All);
         }
         AudioManager.Instance.Play("Welcome");
         AudioManager.Instance.Play("Gameplay");
@@ -47,35 +51,38 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC(nameof(RPC_ShowFirstRoundPanel), RpcTarget.All);
+            Debug.Log("Starting 3 letter round");
+            photonView.RPC(nameof(RPC_ShowFirstRoundPanel), RpcTarget.AllBuffered);
         }
     }
     public void Start4LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC(nameof(RPC_ShowSecondRoundPanel), RpcTarget.All);
+            Debug.Log("Starting 4 letter round");
+            photonView.RPC(nameof(RPC_ShowSecondRoundPanel), RpcTarget.AllBuffered);
         }
     }
     public void Start5LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC(nameof(RPC_ShowThirdRoundPanel), RpcTarget.All);
+            Debug.Log("Starting 5 letter round");
+            photonView.RPC(nameof(RPC_ShowThirdRoundPanel), RpcTarget.AllBuffered);
         }
     }
     public void Start6LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC(nameof(RPC_ShowFourthRoundPanel), RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowFourthRoundPanel), RpcTarget.AllBuffered);
         }
     }    
     public void Start7LetterRound()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC(nameof(RPC_ShowFifthRoundPanel), RpcTarget.All);
+            photonView.RPC(nameof(RPC_ShowFifthRoundPanel), RpcTarget.AllBuffered);
         }
     }
 
@@ -318,7 +325,7 @@ public class UiController : MonoBehaviourPunCallbacks
     public void onVotingTimeEnded()
     {
         Debug.Log("onVotingTimeEnded");
-        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(GameSettings.PlAYERS_VOTED))
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(GameSettings.PlAYERS_VOTED) != false)
         {
             if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED] < PhotonNetwork.CurrentRoom.PlayerCount)
             {
@@ -375,14 +382,17 @@ public class UiController : MonoBehaviourPunCallbacks
             votingPanel.gameObject.SetActive(false);
             votingPanel.voteTimer.StartTime = false;
             votingPanel.resetVotesList();
-            resetPlayerVotedCount();
             waitingPanel.SetActive(true);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                resetPlayerVotedCount();
+            }
         }    
     }
 
     public void resetPlayerVotedCount()
     {
-
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.VOTING_IN_PROGRESS, false } });
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_VOTED, 0 } });
         //PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.NO_OF_ANSWERS_SUBMITTED, 0 } });
     }
@@ -544,8 +554,24 @@ public class UiController : MonoBehaviourPunCallbacks
         }
         //photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All);
     }
-
-    
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("Room Joined in Gameplay:");
+        Debug.Log("Voting in Progress: " + GameManager.isVotingInprogress());
+        GameSettings.PlayerInRoom = true;
+        chatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
+        if (GameManager.isVotingInprogress())
+        {
+            SingleWaitingPanel.SetActive(true);
+            roundConfigurator.roundTimer.StartTime = false;
+        }
+        else
+        {
+            SingleWaitingPanel.SetActive(false);
+            Debug.Log("Voting Is Over");
+        }
+        //base.OnJoinedRoom();
+    }
 
     [PunRPC]
     public void RPC_LeaveRoom(Player p)
@@ -777,9 +803,6 @@ public class UiController : MonoBehaviourPunCallbacks
                 }
             }
         }
-
-        //faceOffMenu.showPlayerPanel();
-        //.showVotersPanel();
     }
 
 
@@ -812,66 +835,129 @@ public class UiController : MonoBehaviourPunCallbacks
     {
         welcomePanel.SetActive(true);
     }
+
     [PunRPC]
     private void RPC_ShowFirstRoundPanel()
     {
+        if (checkIfTheVotingIsInProgress())
+        {
+            return;
+        }
+        StartLevelOfAcronym(AcronymSetter.acronyms.ThreeLetters,GameSettings.ThreeLetterRoundTime);
+    }
+
+    private void StartLevelOfAcronym(AcronymSetter.acronyms acronyms,float levelTime)
+    {
         roundConfigurator.setTitleText("Three letter Round");
-        roundConfigurator.setAcronymType(AcronymSetter.acronyms.ThreeLetters);
-        roundConfigurator.setTimerForRound(GameSettings.ThreeLetterRoundTime);
+        roundConfigurator.setAcronymType(acronyms);
+        roundConfigurator.setTimerForRound(levelTime);
         roundConfigurator.resetAnswerField();
         threeLetterRound.SetActive(true);
         threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
+        threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
         threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
+
     [PunRPC]
     private void RPC_ShowSecondRoundPanel()
     {
-        roundConfigurator.setTitleText("Four letter Round");
-        roundConfigurator.setAcronymType(AcronymSetter.acronyms.FourLetters);
-        roundConfigurator.setTimerForRound(GameSettings.FourLetterRoundTime);
-        roundConfigurator.resetAnswerField();
-        threeLetterRound.SetActive(true);
-        threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+        if (checkIfTheVotingIsInProgress())
+        {
+            return;
+        }
+        StartLevelOfAcronym(AcronymSetter.acronyms.FourLetters, GameSettings.FourLetterRoundTime);
 
-        threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
+        //roundConfigurator.setTitleText("Four letter Round");
+        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.FourLetters);
+        //roundConfigurator.setTimerForRound(GameSettings.FourLetterRoundTime);
+        //roundConfigurator.resetAnswerField();
+        //threeLetterRound.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
+        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
+
     [PunRPC]
     private void RPC_ShowThirdRoundPanel()
     {
-        roundConfigurator.setTitleText("Five letter Round");
-        roundConfigurator.setAcronymType(AcronymSetter.acronyms.FiveLetters);
-        roundConfigurator.setTimerForRound(GameSettings.FiveLetterRoundTime);
-        roundConfigurator.resetAnswerField();
-        threeLetterRound.SetActive(true);
-        threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
+        if (checkIfTheVotingIsInProgress())
+        {
+            return;
+        }
+        StartLevelOfAcronym(AcronymSetter.acronyms.FiveLetters, GameSettings.FiveLetterRoundTime);
+
+        //roundConfigurator.setTitleText("Five letter Round");
+        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.FiveLetters);
+        //roundConfigurator.setTimerForRound(GameSettings.FiveLetterRoundTime);
+        //roundConfigurator.resetAnswerField();
+        //threeLetterRound.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
+        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
+
     [PunRPC]
     private void RPC_ShowFourthRoundPanel()
     {
-        roundConfigurator.setTitleText("Six letter Round");
-        roundConfigurator.setAcronymType(AcronymSetter.acronyms.SixLetters);
-        roundConfigurator.setTimerForRound(GameSettings.SixLetterRoundTime);
-        roundConfigurator.resetAnswerField();
-        threeLetterRound.SetActive(true);
-        threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
+        if (checkIfTheVotingIsInProgress())
+        {
+            return;
+        }
+        StartLevelOfAcronym(AcronymSetter.acronyms.SixLetters, GameSettings.SixLetterRoundTime);
+
+        //roundConfigurator.setTitleText("Six letter Round");
+        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.SixLetters);
+        //roundConfigurator.setTimerForRound(GameSettings.SixLetterRoundTime);
+        //roundConfigurator.resetAnswerField();
+        //threeLetterRound.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
+        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
+
+    public bool checkIfTheVotingIsInProgress()
+    {
+        if (GameManager.isVotingInprogress())
+        {
+            SingleWaitingPanel.SetActive(true);
+            roundConfigurator.roundTimer.StartTime = false;
+            roundConfigurator.roundTimer.gameObject.SetActive(false);
+            return true;
+        }
+        else
+        {
+            SingleWaitingPanel.SetActive(false);
+            return false;
+        }
+    }
+
+
+
     [PunRPC]
     private void RPC_ShowFifthRoundPanel()
     {
-        roundConfigurator.setTitleText("Seven letter Round");
-        roundConfigurator.setAcronymType(AcronymSetter.acronyms.SevenLetters);
-        roundConfigurator.setTimerForRound(GameSettings.SevenLetterRoundTime);
-        roundConfigurator.resetAnswerField();
-        threeLetterRound.SetActive(true);
-        threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
+        if (checkIfTheVotingIsInProgress())
+        {
+            return;
+        }
+        StartLevelOfAcronym(AcronymSetter.acronyms.SevenLetters, GameSettings.SevenLetterRoundTime);
+
+        //roundConfigurator.setTitleText("Seven letter Round");
+        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.SevenLetters);
+        //roundConfigurator.setTimerForRound(GameSettings.SevenLetterRoundTime);
+        //roundConfigurator.resetAnswerField();
+        //threeLetterRound.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
     private void RPC_ShowWaitingPanel()
@@ -924,5 +1010,21 @@ public class UiController : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(RPC_UpdateStars), targetPlayer);
     }
 
+    public void StartVotingForOtherPlayer()
+    {
+        photonView.RPC(nameof(RPC_StartVotingPanel),RpcTarget.OthersBuffered);
+    }
+
+
+    [PunRPC]
+    private void RPC_StartVotingPanel()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            RPC_UpdateAnswerOnplayer(PhotonNetwork.PlayerList[i], false);
+        }
+        turnOffTextPanel(true);
+        GameManager.updateAnswersSubmittedNumber(4);
+    }
 
 }

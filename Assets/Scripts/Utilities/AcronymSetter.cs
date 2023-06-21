@@ -117,7 +117,7 @@ public class AcronymSetter : MonoBehaviourPun
         {
             int[] letters = new int[3];
             letters = returnRandomAlphabet();
-            photonView.RPC("RPC_setTextFor3Letters", RpcTarget.All, letters);
+            photonView.RPC(nameof(RPC_setTextFor3Letters), RpcTarget.AllBuffered, letters);
         }
     }
     public void FourLetterAcronym()
@@ -126,7 +126,7 @@ public class AcronymSetter : MonoBehaviourPun
         {
             int[] letters = new int[4];
             letters = returnRandomAlphabet();
-            photonView.RPC("RPC_setTextFor4Letters", RpcTarget.All, letters);
+            photonView.RPC(nameof(RPC_setTextFor4Letters), RpcTarget.AllBuffered, letters);
         }
     }
     public void FiveLetterAcronym()
@@ -135,7 +135,7 @@ public class AcronymSetter : MonoBehaviourPun
         {
             int[] letters = new int[5];
             letters = returnRandomAlphabet();
-            photonView.RPC("RPC_setTextFor5Letters", RpcTarget.All, letters);
+            photonView.RPC(nameof(RPC_setTextFor5Letters), RpcTarget.AllBuffered, letters);
         }
     }
     public void SixLetterAcronym()
@@ -144,7 +144,7 @@ public class AcronymSetter : MonoBehaviourPun
         {
             int[] letters = new int[6];
             letters = returnRandomAlphabet();
-            photonView.RPC("RPC_setTextFor6Letters", RpcTarget.All, letters);
+            photonView.RPC(nameof(RPC_setTextFor6Letters), RpcTarget.AllBuffered, letters);
         }
     }
     public void SevenLetterAcronym()
@@ -153,7 +153,7 @@ public class AcronymSetter : MonoBehaviourPun
         {
             int[] letters = new int[7];
             letters = returnRandomAlphabet();
-            photonView.RPC("RPC_setTextFor7Letters", RpcTarget.All, letters);
+            photonView.RPC(nameof(RPC_setTextFor7Letters), RpcTarget.AllBuffered, letters);
         }
     }
 }

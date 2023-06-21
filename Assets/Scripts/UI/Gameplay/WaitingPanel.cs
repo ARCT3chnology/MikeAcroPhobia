@@ -8,23 +8,23 @@ public class WaitingPanel : WelcomePanel
     {
         GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
-        Debug.Log("Round number is: " + GameManager.faceOffRoundNumber);  
+        Debug.Log("Faceoff number number is: " + GameManager.faceOffRoundNumber);  
         if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
         {
             timer_txt.text = "";
-            Invoke("StartGame",1f);
+            Invoke(nameof(StartGame),1f);
         }
         else if ((!GameSettings.normalGame) && (GameManager.faceOffRoundNumber < 3))
         {
             timer_txt.text = "";
-            Invoke("StartGame", 1f);
+            Invoke(nameof(StartGame), 1f);
         }
         else
         {
             if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.faceOffRoundNumber != 3)
             {
                 timer_txt.text = "";
-                Invoke("StartGame", 1f);
+                Invoke(nameof(StartGame), 1f);
                 if (GameManager.getFaceOffRoundNumber() != 3)
                 {
                 }
@@ -50,6 +50,7 @@ public class WaitingPanel : WelcomePanel
 
     private void Update()
     {
+        //Debug.Log("InRoom: " + GameSettings.PlayerInRoom + " Round Number: " + GameManager.getroundNumber() + " Normal Game:  " + GameSettings.normalGame);
         if (GameSettings.PlayerInRoom)
         {
             if (GameSettings.normalGame && GameManager.getroundNumber() < 5)

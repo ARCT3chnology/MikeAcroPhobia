@@ -11,6 +11,7 @@ public class WelcomePanel : MonoBehaviour
     [SerializeField] float CurrentTime, EndTime;
     [SerializeField] bool StartTimer;
     [SerializeField] UiController UiController;
+    
     public Text timer_txt 
     {
         get
@@ -19,6 +20,7 @@ public class WelcomePanel : MonoBehaviour
         }
         set { }
     }
+
     public UiController UIController 
     { 
         get 
@@ -26,18 +28,20 @@ public class WelcomePanel : MonoBehaviour
             return UiController;
         }
     }
+
     private void OnEnable()
     {
-       Invoke("StartGame",1f);
+       Invoke(nameof(StartGame),1f);
     }
 
     public void StartGame()
     {
+        //Debug.Log("Time is: " + PhotonNetwork.ServerTimestamp);
         //TimerTxt.gameObject.SetActive(true);
-        Debug.Log("StartGame");
         TimerTxt.text = "";
         CurrentTime = EndTime;
         StartTimer = true;
+        Debug.Log("StartGame " + StartTimer);
     }
 
     private void Update()
@@ -47,8 +51,10 @@ public class WelcomePanel : MonoBehaviour
 
     public virtual void Timer(string text)
     {
+        //Debug.Log("Timer ------ ");
         if (StartTimer)
         {
+            //Debug.Log("Timer Running"+ CurrentTime + " " +StartTimer);
             if (CurrentTime >= 0)
             {
                 CurrentTime -= Time.deltaTime;
@@ -70,6 +76,7 @@ public class WelcomePanel : MonoBehaviour
 
     public virtual void onTimerComplete()
     {
+        Debug.Log("Timer Completed");
         if ((GameSettings.normalGame) && GameManager.getroundNumber() < 5)
         {
             switch (GameManager.getroundNumber())

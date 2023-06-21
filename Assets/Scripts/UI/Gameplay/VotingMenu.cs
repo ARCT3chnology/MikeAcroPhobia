@@ -120,7 +120,7 @@ public class VotingMenu : MonoBehaviour
         {
             for (int i = 0; i < voteList.Count; i++)
             {
-                //Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                //Debug.Log(PhotonNetwork.PlayerLis   t[i].NickName);
                 voteList[i].hideVoteButton(PhotonNetwork.PlayerList[i]);
             }
         }

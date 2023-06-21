@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -132,6 +133,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.ROUND_NUMBER];
     }
+
+    public static bool isVotingInprogress()
+    {
+        return (bool)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.VOTING_IN_PROGRESS];
+    }
+
     public static int getFaceOffRoundNumber()
     {
         //return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
@@ -177,11 +184,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
             {
-                //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+                Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
                 if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     uiController.votingPanel.voteTimer.gameObject.SetActive(true);
                     uiController.votingPanel.voteTimer.StartTimer();
+                    if(PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.VOTING_IN_PROGRESS,true} });
+                        //PhotonNetwork.setr
+                    }
                 }
             }
         }
@@ -222,6 +234,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             uiController.turnOffTextPanel(true);
             updateAnswersSubmittedNumber(4);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+            
+                uiController.StartVotingForOtherPlayer();
+            
+            }
+
         }
         else
         {
