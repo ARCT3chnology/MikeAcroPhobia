@@ -14,6 +14,7 @@ public class GameSettings : ScriptableObject
     public string GameVersion { get { return _gameVersion; } }
     [SerializeField] string _nickName;
     [SerializeField] byte _maxPlayerForLobby;
+    [SerializeField] byte _maxPlayerForRandomLobby;
     public List<levels> gameLevels;
 
     [Serializable]
@@ -31,6 +32,18 @@ public class GameSettings : ScriptableObject
         set 
         { 
             _maxPlayerForLobby = value; 
+        }
+    }
+
+    public byte maxPlayerForRandomLobby
+    {
+        get
+        {
+            return _maxPlayerForRandomLobby;
+        }
+        set
+        {
+            _maxPlayerForRandomLobby = value;
         }
     }
 
@@ -168,6 +181,23 @@ public class GameSettings : ScriptableObject
             return "ANSWER_SUBMITTED";
         }
     }
+
+    public static string TimerStartedKey
+    {
+        get
+        {
+            return "TimerStartedKey";
+        }
+    }    
+
+    public static string TimerStartTimeKey
+    {
+        get
+        {
+            return "TimerStartTimeKey";
+        }
+    }
+
     /// <summary>
     /// The amount of votes player would get;
     /// </summary>

@@ -70,8 +70,8 @@ public class VoteTimer : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             if (_currenttime > _endtime)
             {
-                _currenttime -= Time.deltaTime;
                 _timertext.text = Mathf.FloorToInt(_currenttime % 60).ToString();
+                _currenttime -= Time.deltaTime;
                 _timeSlider.value = _currenttime;
                 
                 if (PhotonNetwork.IsMasterClient)

@@ -57,8 +57,8 @@ public class WelcomePanel : MonoBehaviour
             //Debug.Log("Timer Running"+ CurrentTime + " " +StartTimer);
             if (CurrentTime >= 0)
             {
-                CurrentTime -= Time.deltaTime;
                 setTimerText(text);
+                CurrentTime -= Time.deltaTime;
             }
             else
             {
@@ -100,20 +100,6 @@ public class WelcomePanel : MonoBehaviour
                     break;
             }
         }
-        //else if (GameManager.getroundNumber() == 5)
-        //{
-        //    if(GameManager.allPlayersGotSameVote())
-        //    {
-        //        //starting the game again as all players got the same vote.
-        //        GameManager.updateRoundNumber(0);
-        //        onTimerComplete();
-        //    }
-        //    else if (GameManager.OneplayerGotMaxVotes())
-        //    {
-        //        //Exiting room as one player has won the match.
-        //        Debug.Log("One player got max votes");
-        //    }
-        //}
         else
         {
             switch (GameManager.getFaceOffRoundNumber())

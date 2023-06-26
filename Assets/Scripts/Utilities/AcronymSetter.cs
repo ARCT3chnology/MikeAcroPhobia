@@ -7,12 +7,6 @@ using UnityEngine.UI;
 
 public class AcronymSetter : MonoBehaviourPun
 {
-    //[SerializeField] bool is3letter;
-    //[SerializeField] bool is4letter;
-    //[SerializeField] bool is5letter;
-    //[SerializeField] bool is6letter;
-    //[SerializeField] bool is7letter;
-
     public enum acronyms
     {
         ThreeLetters,
@@ -23,7 +17,6 @@ public class AcronymSetter : MonoBehaviourPun
     }
 
     public acronyms acronymType;
-
     [SerializeField] Text acroText;
     [HideInInspector] char[] alphabets = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public int[] returnRandomAlphabet()

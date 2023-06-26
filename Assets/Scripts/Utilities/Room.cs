@@ -11,23 +11,26 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun.Demo.PunBasics;
+using Debug = UnityEngine.Debug;
+using UnityEngine.UIElements;
+using DG.Tweening.Core.Easing;
 
-public class Room : MonoBehaviour, IOnEventCallback
+public class Room : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     [SerializeField] TMP_Text Txt_RoomName;
     [SerializeField] TMP_Text Txt_PlayersCount;
     [SerializeField] TMP_Text Txt_TimeLeftText;
 
-    public float _starttime;
-    public float _endtime;
-    [SerializeField] bool _startTimer;
-    //[SerializeField] Text _timertext;
-    [SerializeField] Slider _timeSlider;
-    [SerializeField] float _currenttime;
-    //[SerializeField] GameManager gameManager;
-    //[SerializeField] bool autoStart;
+
     [SerializeField] UnityEvent OnTimerEnd;
-    //[SerializeField] bool votingTimer;
+    [SerializeField] bool autoStart;
+
+    public float _starttime;
+    public float _currenttime;
+    public float _endtime;
+
+
+    [SerializeField] bool _startTimer;
     public bool StartTime
     {
         get
@@ -40,10 +43,13 @@ public class Room : MonoBehaviour, IOnEventCallback
         }
     }
 
-
-
     private void OnEnable()
     {
+        resetTimer();
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        {
+            StartTimer();
+        }
         PhotonNetwork.AddCallbackTarget(this);
     }
 
@@ -53,42 +59,17 @@ public class Room : MonoBehaviour, IOnEventCallback
         //PhotonNetwork.NetworkingClient.EventReceived -= OnEventReceived;
         PhotonNetwork.RemoveCallbackTarget(this);
     }
-    bool timeReceived;
-    public void OnEvent(EventData photonEvent)
-    {
-        // Check if the event is the timer start event
-        if (photonEvent.Code == 2)
-        {
-            if (timeReceived == false)
-            {
-                //Debug.Log("Timer Event Received");
-                // Extract the timer start time from the event data
-                object[] eventData = (object[])photonEvent.CustomData;
-                if (eventData.Length > 0)
-                {
-                    _currenttime = Convert.ToSingle(eventData[0]);
-                }
-                //_currenttime = (float)temp;
-                StartTime = true;
-                timeReceived = true;
-            }
-        }
-    }
 
     private void Update()
     {
-        if (StartTime)
+        if (_startTimer)
         {
-            //if (_currenttime > _endtime)
-            //int currentTime = (int)(PhotonNetwork.ServerTimestamp - _starttime);
+
             if (_currenttime > _endtime)
             {
+                Txt_TimeLeftText.text = "Time Left: " + Mathf.FloorToInt(_currenttime % 60).ToString();
                 _currenttime -= Time.deltaTime;
                 //_timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
-                Txt_TimeLeftText.text = "Time Left: " + Mathf.FloorToInt(_currenttime % 60).ToString();
-                //_timeSlider.value = _currenttime;
-                //_timeSlider.value = _currenttime;
-                //_currenttime -= Time.deltaTime;
 
                 if (PhotonNetwork.IsMasterClient)
                 {
@@ -101,23 +82,65 @@ public class Room : MonoBehaviour, IOnEventCallback
             else
             {
 
-                StartTime = false;
-                OnTimerEnd.Invoke();
-                //gameManager.OnAnswerTimeComplete();
+                _startTimer = false;
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    OnTimerEnd.Invoke();
+
+                }
             }
+
         }
+    }
+
+    public void resetTimer()
+    {
+        Txt_TimeLeftText.text = "";
+        _currenttime = _starttime;
+        //Debug.Log(" " + _currenttime.ToString());
+        //_timeSlider.value = _starttime;
+        //_timeSlider.minValue = _endtime;
+        //_timeSlider.maxValue = _starttime;
     }
 
     public void StartTimer()
     {
-        UnityEngine.Debug.Log("Starting Timer");
         // Broadcast the timer start time to all clients
         object[] eventData = new object[] { _currenttime };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent(2, eventData, raiseEventOptions, SendOptions.SendReliable);
+
+        _startTimer = true;
         Txt_TimeLeftText.gameObject.SetActive(true);
-        StartTime = true;
-        _currenttime = _starttime;
+    }
+
+    public void PauseTimer()
+    {
+        _startTimer = false;
+    }
+
+
+    bool timeReceived;
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == 2)
+        {
+            if (timeReceived == false)
+            {
+                Debug.Log("Timer Event Received");
+                // Extract the timer start time from the event data
+                object[] eventData = (object[])photonEvent.CustomData;
+                if (eventData.Length > 0)
+                {
+                    _currenttime = Convert.ToSingle(eventData[0]);
+                }
+                //_currenttime = (float)temp;
+                _startTimer = true;
+                timeReceived = true;
+            }
+        }
     }
 
     public void setRoomStats(string roomName,int PlayerCount)
@@ -125,4 +148,5 @@ public class Room : MonoBehaviour, IOnEventCallback
         Txt_RoomName.text = roomName;
         Txt_PlayersCount.text = PlayerCount.ToString() + "/" + 4 + " Players Joined.";
     }
+
 }

@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Realtime;
 using DanielLochner.Assets.SimpleScrollSnap;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 
 public class Connectivity : MonoBehaviourPunCallbacks
 {
@@ -194,7 +196,85 @@ public class Connectivity : MonoBehaviourPunCallbacks
 
     public void onCLick_PlayButton()
     {
-        SceneManager.LoadScene(2);
+        createLobbyForQuickPlay();
+        //SceneManager.LoadScene(2);
+    }
+
+
+    public void createLobbyForQuickPlay()
+    {
+        TypedLobby typedLobby = new TypedLobby("QuickGame", LobbyType.Default);
+        PhotonNetwork.JoinLobby(typedLobby);
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Joined lobby: " + "QuickGame");
+        JoinRandomRoom();
+    }
+
+    public override void OnLeftLobby()
+    {
+        Debug.Log("Left lobby: " + "QuickGame");
+    }
+
+    public void JoinRandomRoom()
+    {
+        RoomOptions options = new RoomOptions();
+        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRandomLobby;
+        options.PlayerTtl = 0;
+        options.EmptyRoomTtl = 0;
+        options.IsOpen = true;
+        options.IsVisible = true;
+        options.CustomRoomPropertiesForLobby = new string[] { "NotStarted" };
+        addRoomProperties(options);
+        PhotonNetwork.JoinOrCreateRoom("Random", options, TypedLobby.Default);
+
+    }
+
+    private static void addRoomProperties(RoomOptions options)
+    {
+        Hashtable roomProps = new Hashtable();
+        roomProps.Add(GameSettings.PlAYER1_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
+        roomProps.Add(GameSettings.PlAYERS_LEFT, 0);
+        roomProps.Add(GameSettings.ROUND_NUMBER, 0);
+        roomProps.Add(GameSettings.ROUND_TIME, 0);
+        roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);
+        roomProps.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
+        roomProps.Add(GameSettings.VOTING_IN_PROGRESS, false);
+        roomProps.Add(GameSettings.ALL_ANSWERS_SUBMITTED, false);
+        roomProps.Add(GameSettings.NO_OF_ANSWERS_SUBMITTED, 0);
+        options.CustomRoomProperties = roomProps;
+    }
+
+    public override void OnJoinedRoom()
+    {
+        LoadLevelForPlayers();
+        //if (PhotonNetwork.CurrentRoom.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRandomLobby)
+        //{
+        //    //PhotonNetwork.CurrentRoom.IsOpen = false;
+        //}
+        base.OnJoinedRoom();
+    }
+
+    public void LoadLevelForPlayers()
+    {
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            photonView.RPC(nameof(RPC_LoadLevel), PhotonNetwork.PlayerList[i]);
+        }
+    }
+
+    [PunRPC]
+    public void RPC_LoadLevel()
+    {
+        Debug.Log("Loading level in Lobby system");
+        AudioManager.Instance.Stop("MainMenuSound");
+        SceneManager.LoadScene(3);
     }
 
     public void onCLick_JoinRoom()
@@ -233,6 +313,8 @@ public class Connectivity : MonoBehaviourPunCallbacks
         ageInput.SetActive(true);
         
     }
+
+
 
     public void OnClick_SelectImage()
     {

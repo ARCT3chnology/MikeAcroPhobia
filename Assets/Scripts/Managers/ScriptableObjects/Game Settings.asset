@@ -15,6 +15,7 @@ MonoBehaviour:
   _gameVersion: 0.0.1
   _nickName: Mike
   _maxPlayerForLobby: 4
+  _maxPlayerForRandomLobby: 20
   gameLevels:
   - minStars: 1
     maxStars: 10

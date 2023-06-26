@@ -266,6 +266,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log(otherPlayer.NickName + " LEFT ROOM");
+
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            photonView.RPC(nameof(RPC_UpdatePlayerCount), PhotonNetwork.PlayerList[i]);
+        }
+        //if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        //{
+        //    for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        //    {
+        //        photonView.RPC(nameof(RPC_StopRoomTimer), PhotonNetwork.PlayerList[i]);
+        //    }
+        //}
+        //base.OnPlayerLeftRoom(otherPlayer);
+    }
+
     public override void OnJoinedLobby()
     {
         Debug.Log(PhotonNetwork.CurrentLobby.Name + "lobby is joined by player: " + GameSettings.NickName);
@@ -295,10 +313,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
         {
-            for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
-            {
-                photonView.RPC(nameof(RPC_LoadLevel), PhotonNetwork.PlayerList[i]);
-            }
+            LoadLevelForPlayers();
             //PhotonNetwork.CurrentRoom.IsOpen = false;
         }
         else
@@ -306,9 +321,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
             {
                 photonView.RPC(nameof(RPC_UpdatePlayerCount), PhotonNetwork.PlayerList[i]);
+                photonView.RPC(nameof(RPC_StartRoomTimer), PhotonNetwork.PlayerList[i]);
             }
         }
         ChatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
+    }
+
+    public void LoadLevelForPlayers()
+    {
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            photonView.RPC(nameof(RPC_LoadLevel), PhotonNetwork.PlayerList[i]);
+        }
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -347,12 +371,26 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom!=null)
         {
             Room.setRoomStats(PhotonNetwork.CurrentRoom.Name, PhotonNetwork.CurrentRoom.PlayerCount);
-            if(PhotonNetwork.CurrentRoom.PlayerCount >= 2)
-            {
-                Room.StartTimer();
-            }
+
         }
     }
+    [PunRPC]
+    public void RPC_StartRoomTimer()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        {
+            Room.StartTimer();
+        }
+    }
+    [PunRPC]
+    public void RPC_StopRoomTimer()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        {
+            Room.PauseTimer();
+        }
+    }
+
     [PunRPC]
     public void RPC_LoadLevel()
     {

@@ -36,12 +36,6 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    //private void Start()
-    //{
-    //    // Subscribe to the OnEventReceived event
-    //    PhotonNetwork.NetworkingClient.EventReceived += OnEventReceived;
-    //}
-
     private void OnEnable()
     {
         resetTimer  ();
@@ -100,9 +94,8 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
                 //int currentTime = (int)(PhotonNetwork.ServerTimestamp - _starttime);
                 if (_currenttime > _endtime)
                 {
-                    _currenttime -= Time.deltaTime;
-                    //_timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
                     _timertext.text = Mathf.FloorToInt(_currenttime % 60).ToString();
+                    _currenttime -= Time.deltaTime;
                     //_timeSlider.value = _currenttime;
                     _timeSlider.value = _currenttime;
                     //_currenttime -= Time.deltaTime;

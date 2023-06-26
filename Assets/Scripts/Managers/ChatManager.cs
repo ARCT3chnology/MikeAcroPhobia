@@ -172,7 +172,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     }
     public void DisconnectChat()
     {
-        Debug.Log("Disconnecting");
+        Debug.Log("Disconnecting Chat");
         this.chatClient.Disconnect();
     }
 

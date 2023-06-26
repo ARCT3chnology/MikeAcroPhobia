@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -848,7 +849,8 @@ public class UiController : MonoBehaviourPunCallbacks
 
     private void StartLevelOfAcronym(AcronymSetter.acronyms acronyms,float levelTime)
     {
-        roundConfigurator.setTitleText("Three letter Round");
+        string leveltext = getlevelName(acronyms);
+        roundConfigurator.setTitleText(leveltext);
         roundConfigurator.setAcronymType(acronyms);
         roundConfigurator.setTimerForRound(levelTime);
         roundConfigurator.resetAnswerField();
@@ -859,6 +861,25 @@ public class UiController : MonoBehaviourPunCallbacks
         threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
 
+    public string getlevelName(AcronymSetter.acronyms acronyms)
+    {
+        switch (acronyms)
+        {
+            case AcronymSetter.acronyms.ThreeLetters:
+                return "Three Letter Round";
+            case AcronymSetter.acronyms.FourLetters:
+                return "Four Letter Round";
+            case AcronymSetter.acronyms.FiveLetters:
+                return "Five Letter Round";
+            case AcronymSetter.acronyms.SixLetters:
+                return "Six Letter Round";
+            case AcronymSetter.acronyms.SevenLetters:
+                return "Seven Letter Round";
+            default:
+                return "Seven Letter Round";
+        }
+    }
+
     [PunRPC]
     private void RPC_ShowSecondRoundPanel()
     {
@@ -867,17 +888,6 @@ public class UiController : MonoBehaviourPunCallbacks
             return;
         }
         StartLevelOfAcronym(AcronymSetter.acronyms.FourLetters, GameSettings.FourLetterRoundTime);
-
-        //roundConfigurator.setTitleText("Four letter Round");
-        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.FourLetters);
-        //roundConfigurator.setTimerForRound(GameSettings.FourLetterRoundTime);
-        //roundConfigurator.resetAnswerField();
-        //threeLetterRound.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
-        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     [PunRPC]
@@ -888,17 +898,6 @@ public class UiController : MonoBehaviourPunCallbacks
             return;
         }
         StartLevelOfAcronym(AcronymSetter.acronyms.FiveLetters, GameSettings.FiveLetterRoundTime);
-
-        //roundConfigurator.setTitleText("Five letter Round");
-        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.FiveLetters);
-        //roundConfigurator.setTimerForRound(GameSettings.FiveLetterRoundTime);
-        //roundConfigurator.resetAnswerField();
-        //threeLetterRound.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
-        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     [PunRPC]
@@ -909,17 +908,6 @@ public class UiController : MonoBehaviourPunCallbacks
             return;
         }
         StartLevelOfAcronym(AcronymSetter.acronyms.SixLetters, GameSettings.SixLetterRoundTime);
-
-        //roundConfigurator.setTitleText("Six letter Round");
-        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.SixLetters);
-        //roundConfigurator.setTimerForRound(GameSettings.SixLetterRoundTime);
-        //roundConfigurator.resetAnswerField();
-        //threeLetterRound.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        ////Debug.Log(threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.name);
-        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     public bool checkIfTheVotingIsInProgress()
@@ -948,16 +936,6 @@ public class UiController : MonoBehaviourPunCallbacks
             return;
         }
         StartLevelOfAcronym(AcronymSetter.acronyms.SevenLetters, GameSettings.SevenLetterRoundTime);
-
-        //roundConfigurator.setTitleText("Seven letter Round");
-        //roundConfigurator.setAcronymType(AcronymSetter.acronyms.SevenLetters);
-        //roundConfigurator.setTimerForRound(GameSettings.SevenLetterRoundTime);
-        //roundConfigurator.resetAnswerField();
-        //threeLetterRound.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-        //threeLetterRound.transform.GetChild(1).gameObject.SetActive(true);
     }
     [PunRPC]
     private void RPC_ShowWaitingPanel()
@@ -965,20 +943,17 @@ public class UiController : MonoBehaviourPunCallbacks
         Debug.Log("Starting face-Off round");
         waitingPanel.SetActive(true);
         waitingPanel.GetComponent<WaitingPanel>().StartGame();
-        //faceOffMenu.showPlayerPanel();
     }
     [PunRPC]
     private void RPC_faceOffVoter()
     {
         Debug.Log("Starting face-Off Voter round");
-        //waitingPanel.SetActive(true);
         faceOffMenu.showVotersPanel();
     }
     [PunRPC]
     private void RPC_faceOffPlayer()
     {
         Debug.Log("Starting face-Off Player round");
-        //waitingPanel.SetActive(true);
         faceOffMenu.showPlayerPanel();
     }
     [PunRPC]
@@ -1002,7 +977,6 @@ public class UiController : MonoBehaviourPunCallbacks
     private void RPC_UpdateStars()
     {
         PlayerStats.CurrentStars++;
-        //PlayerStatsMenu.Instance.setExperienceSlider();
     }
 
     public void updateStars(Player targetPlayer)
