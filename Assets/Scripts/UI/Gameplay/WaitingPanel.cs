@@ -9,7 +9,7 @@ public class WaitingPanel : WelcomePanel
         GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
         Debug.Log("Faceoff number number is: " + GameManager.faceOffRoundNumber);  
-        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
+        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 1))
         {
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);

@@ -88,6 +88,7 @@ MonoBehaviour:
   - RPC_StartLobbyTimer
   - RPC_StartRoomTimer
   - RPC_StopRoomTimer
+  - RPC_UpdateStarsUI
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

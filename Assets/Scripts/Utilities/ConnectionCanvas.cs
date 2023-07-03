@@ -29,6 +29,7 @@ public class ConnectionCanvas : MonoBehaviour
 
     public void showConnectedPanel(bool autoHide)
     {
+        
         iconImage.color = Color.green;
         TextImage.sprite = connectedSprite;
         Panel.DOAnchorPosX(10, 0.5f).SetEase(Ease.InOutBounce).OnComplete(() =>

@@ -153,7 +153,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     if (PhotonNetwork.InLobby)
                     {
                         RoomOptions options = new RoomOptions();
-                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
                         options.PlayerTtl = 0;
                         options.EmptyRoomTtl = 0;
                         options.IsOpen = true;
@@ -179,7 +179,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     if (PhotonNetwork.InLobby)
                     {
                         RoomOptions options = new RoomOptions();
-                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
                         options.PlayerTtl = 0;
                         options.EmptyRoomTtl = 0;
                         options.IsOpen = true;
@@ -206,7 +206,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     if (PhotonNetwork.InLobby)
                     {
                         RoomOptions options = new RoomOptions();
-                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
                         options.PlayerTtl = 0;
                         options.EmptyRoomTtl = 0;
                         options.IsOpen = true;
@@ -234,7 +234,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     if (PhotonNetwork.InLobby)
                     {
                         RoomOptions options = new RoomOptions();
-                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                        options.MaxPlayers = SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
                         options.PlayerTtl = 0;
                         options.EmptyRoomTtl = 0;
                         options.IsOpen = true;
@@ -413,8 +413,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);
         roomProps.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
         roomProps.Add(GameSettings.VOTING_IN_PROGRESS, false);
+        roomProps.Add(GameSettings.FACEOFF_IN_PROGRESS, false);
         roomProps.Add(GameSettings.ALL_ANSWERS_SUBMITTED, false);
         roomProps.Add(GameSettings.NO_OF_ANSWERS_SUBMITTED, 0);
+        roomProps.Add(GameSettings.ACRO_FOR_FACEOFF, "KJL");
         options.CustomRoomProperties = roomProps;
     }
 
@@ -639,7 +641,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 {
                     case "General":
                         {
-                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom)
                             {
                                 generalRoomFull = false;
                             }
@@ -647,7 +649,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         }
                     case "Science":
                         {
-                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom)
                             {
                                 scienceRoomFull= false;
                             }
@@ -655,7 +657,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         }                
                     case "Information":
                         {
-                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom)
                             {
                                 informationRoomFull = false;
                             }
@@ -663,7 +665,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                         }
                     case "Adult":
                         {
-                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
+                            if (item.playerCount < SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom)
                             {
                                 adultRoomFull = false;
                             }

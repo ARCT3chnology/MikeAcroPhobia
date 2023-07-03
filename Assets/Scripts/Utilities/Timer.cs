@@ -62,13 +62,23 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
         _timeSlider.minValue = _endtime;
         _timeSlider.maxValue = _starttime;
     }
-
+    public bool FaceOffTimer;
     public void StartTimer()
-    {  
+    {
         // Broadcast the timer start time to all clients
-        object[] eventData = new object[] { _currenttime };
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent(1, eventData, raiseEventOptions, SendOptions.SendReliable);
+        if (FaceOffTimer == false)
+        {
+            object[] eventData = new object[] { _currenttime };
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            PhotonNetwork.RaiseEvent(1, eventData, raiseEventOptions, SendOptions.SendReliable);
+
+        }
+        else
+        {
+            object[] eventData = new object[] { _currenttime };
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            PhotonNetwork.RaiseEvent(3, eventData, raiseEventOptions, SendOptions.SendReliable);
+        }
 
         _startTimer = true;
         // Only the master client can start the timer
@@ -102,9 +112,19 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
 
                     if (PhotonNetwork.IsMasterClient)
                     {
-                        object[] eventData = new object[] { _currenttime };
-                        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-                        PhotonNetwork.RaiseEvent(1, eventData, raiseEventOptions, SendOptions.SendReliable);
+                        if (FaceOffTimer == false)
+                        {
+                            object[] eventData = new object[] { _currenttime };
+                            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                            PhotonNetwork.RaiseEvent(1, eventData, raiseEventOptions, SendOptions.SendReliable);
+
+                        }
+                        else
+                        {
+                            object[] eventData = new object[] { _currenttime };
+                            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                            PhotonNetwork.RaiseEvent(3, eventData, raiseEventOptions, SendOptions.SendReliable);
+                        }
                     }
 
                 }
@@ -128,20 +148,42 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
     public void OnEvent(EventData photonEvent)
     {
         // Check if the event is the timer start event
-        if (photonEvent.Code == 1)
+        if (FaceOffTimer == false)
         {
-            if (timeReceived == false)
+            if (photonEvent.Code == 1)
             {
-                Debug.Log("Timer Event Received");
-                // Extract the timer start time from the event data
-                object[] eventData = (object[])photonEvent.CustomData;
-                if(eventData.Length > 0)
+                if (timeReceived == false)
                 {
-                    _currenttime = Convert.ToSingle(eventData[0]);
+                    Debug.Log("Timer Event Received");
+                    // Extract the timer start time from the event data
+                    object[] eventData = (object[])photonEvent.CustomData;
+                    if(eventData.Length > 0)
+                    {
+                        _currenttime = Convert.ToSingle(eventData[0]);
+                    }
+                    //_currenttime = (float)temp;
+                    _startTimer = true;
+                    timeReceived = true;
                 }
-                //_currenttime = (float)temp;
-                _startTimer = true;
-                timeReceived = true;
+            }
+        }
+        if (FaceOffTimer)
+        {
+            if (photonEvent.Code == 3)
+            {
+                if (timeReceived == false)
+                {
+                    Debug.Log("Timer Event Received");
+                    // Extract the timer start time from the event data
+                    object[] eventData = (object[])photonEvent.CustomData;
+                    if (eventData.Length > 0)
+                    {
+                        _currenttime = Convert.ToSingle(eventData[0]);
+                    }
+                    //_currenttime = (float)temp;
+                    _startTimer = true;
+                    timeReceived = true;
+                }
             }
         }
         //throw new System.NotImplementedException();

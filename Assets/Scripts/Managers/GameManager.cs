@@ -95,8 +95,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             else
             {
+                Debug.Log("State: " + state);
                 Debug.Log("Player submitted answer in faceOff." + (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
-                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2)
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2 && state != false)
                 {
                     //makePlayerWaitinFaceOff(targetPlayer);
                     for (int i = 0; i < uiController.faceOffPlayers.Count; i++)
@@ -112,20 +113,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-    public void makePlayerWaitinFaceOff(Player p)
-    {
-        uiController.makePlayerWaitInFaceOff(p);
-        if (p == PhotonNetwork.LocalPlayer)
-        {
-        }
-    }
     public void makePlayerWaitForFaceOffVoting(Player p)
     {
         uiController.makePlayerWaitForFaceOffVoting(p);
-        if (p == PhotonNetwork.LocalPlayer)
-        {
-        }
-
     }
 
 
@@ -137,6 +127,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static bool isVotingInprogress()
     {
         return (bool)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.VOTING_IN_PROGRESS];
+    }
+
+    public static bool getFaceOffInProgress()
+    {
+        return (bool)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_IN_PROGRESS];
+    }
+
+    public static void setFaceOffInProgress(bool state)
+    {
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.FACEOFF_IN_PROGRESS, state} });
     }
 
     public static int getFaceOffRoundNumber()
@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
             {
-                Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+                //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
                 if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 1)
                 {
                     //Time to make player Wait.
@@ -253,6 +253,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             for (int i = 0; i < uiController.faceOffPlayers.Count; i++)
             {
+                Debug.Log("On Answer Time Complete");
                 //uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
                 makePlayerWaitForFaceOffVoting(uiController.faceOffPlayers[i]);
 
@@ -281,13 +282,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         updateAnswersSubmittedNumber();
         AudioManager.Instance.Play("Submit");
-        if (GameSettings.normalGame)
-        {
-        }
-        else
-        {
-            //uiController.turnOffTextPanelFaceOff_Voter1();
-        }
+        //if (GameSettings.normalGame)
+        //{
+        //}
+        //else
+        //{
+        //    //uiController.turnOffTextPanelFaceOff_Voter1();
+        //}
     }
 
     public static int faceOffRoundNumber { get; set; }
@@ -307,14 +308,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         //uiController.turnOffTextPanelFaceOff();
     }
 
-    [PunRPC]
-    public void RPC_UpdateFaceOffnumber()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            //updateFaceOffRoundNumber();
-        }
-    }
 
     public static bool allPlayersGotSameVote()
     {

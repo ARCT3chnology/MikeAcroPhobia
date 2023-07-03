@@ -14,6 +14,7 @@ public class GameSettings : ScriptableObject
     public string GameVersion { get { return _gameVersion; } }
     [SerializeField] string _nickName;
     [SerializeField] byte _maxPlayerForLobby;
+    [SerializeField] byte _maxPlayerForRoom;
     [SerializeField] byte _maxPlayerForRandomLobby;
     public List<levels> gameLevels;
 
@@ -32,6 +33,17 @@ public class GameSettings : ScriptableObject
         set 
         { 
             _maxPlayerForLobby = value; 
+        }
+    }
+    public byte maxPlayerForRoom
+    {
+        get
+        {
+            return _maxPlayerForRoom;
+        }
+        set 
+        {
+            _maxPlayerForRoom = value; 
         }
     }
 
@@ -89,6 +101,20 @@ public class GameSettings : ScriptableObject
         get 
         {
             return "VOTING_IN_PROGRESS";
+        }
+    }
+    public static string FACEOFF_IN_PROGRESS {
+        get 
+        {
+            return "FACEOFF_IN_PROGRESS";
+        }
+    }
+
+    public static string ACRO_FOR_FACEOFF
+    {
+        get
+        {
+            return "ACRO_FOR_FACEOFF";
         }
     }
 

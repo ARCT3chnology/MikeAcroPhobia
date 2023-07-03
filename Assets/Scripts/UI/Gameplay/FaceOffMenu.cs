@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,19 @@ public class FaceOffMenu : MonoBehaviour
         set 
         { 
             VoteTimer = value;
+        }
+    }
+
+    [SerializeField] UiController _uiController;
+    public UiController UIController
+    {
+        get
+        {
+            return _uiController;
+        }
+        set
+        {
+            UIController = _uiController;
         }
     }
 
@@ -153,6 +167,7 @@ public class FaceOffMenu : MonoBehaviour
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                     }
                     if (i == 1)
@@ -164,6 +179,7 @@ public class FaceOffMenu : MonoBehaviour
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
                     if (i == 2)
@@ -175,6 +191,7 @@ public class FaceOffMenu : MonoBehaviour
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
                     if (i == 3)
@@ -185,6 +202,7 @@ public class FaceOffMenu : MonoBehaviour
                         _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties1;
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties1);
                     }
@@ -219,6 +237,7 @@ public class FaceOffMenu : MonoBehaviour
                         _PlayerProperties1[GameSettings.PLAYER_VOTES] = playerVoteCount;
                         Debug.Log("Vote added to: " + PhotonNetwork.PlayerList[i].NickName + "Votes" + playerVoteCount);
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
 
@@ -235,6 +254,7 @@ public class FaceOffMenu : MonoBehaviour
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
 
                     }
                     if (i == 2)
@@ -249,6 +269,7 @@ public class FaceOffMenu : MonoBehaviour
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
 
                     }
                     if (i == 3)
@@ -262,6 +283,7 @@ public class FaceOffMenu : MonoBehaviour
                         //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                         //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                         PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties1);
+                        UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
 
                     }
                 }
@@ -294,7 +316,6 @@ public class FaceOffMenu : MonoBehaviour
     public void setAnsterText(string text)
     {
         Debug.Log("setAnswerText: " + text);
-
         P1Answer.text = text;
         P2Answer.text = text;
         Votes_Txt[0].gameObject.SetActive(false);
@@ -315,5 +336,10 @@ public class FaceOffMenu : MonoBehaviour
         Votes_Txt[1].text = votes.ToString();
         Votes_Txt[1].gameObject.SetActive(true);
         VoteButtons[1].gameObject.SetActive(false);
+
+    }
+    public void UpdateStarOfSpecficPlayer(Player targetPlayer)
+    {
+        UIController.updateStars(targetPlayer);
     }
 }
