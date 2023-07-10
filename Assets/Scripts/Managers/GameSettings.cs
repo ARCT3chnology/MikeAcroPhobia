@@ -192,6 +192,50 @@ public class GameSettings : ScriptableObject
         }
     }
 
+    public static string PlAYER5_VOTES
+    {
+        get
+        {
+            return "PlAYER5_VOTES";
+        }
+    }
+    public static string PlAYER6_VOTES
+    {
+        get
+        {
+            return "PlAYER6_VOTES";
+        }
+    }
+    public static string PlAYER7_VOTES
+    {
+        get
+        {
+            return "PlAYER7_VOTES";
+        }
+    }
+    public static string PlAYER8_VOTES
+    {
+        get
+        {
+            return "PlAYER8_VOTES";
+        }
+    }
+    public static string PlAYER9_VOTES
+    {
+        get
+        {
+            return "PlAYER9_VOTES";
+        }
+    }
+    public static string PlAYER10_VOTES
+    {
+        get
+        {
+            return "PlAYER10_VOTES";
+        }
+    }
+
+
     public static string PlAYER_ANSWER 
     {
         get
@@ -302,6 +346,12 @@ public class GameSettings : ScriptableObject
         PlayerVotesArray.Add(PlAYER2_VOTES);
         PlayerVotesArray.Add(PlAYER3_VOTES);
         PlayerVotesArray.Add(PlAYER4_VOTES);
+        PlayerVotesArray.Add(PlAYER5_VOTES);
+        PlayerVotesArray.Add(PlAYER6_VOTES);
+        PlayerVotesArray.Add(PlAYER7_VOTES);
+        PlayerVotesArray.Add(PlAYER8_VOTES);
+        PlayerVotesArray.Add(PlAYER9_VOTES);
+        PlayerVotesArray.Add(PlAYER10_VOTES);
     }
     public static bool PlayerInRoom
     {

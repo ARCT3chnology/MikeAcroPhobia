@@ -55,6 +55,27 @@ public class VotingMenu : MonoBehaviour
     }
 
 
+    public void removePlayerFromVoteList(Player playerWhoLeft)
+    {
+        List<GameObject> VotesToRemove = new List<GameObject>();
+        
+        //Collecting GameObjects to remove from the list.
+        for (int i = 0; i < voteList.Count; i++)
+        {
+            if (voteList[i].acroText.text == playerWhoLeft.CustomProperties[GameSettings.PlAYER_ANSWER].ToString())
+            {
+                VotesToRemove.Add(voteList[i].gameObject);
+                voteList.Remove(voteList[i]);
+            }
+        }
+        //removing the game objects.
+        for (int i = 0; i < VotesToRemove.Count; i++)
+        {
+            Destroy(VotesToRemove[i]);
+        }
+
+    }
+
     public void instantiateAnswers(bool playerSubmitted)
     {
         //Debug.Log("instantiateAnswers");
@@ -121,7 +142,10 @@ public class VotingMenu : MonoBehaviour
             for (int i = 0; i < voteList.Count; i++)
             {
                 //Debug.Log(PhotonNetwork.PlayerLis   t[i].NickName);
-                voteList[i].hideVoteButton(PhotonNetwork.PlayerList[i]);
+                if (PhotonNetwork.PlayerList[i]!=null)
+                {
+                    voteList[i].hideVoteButton(PhotonNetwork.PlayerList[i]);
+                }
             }
         }
     }

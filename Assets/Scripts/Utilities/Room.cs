@@ -21,14 +21,12 @@ public class Room : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] TMP_Text Txt_PlayersCount;
     [SerializeField] TMP_Text Txt_TimeLeftText;
 
-
     [SerializeField] UnityEvent OnTimerEnd;
     [SerializeField] bool autoStart;
 
     public float _starttime;
     public float _currenttime;
     public float _endtime;
-
 
     [SerializeField] bool _startTimer;
     public bool StartTime
@@ -146,7 +144,7 @@ public class Room : MonoBehaviourPunCallbacks, IOnEventCallback
     public void setRoomStats(string roomName,int PlayerCount)
     {
         Txt_RoomName.text = roomName;
-        Txt_PlayersCount.text = PlayerCount.ToString() + "/" + 4 + " Players Joined.";
+        Txt_PlayersCount.text = PlayerCount.ToString() + "/" + MasterManager.Instance._gameSettings.maxPlayerForRoom.ToString() + " Players Joined.";
     }
 
 }

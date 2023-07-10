@@ -9,7 +9,7 @@ public class WaitingPanel : WelcomePanel
         GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
         Debug.Log("Faceoff number number is: " + GameManager.faceOffRoundNumber);  
-        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 1))
+        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
         {
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);
@@ -66,7 +66,7 @@ public class WaitingPanel : WelcomePanel
             }
             else
             {
-                Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.faceOffRoundNumber);
+                //Debug.Log("Normal Game is: " + GameSettings.normalGame + "FaceOff Number" + GameManager.faceOffRoundNumber);
                 if ((!GameSettings.normalGame) && GameManager.faceOffRoundNumber < 3)
                 {
                     if (GameManager.faceOffRoundNumber == 0)

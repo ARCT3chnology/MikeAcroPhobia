@@ -9,7 +9,14 @@ using UnityEngine.UI;
 
 public class Vote : MonoBehaviour
 {
-    [SerializeField] Text answerText;
+    [SerializeField] Text _acroText;
+
+    public Text acroText
+    {
+        get { return _acroText; }
+        set { _acroText = value; }
+    }
+
     [SerializeField] Text nameText;
     [SerializeField] Button votebutton;
     [SerializeField] Text noOfVotes;
@@ -34,19 +41,16 @@ public class Vote : MonoBehaviour
             //UnityEngine.Debug.Log(PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER].ToString());
             if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
             {
-                if (answerText.text!=null)
+                if (acroText.text!=null)
                 {
-                    if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER].ToString() == answerText.text)
+                    if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER].ToString() == acroText.text)
                     {
                         if(i == 0)
                         {
                             playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER1_VOTES];
                             playerVoteCount++;
-                            //PlayerStats.CurrentStars++;
-                            //PlayerStatsMenu.Instance.UpdateStarsText();
                             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER1_VOTES, playerVoteCount } });
                             _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                            //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
                             votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         }
@@ -54,12 +58,8 @@ public class Vote : MonoBehaviour
                         {
                             playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER2_VOTES];
                             playerVoteCount++;
-                            //PlayerStats.CurrentStars++;
-                            //PlayerStatsMenu.Instance.UpdateStarsText();
                             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER2_VOTES, playerVoteCount } });
                             _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                            //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
-                            //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
                             votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         }
@@ -67,12 +67,8 @@ public class Vote : MonoBehaviour
                         {
                             playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER3_VOTES];
                             playerVoteCount++;
-                            //PlayerStats.CurrentStars++;
-                            //PlayerStatsMenu.Instance.UpdateStarsText();
                             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER3_VOTES, playerVoteCount } });
                             _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                            //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
-                            //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
                             votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         }
@@ -80,15 +76,64 @@ public class Vote : MonoBehaviour
                         {
                             playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER4_VOTES];
                             playerVoteCount++;
-                            //PlayerStats.CurrentStars++;
-                            //PlayerStatsMenu.Instance.UpdateStarsText();
                             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER4_VOTES, playerVoteCount } });
                             _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
-                            //PhotonNetwork.SetPlayerCustomProperties(_PlayerProperties);
-                            //PhotonNetwork.PlayerList[i].CustomProperties = _PlayerProperties;
                             PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
                             votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
-
+                        }
+                        if (i == 4)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER5_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER5_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
+                        }
+                        if (i == 5)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER6_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER6_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
+                        }
+                        if (i == 6)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER7_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER7_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
+                        }
+                        if (i == 7)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER8_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER8_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
+                        }
+                        if (i == 8)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER9_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER9_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
+                        }
+                        if (i == 9)
+                        {
+                            playerVoteCount = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYER10_VOTES];
+                            playerVoteCount++;
+                            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYER10_VOTES, playerVoteCount } });
+                            _PlayerProperties[GameSettings.PLAYER_VOTES] = playerVoteCount;
+                            PhotonNetwork.PlayerList[i].SetCustomProperties(_PlayerProperties);
+                            votingMenu.UpdateStarOfSpecficPlayer(PhotonNetwork.PlayerList[i]);
                         }
                     }
 
@@ -103,17 +148,18 @@ public class Vote : MonoBehaviour
         votingMenu.hideAllVoteButton();
     }
 
-
+    [SerializeField] Color PlayerColor;
     public void setVoteText(Player player)
     {
-        answerText.text = (string)player.CustomProperties[GameSettings.PlAYER_ANSWER];
+        acroText.text = (string)player.CustomProperties[GameSettings.PlAYER_ANSWER];
         UnityEngine.Debug.Log("Setting vote text");
 
         if (player.IsLocal)
         {
-            if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)answerText.text)
+            if ((string)player.CustomProperties[GameSettings.PlAYER_ANSWER] == (string)acroText.text)
             {
                 votebutton.interactable = false;
+                nameText.color = PlayerColor;
             }
 
         }

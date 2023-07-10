@@ -379,6 +379,12 @@ public class MultiplayerNetworkManager : MonoBehaviourPunCallbacks
         expectedCustomRoomProperties.Add(GameSettings.PlAYER2_VOTES, 0);
         expectedCustomRoomProperties.Add(GameSettings.PlAYER3_VOTES, 0);
         expectedCustomRoomProperties.Add(GameSettings.PlAYER4_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER5_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER6_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER7_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER8_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER9_VOTES, 0);
+        expectedCustomRoomProperties.Add(GameSettings.PlAYER10_VOTES, 0);
         expectedCustomRoomProperties.Add(GameSettings.PlAYERS_VOTED, 0);
         expectedCustomRoomProperties.Add(GameSettings.ROUND_NUMBER, 0);
         expectedCustomRoomProperties.Add(GameSettings.FACEOFF_ROUND_NUMBER, 0);
@@ -526,6 +532,12 @@ public class MultiplayerNetworkManager : MonoBehaviourPunCallbacks
         roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER5_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER6_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER7_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER8_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER9_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER10_VOTES, 0);
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
         roomProps.Add(GameSettings.TOURNAMENT_NUMBER, 0);

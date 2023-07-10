@@ -239,6 +239,12 @@ public class Connectivity : MonoBehaviourPunCallbacks
         roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER5_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER6_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER7_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER8_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER9_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER10_VOTES, 0);
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
         roomProps.Add(GameSettings.PlAYERS_LEFT, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
@@ -354,4 +360,13 @@ public class Connectivity : MonoBehaviourPunCallbacks
         }, imageName);
     }
     string imageName;
+
+
+    //[PunRPC]
+    public void RPC_UpdateStars()
+    {
+        PlayerStats.ExperiencePoints++;
+        PlayerStatsMenu.Instance.UpdateStarsText();
+        PlayerStatsMenu.Instance.setExperienceSlider();
+    }
 }

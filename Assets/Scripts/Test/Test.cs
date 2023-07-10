@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
@@ -17,7 +19,40 @@ public class Test : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("11");
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Check if the mouse is over a UI element
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                // Get the mouse position
+                Vector3 mousePosition = Input.mousePosition;
+
+                // Create a pointer event
+                PointerEventData eventData = new PointerEventData(EventSystem.current);
+                eventData.position = mousePosition;
+
+                // Perform the raycast and store the results
+                List<RaycastResult> results = new List<RaycastResult>(); // Adjust the size based on your needs
+                EventSystem.current.RaycastAll(eventData, results);
+
+                // Iterate through the raycast results
+                for (int i = 0; i < results.Count; i++)
+                {
+                    GameObject hitObject = results[i].gameObject;
+
+                    // Check if the hit object is a UI element
+                    if (hitObject.GetComponent<UIBehaviour>() != null)
+                    {
+                        // A UI element was hit by the raycast
+                        // Implement your logic based on the hit information
+                        Debug.Log("Hit UI element: " + hitObject.name);
+                        break; // Exit the loop after the first UI hit
+                    }
+                }
+            }
+        }
+
+        //Debug.Log("11");
     }
 
     private static void testMethod()

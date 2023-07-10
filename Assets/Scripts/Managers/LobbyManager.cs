@@ -261,10 +261,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        base.OnPlayerEnteredRoom(newPlayer);
-    }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -402,10 +398,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private static void addRoomProperties(RoomOptions options)
     {
         Hashtable roomProps = new Hashtable();
+        
         roomProps.Add(GameSettings.PlAYER1_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER2_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER3_VOTES, 0);
         roomProps.Add(GameSettings.PlAYER4_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER5_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER6_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER7_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER8_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER9_VOTES, 0);
+        roomProps.Add(GameSettings.PlAYER10_VOTES, 0);
+
         roomProps.Add(GameSettings.PlAYERS_VOTED, 0);
         roomProps.Add(GameSettings.PlAYERS_LEFT, 0);
         roomProps.Add(GameSettings.ROUND_NUMBER, 0);
@@ -452,38 +456,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("OnR0omListUpdate is called " + roomList.Count);
-
-        //foreach (RoomInfo room in roomList)
-        //{
-        //    if(room.Name == "General")
-        //    {
-        //        if(room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-        //            generalRoomFull = true;
-        //        else
-        //            generalRoomFull = false;
-        //    }
-        //    else if (room.Name == "Science")
-        //    {
-        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-        //            scienceRoomFull = true;
-        //        else
-        //            scienceRoomFull = false;
-        //    }
-        //    else if (room.Name == "Information")
-        //    {
-        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-        //            informationRoomFull = true;
-        //        else
-        //            informationRoomFull = false;
-        //    }
-        //    else if (room.Name == "Adult")
-        //    {
-        //        if (room.PlayerCount == SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby)
-        //            adultRoomFull = true;
-        //        else
-        //            adultRoomFull = false;
-        //    }
-        //}
         GameSettings.CurrentRooms = new List<LocalRoomInfo>();
         for (int i = 0; i < roomList.Count; i++)
         {
@@ -510,25 +482,25 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 {
                     case "General":
                         {
-                            GeneralCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                            GeneralCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
 
                             break;
                         }
                     case "Science":
                         {
-                            ScienceCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                            ScienceCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
 
                             break;
                         }
                     case "Information":
                         {
-                            InformationCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                            InformationCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
 
                             break;
                         }
                     case "Adult":
                         {
-                            AdultCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForLobby;
+                            AdultCategoryPanel.Txt_Count.text = item.playerCount.ToString() + "/" + SingletonReferences.instance.MasterManager._gameSettings.maxPlayerForRoom;
 
                             break;
                         }
@@ -679,11 +651,5 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
         
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
-    }
-
-    public void setPlayerCount()
-    {
-        //PhotonNetwork.GetCustomRoomList(GeneralLobby, "C0");
-
     }
 }
