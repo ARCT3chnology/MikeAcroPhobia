@@ -19,22 +19,22 @@ MonoBehaviour:
   _maxPlayerForRandomLobby: 20
   gameLevels:
   - minStars: 1
-    maxStars: 10
-  - minStars: 11
-    maxStars: 17
-  - minStars: 18
-    maxStars: 28
-  - minStars: 29
-    maxStars: 40
-  - minStars: 41
-    maxStars: 60
-  - minStars: 61
-    maxStars: 70
-  - minStars: 71
-    maxStars: 80
-  - minStars: 81
-    maxStars: 90
-  - minStars: 91
     maxStars: 100
   - minStars: 101
-    maxStars: 110
+    maxStars: 500
+  - minStars: 501
+    maxStars: 1000
+  - minStars: 1001
+    maxStars: 2000
+  - minStars: 2001
+    maxStars: 3500
+  - minStars: 3501
+    maxStars: 5000
+  - minStars: 5001
+    maxStars: 7000
+  - minStars: 7001
+    maxStars: 10000
+  - minStars: 10001
+    maxStars: 15000
+  - minStars: 15001
+    maxStars: 20000

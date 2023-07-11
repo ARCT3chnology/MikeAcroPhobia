@@ -6,7 +6,10 @@ public class PlayerStats
 {
     public static int BirthYear;
     //public static int Level = 1;
-    public static float Experience;
+    public static float Experience
+    {
+        get; set;
+    }
     public static Texture2D PlayerImage;
 
     public static int CurrentLevel

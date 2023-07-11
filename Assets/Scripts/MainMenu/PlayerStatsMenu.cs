@@ -101,6 +101,7 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void setExperienceSlider()
     {
+        Debug.Log("Setting SLider Value");
         float fillValue;
         if (PlayerStats.ExperiencePoints > 0)
         {
@@ -218,12 +219,14 @@ public class PlayerStatsMenu : MonoBehaviour
 
     }
 
-    public void UpadateMatchesWon()
+    public void UpdateMatchesWon()
     {
-
+        PlayerStats.GamesWon++;
     }
-    public void UpadateMatchesLost()
-    {
 
+
+    public void UpdateMatchesLost()
+    {
+        PlayerStats.GamesLost++;
     }
 }

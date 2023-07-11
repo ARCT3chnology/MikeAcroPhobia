@@ -480,6 +480,18 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                 maxIndex = allVotes.ToList().IndexOf(votes);
                 //gameEndMenu.StartTimer();
                 PhotonNetwork.AutomaticallySyncScene = false;
+                photonView.RPC(nameof(RPC_UpdateGamesWin), PhotonNetwork.PlayerList[maxIndex]);
+                for (int i = 0; i < PhotonNetwork.PlayerList.Count(); i++)
+                {
+                    if (i != maxCount)
+                    {
+                        photonView.RPC(nameof(RPC_UpdateGamesLost), PhotonNetwork.PlayerList[i]);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
                 photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
                 GameSettings.PlayerInRoom = false;
@@ -524,6 +536,17 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
 
             }
         }
+    }
+
+    [PunRPC]
+    private void RPC_UpdateGamesLost()
+    {
+        PlayerStatsMenu.Instance.UpdateMatchesLost();
+    }
+    [PunRPC]
+    private void RPC_UpdateGamesWin()
+    {
+        PlayerStatsMenu.Instance.UpdateMatchesWon();
     }
 
     [PunRPC]
@@ -1212,40 +1235,43 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    private void RPC_UpdateStars()
+    private void RPC_UpdateVotes()
     {
         PlayerStats.TotalVotes++;
         updateExperience();
+        PlayerStatsMenu.Instance.setVotesText();
     }
+
     private void updateExperience()
     {
         if (GameSettings.normalGame)
         {
+            Debug.Log("Add Experience for Round: " + GameManager.getroundNumber());
             switch (GameManager.getroundNumber())
             {
                 case 0:
                     {
-                        PlayerStats.Experience += 3;
+                        PlayerStats.ExperiencePoints += 3;
                         break; 
                     }
                 case 1:
                     {
-                        PlayerStats.Experience += 4;
+                        PlayerStats.ExperiencePoints += 4;
                         break;
                     }
                 case 2:
                     {
-                        PlayerStats.Experience += 5;
+                        PlayerStats.ExperiencePoints += 5;
                         break;
                     }
                 case 3:
                     {
-                        PlayerStats.Experience += 6;
+                        PlayerStats.ExperiencePoints += 6;
                         break;
                     }
                 case 4:
                     {
-                        PlayerStats.Experience += 7;
+                        PlayerStats.ExperiencePoints += 7;
                         break;
                     }
                 default:
@@ -1271,7 +1297,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
 
     public void updateStars(Player targetPlayer)
     {
-        photonView.RPC(nameof(RPC_UpdateStars), targetPlayer);
+        photonView.RPC(nameof(RPC_UpdateVotes), targetPlayer);
     }
 
     public void StartVotingForOtherPlayer()

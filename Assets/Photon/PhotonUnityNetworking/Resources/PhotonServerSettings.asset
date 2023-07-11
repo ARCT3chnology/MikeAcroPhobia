@@ -91,6 +91,11 @@ MonoBehaviour:
   - RPC_UpdateStarsUI
   - RPC_AddFaceOffPlayer
   - RPC_AddFaceOffVoters
+  - RPC_UpdateVotes
+  - UpdateGamesLost
+  - UpdateGamesWin
+  - RPC_UpdateGamesLost
+  - RPC_UpdateGamesWin
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
