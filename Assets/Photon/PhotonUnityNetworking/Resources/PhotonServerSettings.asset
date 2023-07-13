@@ -96,6 +96,7 @@ MonoBehaviour:
   - UpdateGamesWin
   - RPC_UpdateGamesLost
   - RPC_UpdateGamesWin
+  - RPC_ShowFaceOffPlayerAnswer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

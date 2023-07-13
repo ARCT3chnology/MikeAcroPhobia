@@ -16,7 +16,6 @@ public class Vote : MonoBehaviour
         get { return _acroText; }
         set { _acroText = value; }
     }
-
     [SerializeField] Text nameText;
     [SerializeField] Button votebutton;
     [SerializeField] Text noOfVotes;

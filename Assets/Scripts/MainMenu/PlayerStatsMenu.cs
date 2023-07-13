@@ -167,7 +167,7 @@ public class PlayerStatsMenu : MonoBehaviour
                 }
             }
 #endif
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN 
         if (Input.GetMouseButtonDown(0))
         {
             // Check if the mouse is over a UI element
@@ -194,7 +194,7 @@ public class PlayerStatsMenu : MonoBehaviour
                     {
                         // A UI element was hit by the raycast
                         // Implement your logic based on the hit information
-                        Debug.Log("Hit UI element: " + hitObject.name);
+                        //Debug.Log("Hit UI element: " + hitObject.name);
                         if(hitObject.name == "PlayerStatsImage")
                         {
                             LargePlayerStats.mainGameObject.SetActive(true);

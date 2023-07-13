@@ -9,7 +9,7 @@ public class WaitingPanel : WelcomePanel
         GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
         Debug.Log("Faceoff number number is: " + GameManager.faceOffRoundNumber);  
-        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
+        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 2))
         {
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);
@@ -25,20 +25,17 @@ public class WaitingPanel : WelcomePanel
             {
                 timer_txt.text = "";
                 Invoke(nameof(StartGame), 1f);
-                if (GameManager.getFaceOffRoundNumber() != 3)
-                {
-                }
             }
-            else if (GameManager.allPlayersGotSameVote() && GameManager.faceOffRoundNumber < 3)
-            {
-                GameManager.updateRoundNumber(0);
-                UIController.restartGame();
-                //Invoke("StartGame", 1f);
-            }
-            else if (GameManager.threePlayerGotSameVotes())
-            {
-                UIController.onthreePlayerGotSameVotes();
-            }
+            //else if (GameManager.allPlayersGotSameVote() && GameManager.faceOffRoundNumber < 3)
+            //{
+            //    GameManager.updateRoundNumber(0);
+            //    UIController.restartGame();
+            //    //Invoke("StartGame", 1f);
+            //}
+            //else if (GameManager.threePlayerGotSameVotes())
+            //{
+            //    UIController.onthreePlayerGotSameVotes();
+            //}
             else
             {
                 UIController.GameCompleted();
