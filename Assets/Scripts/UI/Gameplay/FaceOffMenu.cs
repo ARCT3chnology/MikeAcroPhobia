@@ -89,7 +89,8 @@ public class FaceOffMenu : MonoBehaviour
         PlayerPanel.SetActive(true);
         P1TextInput.SetTextWithoutNotify("");
         submitButton.interactable = true;
-        LevelNamePlayer.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber + 1).ToString();
+        //LevelNamePlayer.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber + 1).ToString();
+        LevelNamePlayer.text = "FaceOff Round: " + (GameManager.getFaceOffRoundNumber() + 1).ToString();
         ProgressPanel.SetActive(false);
     }
 
@@ -102,16 +103,27 @@ public class FaceOffMenu : MonoBehaviour
 
     public void showVotersPanel()
     {
+        Debug.Log("Showing Voter Panel");
         ProgressPanel.GetComponent<WaitingPanel>().resetTimer();
         this.gameObject.SetActive(true);
         VoterPanel.SetActive(true);
-        for (int i = 0; i < UIController.faceOffVoters.Count; i++)
+        if (FaceOffVotes != null)
+        {
+            foreach (var item in FaceOffVotes)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+        FaceOffVotes = new FaceOffVote[UIController.faceOffPlayers.Count];
+        for (int i = 0; i < UIController.faceOffPlayers.Count; i++)
         {
             GameObject gb = Instantiate(VoteGameObject, ParentContent.transform);
+            FaceOffVotes[i] = gb.GetComponent<FaceOffVote>();
         }
 
         setVoteButtonInteractableState(false);
-        LevelNameVoter.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber+1).ToString();
+        //LevelNameVoter.text = "FaceOff Round: " + (GameManager.faceOffRoundNumber+1).ToString();
+        LevelNameVoter.text = "FaceOff Round: " + (GameManager.getFaceOffRoundNumber()+1).ToString();
         setVoteButtonState(true);
         setAnsterText("");
         ProgressPanel.SetActive(false);
@@ -132,6 +144,7 @@ public class FaceOffMenu : MonoBehaviour
         {
             if(i == index)
             {
+                Debug.Log("Updating Answer");
                 FaceOffVotes[i].setAnswerTxt(answer);
             }
         }

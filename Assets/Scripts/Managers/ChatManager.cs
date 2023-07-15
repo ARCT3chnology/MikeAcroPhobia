@@ -114,7 +114,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         if (isConnected == false)
         {
-            Invoke(nameof(ConnectChat), 1.5f);
+            Invoke(nameof(ConnectChat), 2f);
         }
             //ConnectChat();
     }

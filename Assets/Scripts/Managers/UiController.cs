@@ -257,7 +257,8 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                     }
                     if (!GameManager.faceOffRoundNumberIncreased)
                     {
-                        GameManager.faceOffRoundNumber++;
+                        //GameManager.faceOffRoundNumber++;
+                        GameManager.updateFaceOffRoundNumber();
                         GameManager.faceOffRoundNumberIncreased = true;
                     }
                     Debug.Log("All two sumbitted their votes");       
@@ -510,18 +511,26 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                 maxIndex = allVotes.ToList().IndexOf(votes);
                 //gameEndMenu.StartTimer();
                 PhotonNetwork.AutomaticallySyncScene = false;
-                photonView.RPC(nameof(RPC_UpdateGamesWin), PhotonNetwork.PlayerList[maxIndex]);
-                for (int i = 0; i < PhotonNetwork.PlayerList.Count(); i++)
+                if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[maxIndex])
                 {
-                    if (i != maxCount)
-                    {
-                        photonView.RPC(nameof(RPC_UpdateGamesLost), PhotonNetwork.PlayerList[i]);
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    //photonView.RPC(nameof(RPC_UpdateGamesWin), PhotonNetwork.PlayerList[maxIndex]);
+                    RPC_UpdateGamesWin();
                 }
+                else
+                {
+                    RPC_UpdateGamesLost();
+                }
+                //for (int i = 0; i < PhotonNetwork.PlayerList.Count(); i++)
+                //{
+                //    if (i != maxCount)
+                //    {
+                //        photonView.RPC(nameof(RPC_UpdateGamesLost), PhotonNetwork.PlayerList[i]);
+                //    }
+                //    else
+                //    {
+                //        continue;
+                //    }
+                //}
                 photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
                 GameSettings.PlayerInRoom = false;
@@ -944,13 +953,19 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     private void turnOffTextPanelFaceOff_Voter1()
     {
+        Debug.Log("FaceOff - Turning off text panel: " );
         faceOffMenu.onAnswerSubmission();
         faceOffMenu.setVoteButtonInteractableState(true);
         faceOffMenu.setVoteButtonState(true);
 
         for (int i = 0; i < faceOffVoters.Count(); i++)
         {
-            photonView.RPC(nameof(RPC_ShowFaceOffPlayerAnswer), faceOffVoters[i], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER],i);
+            for (int j = 0; j < faceOffPlayers.Count(); j++)
+            {
+                Debug.Log("FaceOff - Turning off text panel: For Player: " + (string)faceOffPlayers[j].CustomProperties[GameSettings.PlAYER_ANSWER]);
+                //photonView.RPC(nameof(RPC_ShowFaceOffPlayerAnswer), faceOffVoters[i], (string)faceOffPlayers[j].CustomProperties[GameSettings.PlAYER_ANSWER],i);
+                RPC_ShowFaceOffPlayerAnswer((string)faceOffPlayers[j].CustomProperties[GameSettings.PlAYER_ANSWER],j);
+            }
             //photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[i], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
             photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[i]);
         }
@@ -958,18 +973,18 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         faceOffMenu.Vote_Timer.StartTimer();
         //votingPanel.gameObject.SetActive(true);
     }
-    [PunRPC]
-    private void turnOffTextPanelFaceOff_Voter2()
-    {
-        faceOffMenu.onAnswerSubmission();
-        faceOffMenu.setVoteButtonInteractableState(true);
-        faceOffMenu.setVoteButtonState(true);
-        photonView.RPC(nameof(RPC_ShowFaceOffPlayerAnswer), faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        //photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
-        photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[1]);
-        faceOffMenu.Vote_Timer.StartTimer();
-        //votingPanel.gameObject.SetActive(true);
-    }
+    //[PunRPC]
+    //private void turnOffTextPanelFaceOff_Voter2()
+    //{
+    //    faceOffMenu.onAnswerSubmission();
+    //    faceOffMenu.setVoteButtonInteractableState(true);
+    //    faceOffMenu.setVoteButtonState(true);
+    //    photonView.RPC(nameof(RPC_ShowFaceOffPlayerAnswer), faceOffVoters[1], (string)faceOffPlayers[0].CustomProperties[GameSettings.PlAYER_ANSWER]);
+    //    //photonView.RPC(nameof(RPC_ShowFaceOffP2Answer), faceOffVoters[1], (string)faceOffPlayers[1].CustomProperties[GameSettings.PlAYER_ANSWER]);
+    //    photonView.RPC(nameof(RPC_StartFaceOffVotingTimer), faceOffVoters[1]);
+    //    faceOffMenu.Vote_Timer.StartTimer();
+    //    //votingPanel.gameObject.SetActive(true);
+    //}
     public void makePlayerWaitForFaceOffVoting(Player P)
     {
         photonView.RPC(nameof(RPC_MakePlayerWaitinFaceOff), P);
@@ -1234,7 +1249,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("Starting face-Off Player round");
         faceOffMenu.showPlayerPanel();
     }
-    [PunRPC]
+    //[PunRPC]
     private void RPC_ShowFaceOffPlayerAnswer(string playerAnswer,int index)
     {
         faceOffMenu.updatePlayerAnswer(playerAnswer,index);
@@ -1299,6 +1314,15 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         {
             switch (GameManager.getFaceOffRoundNumber())
             {
+                case 0:
+                    PlayerStats.ExperiencePoints += 3;
+                    break;
+                case 1:
+                    PlayerStats.ExperiencePoints += 4;
+                    break;
+                case 2:
+                    PlayerStats.ExperiencePoints += 5;
+                    break;
                 default:
                     break;
             }

@@ -194,6 +194,31 @@ public class Connectivity : MonoBehaviourPunCallbacks
         ImageInput.SetActive(true);
     }
 
+    public enum sex
+    {
+        male,
+        female
+    }
+    public sex Gender;
+    public Texture Male;
+    public Texture Female;
+
+    public void setPlayerImage()
+    {
+        switch (Gender) 
+        {
+            case sex.male:
+                UserProfile.texture = Female;
+                Gender = sex.female;
+                break;
+                    
+            case sex.female:
+                UserProfile.texture = Male;
+                Gender = sex.male;
+                break;
+        }
+    }
+
     public void onCLick_PlayButton()
     {
         createLobbyForQuickPlay();

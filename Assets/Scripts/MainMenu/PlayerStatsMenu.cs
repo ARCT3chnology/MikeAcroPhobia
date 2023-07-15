@@ -52,6 +52,7 @@ public class PlayerStatsMenu : MonoBehaviour
     public void SetGamesWonText()
     {
         LargePlayerStats.txt_GamesWon.text = PlayerStats.GamesWon.ToString();
+        setWinRate();
     }
 
     public void setVotesText()
@@ -61,9 +62,13 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void setWinRate()
     {
-        if (PlayerStats.GamesLost > 0)
+        if (PlayerStats.GamesLost == 0 && PlayerStats.GamesWon > 0)
         {
-            LargePlayerStats.txt_WinRate.text = (PlayerStats.GamesLost / PlayerStats.GamesWon).ToString() + "%";
+            LargePlayerStats.txt_WinRate.text = "100%";
+        }
+        else if (PlayerStats.GamesLost > 0 && PlayerStats.GamesWon > 0)
+        {
+            LargePlayerStats.txt_WinRate.text = ((PlayerStats.GamesLost/PlayerStats.GamesWon)*100).ToString() +"%";
         }
         else
         {
@@ -101,7 +106,7 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void setExperienceSlider()
     {
-        Debug.Log("Setting SLider Value");
+        //Debug.Log("Setting SLider Value");
         float fillValue;
         if (PlayerStats.ExperiencePoints > 0)
         {
@@ -221,12 +226,16 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void UpdateMatchesWon()
     {
+        Debug.Log("Updating Games Won");
         PlayerStats.GamesWon++;
+        SetGamesWonText();
     }
 
 
     public void UpdateMatchesLost()
     {
+        Debug.Log("Updating Games LOST");
         PlayerStats.GamesLost++;
+        setWinRate();
     }
 }

@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 Debug.Log("State: " + state);
                 Debug.Log("Player submitted answer in faceOff." + (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
-                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < 2 && state != false)
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.NO_OF_ANSWERS_SUBMITTED] < uiController.faceOffPlayers.Count() && state != false)
                 {
                     //makePlayerWaitinFaceOff(targetPlayer);
                     for (int i = 0; i < uiController.faceOffPlayers.Count; i++)
@@ -141,8 +141,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public static int getFaceOffRoundNumber()
     {
-        //return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
-        return faceOffRoundNumber;
+        return (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_ROUND_NUMBER];
+        //return faceOffRoundNumber;
     }
     public static void updateRoundNumber()
     {
@@ -201,18 +201,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] != null)
             {
-                //Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
+                Debug.Log("No of answers: " + (int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED]);
                 if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 1)
                 {
                     //Time to make player Wait.
                     Debug.Log("Please Wait");
                     //uiController.votingPanel.voteTimer.StartTimer();
                 }
-                else if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == 2)
+                else if ((int)propertiesThatChanged[GameSettings.NO_OF_ANSWERS_SUBMITTED] == uiController.faceOffPlayers.Count())
                 {
                     //Time to get votes from other players.
                     Debug.Log("Give votes.");
-                    for (int i = 0; i < uiController.faceOffVoters.Count; i++)
+                    for (int i = 0; i < uiController.faceOffVoters.Count(); i++)
                     {
                         uiController.RPC_OnFaceOffAnswerSubmit(uiController.faceOffVoters[i]);
                         //photonView.RPC("RPC_OnFaceOffAnswerSubmit", PhotonNetwork.PlayerList[uiController.faceOffVoters[i]], PhotonNetwork.PlayerList[uiController.faceOffVoters[i]]);
@@ -261,7 +261,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             if (!faceOffRoundNumberIncreased)
             {
-                faceOffRoundNumber++;
+                updateFaceOffRoundNumber();
+                //faceOffRoundNumber++;
                 faceOffRoundNumberIncreased = true;
             }
             //uiController.turnOffTextPanelFaceOff();
@@ -295,10 +296,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static bool faceOffRoundNumberIncreased { get; set; }
     public void OnVotingTimeComplete_FaceOff()
     {
-        Debug.Log("On Voting time complete faceOff");
+        Debug.Log("On Voting time complete faceOff"); 
         if (!faceOffRoundNumberIncreased)
         {
-            faceOffRoundNumber++;
+            updateFaceOffRoundNumber();
+            //faceOffRoundNumber++;
             faceOffRoundNumberIncreased = true;
         }
         uiController.DisableFaceoffVoteMenuFromAll();
