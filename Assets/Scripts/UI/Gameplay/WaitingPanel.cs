@@ -14,11 +14,11 @@ public class WaitingPanel : WelcomePanel
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);
         }
-        //else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3))
-        //{
-        //    timer_txt.text = "";
-        //    Invoke(nameof(StartGame), 1f);
-        //}
+        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3))
+        {
+            timer_txt.text = "";
+            Invoke(nameof(StartGame), 1f);
+        }
         else
         {
             if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.getFaceOffRoundNumber() != 3)

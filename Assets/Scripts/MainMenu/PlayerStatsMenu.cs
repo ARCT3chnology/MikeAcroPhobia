@@ -16,8 +16,8 @@ public class PlayerStatsMenu : MonoBehaviour
     [SerializeField] Text StarsText;
     [SerializeField] Image ExperienceSlider;
     [SerializeField] GameObject PlayerStatsUI;
-    [SerializeField] RawImage PlayerImageHolder;
-    [SerializeField] Texture defaultImage;
+    [SerializeField] Image SmallProfileImage;
+    [SerializeField] Sprite defaultImage;
     [SerializeField] GraphicRaycaster graphicRaycaster;
     public static PlayerStatsMenu Instance;
 
@@ -34,7 +34,18 @@ public class PlayerStatsMenu : MonoBehaviour
         public Image experienceSlider;
         public TMP_Text txt_Experience;
     }
+    [System.Serializable]
+    public struct Icons
+    {
+        public Sprite maleIcon;
+        public Sprite femaleIcon;
+    }
+
+    public Icons largeIcons;
+    public Icons smallIcons;
+
     public DetailedPlayerStats LargePlayerStats;
+
 
     private void Awake()
     {
@@ -92,15 +103,27 @@ public class PlayerStatsMenu : MonoBehaviour
         LargePlayerStats.txt_Level.text = (PlayerStats.CurrentLevel + 1).ToString();
     }
 
-    public void setImage()
+    public void setImageProfile(Connectivity.sex gender)
     {
-        if (PlayerStats.PlayerImage!=null)
+        switch (gender)
         {
-            PlayerImageHolder.texture = PlayerStats.PlayerImage;
-        }
-        else
-        {
-            PlayerImageHolder.texture = defaultImage;
+            case Connectivity.sex.male:
+                {
+                    SmallProfileImage.sprite = smallIcons.maleIcon;
+                    LargePlayerStats.PlayerImage.sprite = largeIcons.maleIcon;
+                    PlayerPrefs.SetInt("Gender", 0);
+                    break;
+                }
+            case Connectivity.sex.female:
+                {
+                    SmallProfileImage.sprite = smallIcons.femaleIcon;
+                    LargePlayerStats.PlayerImage.sprite = largeIcons.femaleIcon;
+                    PlayerPrefs.SetInt("Gender", 1);
+                    break;
+                }
+            default:
+                break;
+
         }
     }
 
@@ -166,10 +189,47 @@ public class PlayerStatsMenu : MonoBehaviour
                 // Check if the touch is over a UI element
                 if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
                 {
-                    // The touch is over a UI element
-                    // Implement your logic here when the UI element is touched
-                    Debug.Log("UI element touched");
+                // Get the mouse position
+                Vector3 mousePosition = touch.position;
+
+                // Create a pointer event
+                PointerEventData eventData = new PointerEventData(EventSystem.current);
+                eventData.position = mousePosition;
+
+                // Perform the raycast and store the results
+                List<RaycastResult> results = new List<RaycastResult>(); // Adjust the size based on your needs
+                EventSystem.current.RaycastAll(eventData, results);
+
+                // Iterate through the raycast results
+                for (int i = 0; i < results.Count; i++)
+                {
+                    GameObject hitObject = results[i].gameObject;
+
+                    // Check if the hit object is a UI element
+                    if (hitObject.GetComponent<UIBehaviour>() != null)
+                    {
+                        // A UI element was hit by the raycast
+                        // Implement your logic based on the hit information
+                        //Debug.Log("Hit UI element: " + hitObject.name);
+                        if (hitObject.name == "PlayerStatsImage")
+                        {
+                            LargePlayerStats.mainGameObject.SetActive(true);
+                            LargePlayerStats.mainGameObject.transform.DOScale(Vector3.one, .5f).SetEase(Ease.InOutSine);
+                            graphicRaycaster.enabled = true;
+                        }
+
+                        if (hitObject.name == "ClosePanel")
+                        {
+                            LargePlayerStats.mainGameObject.transform.DOScale(Vector3.zero, .5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                            {
+                                LargePlayerStats.mainGameObject.SetActive(false);
+                                graphicRaycaster.enabled = false;
+                            });
+                        }
+                        break; // Exit the loop after the first UI hit
+                    }
                 }
+            }
             }
 #endif
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN 

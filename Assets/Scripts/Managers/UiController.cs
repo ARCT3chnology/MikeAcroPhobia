@@ -379,7 +379,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         {
             if ((int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED] < PhotonNetwork.CurrentRoom.PlayerCount)
             {
-                votingPanel.updateVotesStats(4, (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED]);
+                votingPanel.updateVotesStats(PhotonNetwork.PlayerList.Count(), (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_VOTED]);
                 votingPanel.hideAllVoteButton();
                 for (int j = 0; j < votingPanel.voteList.Count; j++)
                 {
@@ -563,7 +563,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
             }
-            else if (maxCount >= 3)
+            else if (maxCount >= 2)
             {
                 if (GameManager.getFaceOffRoundNumber() < 3)
                 {
@@ -669,7 +669,10 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("Room Joined in Gameplay:");
         Debug.Log("Voting in Progress: " + GameManager.isVotingInprogress());
         GameSettings.PlayerInRoom = true;
-        chatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
+        if (PhotonNetwork.LocalPlayer.IsLocal)
+        {
+            chatHandler.JoinRoomChat(PhotonNetwork.CurrentRoom.Name);
+        }
 
         if (GameManager.getFaceOffInProgress())
         {
@@ -725,6 +728,12 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         {
             votingPanel.removePlayerFromVoteList(otherPlayer);
         }
+        if (GameManager.getFaceOffInProgress())
+        {
+            removeFaceoffPlayer(otherPlayer);
+            removeFaceoffVoter(otherPlayer);
+        }
+
 
         Debug.Log(otherPlayer.NickName + " Left the Room");
         if(GameManager.getroundNumber()==5 && GameManager.threePlayerGotSameVotes())
@@ -750,6 +759,35 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         //    SceneManager.LoadScene(1);
         //}
         base.OnPlayerLeftRoom(otherPlayer);
+    }
+
+    public void removeFaceoffPlayer(Player playerToRemove)
+    {
+        for (int i = 0; i < faceOffPlayers.Count; i++)
+        {
+            if (playerToRemove == faceOffPlayers[i])
+            {
+                Debug.Log("Removing faceoff player");
+                faceOffPlayers.RemoveAt(i);
+            }
+        }
+
+        if (faceOffPlayers.Count() == 1)
+        {
+            //All Players left the Last is the Winner.
+            GameCompleted();
+        }
+    }
+    public void removeFaceoffVoter(Player playerToRemove)
+    {
+        for (int i = 0; i < faceOffVoters.Count; i++)
+        {
+            if (playerToRemove == faceOffVoters[i])
+            {
+                Debug.Log("Removing faceoff Voter");
+                faceOffVoters.RemoveAt(i);
+            }
+        }
     }
 
     public IEnumerator startNextRound(Player otherPlayer)
@@ -1159,17 +1197,17 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         switch (acronyms)
         {
             case AcronymSetter.acronyms.ThreeLetters:
-                return "Three Letter Round";
+                return "THREE LETTER ROUND";
             case AcronymSetter.acronyms.FourLetters:
-                return "Four Letter Round";
+                return "FOUR LETTER ROUND";
             case AcronymSetter.acronyms.FiveLetters:
-                return "Five Letter Round";
+                return "FIVE LETTER ROUND";
             case AcronymSetter.acronyms.SixLetters:
-                return "Six Letter Round";
+                return "SIX LETTER ROUND";
             case AcronymSetter.acronyms.SevenLetters:
-                return "Seven Letter Round";
+                return "SEVEN LETTER ROUND";
             default:
-                return "Seven Letter Round";
+                return "SEVEN LETTER ROUND";
         }
     }
 

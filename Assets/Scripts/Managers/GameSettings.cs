@@ -60,10 +60,12 @@ public class GameSettings : ScriptableObject
     }
 
     static int val;
-
     private void OnEnable()
     {
+        //for testing we use the variable val wit hval In the NickName.
+
         val = UnityEngine.Random.Range(0, 999);
+        
     }
 
     public static string NickName
@@ -71,11 +73,12 @@ public class GameSettings : ScriptableObject
         get 
         {
             return PlayerPrefs.GetString("Name"+val.ToString(), "Player");
-           
+            //return PlayerPrefs.GetString("Name", "Player");
         }
         set 
         { 
             PlayerPrefs.SetString("Name"+val.ToString(), value);
+            //PlayerPrefs.SetString("Name", value);
         }
     }
 

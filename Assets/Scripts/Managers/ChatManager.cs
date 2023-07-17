@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using WebSocketSharp;
 using AuthenticationValues = Photon.Chat.AuthenticationValues;
 
@@ -112,11 +113,16 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void OnEnable()
     {
-        if (isConnected == false)
+        Invoke(nameof(connectChatForGameplay), 3f);
+        //ConnectChat();
+    }
+
+    public void connectChatForGameplay()
+    {
+        if (isConnected == false && SceneManager.GetActiveScene().name != "LobbySystem 1")
         {
-            Invoke(nameof(ConnectChat), 2f);
+            ConnectChat();
         }
-            //ConnectChat();
     }
 
     private void OnDisable()
@@ -130,8 +136,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         //EXTABLISH AND MAINTAIN A CONNECTION
         if (isConnected) chatClient.Service();
-
-
 
     }
 

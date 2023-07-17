@@ -41,11 +41,19 @@ public class Connectivity : MonoBehaviourPunCallbacks
 
         //if (GameSettings.NickName != "Player")
         //{
+        //    if (PlayerPrefs.GetInt("Gender") == 0)
+        //    {
+        //        Gender = sex.male;
+        //    }
+        //    else
+        //    {
+        //        Gender = sex.female;
+        //    }
         //    MenuManager.Instance.CloseMenu(LoginMenu);
         //    MenuManager.Instance.OpenMenu(menuName.PlayPanel);
         //    PlayerStatsMenu.Instance.setName();
         //    PlayerStatsMenu.Instance.setLevel();
-        //    PlayerStatsMenu.Instance.setImage();
+        //    PlayerStatsMenu.Instance.setImageProfile(Gender);
         //    PlayerStatsMenu.Instance.setExperienceSlider();
         //    PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
         //}
@@ -200,24 +208,30 @@ public class Connectivity : MonoBehaviourPunCallbacks
         female
     }
     public sex Gender;
-    public Texture Male;
-    public Texture Female;
+    //public Texture2D Male;
+    //public Texture2D Female;
 
     public void setPlayerImage()
     {
         switch (Gender) 
         {
             case sex.male:
-                UserProfile.texture = Female;
+                UserProfile.sprite = PlayerStatsMenu.Instance.smallIcons.femaleIcon;
+                //PlayerStats.PlayerImage = PlayerStatsMenu.Instance.smallIcons.femaleIcon;
                 Gender = sex.female;
-                break;
+                PlayerStatsMenu.Instance.setImageProfile(Gender);
+            break;
                     
             case sex.female:
-                UserProfile.texture = Male;
+                UserProfile.sprite = PlayerStatsMenu.Instance.smallIcons.maleIcon;
+                PlayerStats.PlayerImage = PlayerStatsMenu.Instance.smallIcons.maleIcon;
                 Gender = sex.male;
-                break;
+                PlayerStatsMenu.Instance.setImageProfile(Gender);
+            break;
         }
     }
+
+    
 
     public void onCLick_PlayButton()
     {
@@ -315,7 +329,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
 
 
     [SerializeField] SimpleScrollSnap ageScroll;
-    [SerializeField] RawImage UserProfile;
+    [SerializeField] Image UserProfile;
     [SerializeField] GameObject ImageInput;
     public void OnClick_AgeScroller()
     {
@@ -332,7 +346,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu(menuName.PlayPanel);
         PlayerStatsMenu.Instance.setName();
         PlayerStatsMenu.Instance.setLevel();
-        PlayerStatsMenu.Instance.setImage();
+        PlayerStatsMenu.Instance.setImageProfile(Gender);
         PlayerStatsMenu.Instance.setExperienceSlider();
         PlayerStatsMenu.Instance.UpdateStarsText();
         PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
@@ -345,44 +359,47 @@ public class Connectivity : MonoBehaviourPunCallbacks
         
     }
 
-
+    
 
     public void OnClick_SelectImage()
     {
-        NativeGallery.GetImageFromGallery((path) =>
-        {
-            Debug.Log("Image path: " + path);
-            if (path != null)
-            {
-                // Create Texture from selected image
-                Texture2D texture = NativeGallery.LoadImageAtPath(path, 512);
-                if (texture == null)
-                {
-                    Debug.Log("Couldn't load texture from " + path);
-                    return;
-                }
 
-                // Assign texture to a temporary quad and destroy it after 5 seconds
-                //GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                //quad.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2.5f;
-                //quad.transform.forward = Camera.main.transform.forward;
-                //quad.transform.localScale = new Vector3(1f, texture.height / (float)texture.width, 1f);
+        //Use this part of code to enable player upload their own pictures.
 
-                //Material material = SingleInterface.ProfilePic.GetComponent<Image>().material;
-                UserProfile.texture = texture;
-                PlayerStats.PlayerImage = texture;
-                //if (!material.shader.isSupported) // happens when Standard shader is not included in the build
-                //    material.shader = Shader.Find("Legacy Shaders/Diffuse");
+        //NativeGallery.GetImageFromGallery((path) =>
+        //{
+        //    Debug.Log("Image path: " + path);
+        //    if (path != null)
+        //    {
+        //        // Create Texture from selected image
+        //        Texture2D texture = NativeGallery.LoadImageAtPath(path, 512);
+        //        if (texture == null)
+        //        {
+        //            Debug.Log("Couldn't load texture from " + path);
+        //            return;
+        //        }
 
-                //material.mainTexture = texture;
+        //        // Assign texture to a temporary quad and destroy it after 5 seconds
+        //        //GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        //        //quad.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2.5f;
+        //        //quad.transform.forward = Camera.main.transform.forward;
+        //        //quad.transform.localScale = new Vector3(1f, texture.height / (float)texture.width, 1f);
 
-                //Destroy(quad, 5f);
+        //        //Material material = SingleInterface.ProfilePic.GetComponent<Image>().material;
+        //        UserProfile.texture = texture;
+        //        PlayerStats.PlayerImage = texture;
+        //        //if (!material.shader.isSupported) // happens when Standard shader is not included in the build
+        //        //    material.shader = Shader.Find("Legacy Shaders/Diffuse");
 
-                // If a procedural texture is not destroyed manually, 
-                // it will only be freed after a scene change
-                //Destroy(texture, 5f);
-            }
-        }, imageName);
+        //        //material.mainTexture = texture;
+
+        //        //Destroy(quad, 5f);
+
+        //        // If a procedural texture is not destroyed manually, 
+        //        // it will only be freed after a scene change
+        //        //Destroy(texture, 5f);
+        //    }
+        //}, imageName);
     }
     string imageName;
 

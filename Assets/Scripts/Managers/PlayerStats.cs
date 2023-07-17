@@ -10,7 +10,7 @@ public class PlayerStats
     {
         get; set;
     }
-    public static Texture2D PlayerImage;
+    public static Sprite PlayerImage;
 
     public static int CurrentLevel
     {
