@@ -129,6 +129,13 @@ public class FaceOffMenu : MonoBehaviour
         ProgressPanel.SetActive(false);
     }
 
+    public void removePlayerFromVoter()
+    {
+        int max = FaceOffVotes.Length;
+        Destroy(FaceOffVotes[max - 1].gameObject);
+
+    }
+
     public void onAnswerSubmission()
     {
         PlayerPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);

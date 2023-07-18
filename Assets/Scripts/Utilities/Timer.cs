@@ -38,6 +38,7 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
 
     private void OnEnable()
     {
+
         resetTimer  ();
         if (autoStart)
         {
@@ -58,7 +59,7 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
         _timertext.text = "";
         _currenttime = _starttime;
         //Debug.Log(" " + _currenttime.ToString());
-        _timeSlider.value = _starttime;
+        _timeSlider.value = 0;
         _timeSlider.minValue = _endtime;
         _timeSlider.maxValue = _starttime;
     }
@@ -108,7 +109,7 @@ public class Timer : MonoBehaviourPunCallbacks, IOnEventCallback
                 //int currentTime = (int)(PhotonNetwork.ServerTimestamp - _starttime);
                 if (_currenttime > _endtime)
                 {
-                    _timertext.text = Mathf.FloorToInt(_currenttime % 60).ToString();
+                    _timertext.text = Mathf.FloorToInt(_currenttime / 60).ToString() + " : "+Mathf.FloorToInt(_currenttime % 60).ToString();
                     _currenttime -= Time.deltaTime;
                     //_timeSlider.value = _currenttime;
                     _timeSlider.value = _currenttime;

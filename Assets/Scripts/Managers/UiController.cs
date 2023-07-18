@@ -24,7 +24,8 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] FaceOffMenu _faceOffMenu;
     [SerializeField] GameTieMenu _gameTieMenu;
     [SerializeField] ChatHandler chatHandler;
-    [SerializeField] GameObject SingleWaitingPanel; 
+    [SerializeField] GameObject SingleWaitingPanel;
+    [SerializeField] PlayerLeftUI _playerLeftUI;
     private ExitGames.Client.Photon.Hashtable stats = new ExitGames.Client.Photon.Hashtable();
 
     public GameObject welcomePanel { get { return _WelcomePanel; } }
@@ -36,7 +37,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
     public RoundConfigurator roundConfigurator { get { return _RoundConfigurator; } }
     public FaceOffMenu faceOffMenu { get { return _faceOffMenu; } }
     public GameTieMenu GameTieMenu { get { return _gameTieMenu; } }
-
+    public PlayerLeftUI PlayerLeftUI { get { return _playerLeftUI; } }
     private void Start()
     {
         //PhotonPeer.RegisterType(,);
@@ -474,6 +475,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
     public void GameCompleted()
     {
         int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+        
         int votes = 0, maxIndex = 0;
         for (int i = 0; i < allVotes.Length; i++)
         {
@@ -520,17 +522,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     RPC_UpdateGamesLost();
                 }
-                //for (int i = 0; i < PhotonNetwork.PlayerList.Count(); i++)
-                //{
-                //    if (i != maxCount)
-                //    {
-                //        photonView.RPC(nameof(RPC_UpdateGamesLost), PhotonNetwork.PlayerList[i]);
-                //    }
-                //    else
-                //    {
-                //        continue;
-                //    }
-                //}
+
                 photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, PhotonNetwork.PlayerList[maxIndex].NickName, votes);
                 Debug.Log("GameCompleted: " + maxIndex.ToString());
                 GameSettings.PlayerInRoom = false;
@@ -565,7 +557,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
             }
             else if (maxCount >= 2)
             {
-                if (GameManager.getFaceOffRoundNumber() < 3)
+                if (GameManager.getFaceOffRoundNumber() < 3 )
                 {
                     FaceOffRounds();
                 }
@@ -718,9 +710,29 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         //SceneManager.LoadScene(1);
     }
 
+    // Call this method to switch the master client
+    public void SwitchMasterClient(Player newMasterClient)
+    {
+        // Make sure you are the current master client before switching
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // Set the new master client
+            PhotonNetwork.SetMasterClient(newMasterClient);
+        }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        Debug.Log("Master Client Changed to :" + newMasterClient.NickName);
+
+        base.OnMasterClientSwitched(newMasterClient);
+    }
+
     //public int playerleft;
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        //SwitchMasterClient(PhotonNetwork.PlayerList[0]);
+        PlayerLeftUI.showText(otherPlayer.NickName);
         //playerleft = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlAYERS_LEFT];
         //playerleft++;
         //PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.PlAYERS_LEFT,playerleft} });
@@ -730,8 +742,9 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (GameManager.getFaceOffInProgress())
         {
-            removeFaceoffPlayer(otherPlayer);
-            removeFaceoffVoter(otherPlayer);
+            photonView.RPC(nameof(RPC_removeFaceoffPlayer), RpcTarget.AllBuffered, otherPlayer);
+            photonView.RPC(nameof(RPC_removeFaceoffVoter), RpcTarget.AllBuffered, otherPlayer);
+
         }
 
 
@@ -761,7 +774,9 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         base.OnPlayerLeftRoom(otherPlayer);
     }
 
-    public void removeFaceoffPlayer(Player playerToRemove)
+    //public override onmas
+    [PunRPC]
+    public void RPC_removeFaceoffPlayer(Player playerToRemove)
     {
         for (int i = 0; i < faceOffPlayers.Count; i++)
         {
@@ -769,16 +784,60 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.Log("Removing faceoff player");
                 faceOffPlayers.RemoveAt(i);
+                faceOffMenu.removePlayerFromVoter();
             }
         }
 
         if (faceOffPlayers.Count() == 1)
         {
             //All Players left the Last is the Winner.
-            GameCompleted();
+            //GameCompleted();
+            GameCompletedForFaceOff();
         }
     }
-    public void removeFaceoffVoter(Player playerToRemove)
+
+    //This function is called when all the players of the face-off rounds left the room except the one who is also the
+    //player then he is gonna win.
+    public void GameCompletedForFaceOff()
+    {
+        int[] allVotes = new int[PhotonNetwork.CurrentRoom.PlayerCount];
+
+        int votes = 0, maxIndex = 0;
+        for (int i = 0; i < allVotes.Length; i++)
+        {
+            allVotes[i] = (int)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.PlayerVotesArray[i]];
+        }
+        AudioManager.Instance.Stop("Gameplay");
+        votes = allVotes.Max();
+        //maxIndex = allVotes.ToList().IndexOf(votes);
+        //gameEndMenu.StartTimer();
+        PhotonNetwork.AutomaticallySyncScene = false;
+        if (PhotonNetwork.LocalPlayer == faceOffPlayers[0])
+        {
+            //photonView.RPC(nameof(RPC_UpdateGamesWin), PhotonNetwork.PlayerList[maxIndex]);
+            RPC_UpdateGamesWin();
+        }
+        else
+        {
+            RPC_UpdateGamesLost();
+        }
+
+        photonView.RPC(nameof(RPC_ShowLevelComplete), RpcTarget.All, faceOffPlayers[0].NickName, votes);
+        Debug.Log("GameCompleted: " + maxIndex.ToString());
+        GameSettings.PlayerInRoom = false;
+        if (GameSettings.CurrentRooms != null)
+        {
+            foreach (var item in GameSettings.CurrentRooms)
+            {
+                if (item.roomName == PhotonNetwork.CurrentRoom.Name)
+                    item.playerCount = 0;
+            }
+        }
+
+        //gameEndMenu.setEndPanelStats(PhotonNetwork.PlayerList[maxIndex].NickName,votes);
+    }
+    [PunRPC]
+    public void RPC_removeFaceoffVoter(Player playerToRemove)
     {
         for (int i = 0; i < faceOffVoters.Count; i++)
         {
@@ -924,7 +983,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         {
             faceOffPlayers.Add(playerToAdd);
         }
-        Debug.Log("RPC_FACEOFF Players: " + faceOffPlayers.Count);
+        Debug.Log("Adding RPC_FACEOFF Players: " + faceOffPlayers.Count);
 
     }
     [PunRPC]
@@ -939,7 +998,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
         {
             faceOffVoters.Add(playerToAdd);
         }
-        Debug.Log("RPC_FACEOFF VOTERS: " + faceOffVoters.Count);
+        Debug.Log("Adding RPC_FACEOFF VOTERS: " + faceOffVoters.Count);
     } 
 
     public void restartGame()
@@ -1106,7 +1165,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
                     int[] letters = new int[3];
                     letters = returnRandomAlphabet();
                     acroText = alphabets[letters[0]].ToString() + alphabets[letters[1]].ToString() + alphabets[letters[2]].ToString();
-                    Debug.Log("Face Off Acre: " + acroText);
+                    Debug.Log("Face Off Acro: " + acroText);
                 }
                 break;
             case AcronymSetter.acronyms.FourLetters:
@@ -1116,7 +1175,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
 
                     acroText = alphabets[letters[0]].ToString() + alphabets[letters[1]].ToString() + alphabets[letters[2]].ToString()
     + alphabets[letters[3]].ToString();
-                    Debug.Log("Face Off Acre: " + acroText);
+                    Debug.Log("Face Off Acro: " + acroText);
                     break;
                 }
             case AcronymSetter.acronyms.FiveLetters:

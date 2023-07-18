@@ -66,14 +66,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (changedProps[GameSettings.ANSWER_SUBMITTED] != null)
         {
-            //if (targetPlayer.IsLocal)
-            //{
-            //    if (changedProps[GameSettings.PLAYER_VOTES] != null)
-            //    {
-            //        Debug.Log("Stars Upgraded");
-            //        PlayerStats.CurrentStars++;
-            //    }
-            //}
 
             bool state = (bool)changedProps[GameSettings.ANSWER_SUBMITTED];
             //Debug.Log("Answer Submitted is: " + state);
@@ -282,13 +274,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         updateAnswersSubmittedNumber();
         AudioManager.Instance.Play("Submit");
-        //if (GameSettings.normalGame)
-        //{
-        //}
-        //else
-        //{
-        //    //uiController.turnOffTextPanelFaceOff_Voter1();
-        //}
     }
 
     public static int faceOffRoundNumber { get; set; }

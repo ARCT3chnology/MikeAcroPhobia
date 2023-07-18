@@ -14,14 +14,14 @@ public class WaitingPanel : WelcomePanel
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);
         }
-        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3))
+        else if ((!GameSettings.normalGame) && (GameManager.getFaceOffRoundNumber() < 3) && (UIController.faceOffPlayers.Count>1))
         {
             timer_txt.text = "";
             Invoke(nameof(StartGame), 1f);
         }
         else
         {
-            if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.getFaceOffRoundNumber() != 3)
+            if (GameManager.playerGotSameMaxVotes() && GameSettings.FaceOffGame && GameManager.getFaceOffRoundNumber() != 3 && (UIController.faceOffPlayers.Count > 1))
             {
                 timer_txt.text = "";
                 Invoke(nameof(StartGame), 1f);

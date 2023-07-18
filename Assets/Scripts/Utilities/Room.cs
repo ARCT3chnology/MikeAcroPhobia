@@ -65,7 +65,7 @@ public class Room : MonoBehaviourPunCallbacks, IOnEventCallback
 
             if (_currenttime > _endtime)
             {
-                Txt_TimeLeftText.text = "Time Left: " + Mathf.FloorToInt(_currenttime % 60).ToString();
+                Txt_TimeLeftText.text = "Time Left: " + Mathf.FloorToInt(_currenttime / 60).ToString() + " : " + Mathf.FloorToInt(_currenttime % 60).ToString();
                 _currenttime -= Time.deltaTime;
                 //_timertext.text = Mathf.FloorToInt(_currenttime%60).ToString();
 

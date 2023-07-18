@@ -44,6 +44,7 @@ public class VoteTimer : MonoBehaviourPunCallbacks, IOnEventCallback
         _currenttime = _starttime;
         //Debug.Log(" " + _currenttime.ToString());
         _timeSlider.value = _starttime;
+        _timeSlider.value = _endtime;
         _timeSlider.minValue = _endtime;
         _timeSlider.maxValue = _starttime;
         PhotonNetwork.AddCallbackTarget(this);
@@ -84,7 +85,7 @@ public class VoteTimer : MonoBehaviourPunCallbacks, IOnEventCallback
             else
             {
                 _startTimer = false;
-                
+
                 OnTimerEnd.Invoke();
                 //gameManager.OnAnswerTimeComplete();
             }
