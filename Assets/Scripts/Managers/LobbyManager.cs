@@ -295,6 +295,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnLeftLobby()
     {
         Debug.Log(GameSettings.NickName + " Left Lobby");
+        SceneManager.LoadScene(0);
         base.OnLeftLobby();
     }
 
@@ -588,9 +589,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void onClick_onBackButton()
     {
-        PhotonNetwork.LeaveLobby();
-        SceneManager.LoadScene(0);
-        AudioManager.Instance.Play("MenuButton");
+        if (PhotonNetwork.LeaveLobby())
+        {
+            //SceneManager.LoadScene(0);
+            AudioManager.Instance.Play("MenuButton");
+        }
+        
     }
 
     public void onClick_LeaveRoomButton()

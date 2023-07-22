@@ -12,21 +12,21 @@ public class PlayerStats
     }
     public static Sprite PlayerImage;
 
-    public static int CurrentLevel
-    {
-        get;set;
-    }
     //public static int CurrentLevel
     //{
-    //    get
-    //    {
-    //        return PlayerPrefs.GetInt("CurrentLevel", 0);
-    //    }
-    //    set
-    //    {
-    //        PlayerPrefs.SetInt("CurrentLevel", value);
-    //    }
+    //    get;set;
     //}
+    public static int CurrentLevel
+    {
+        get
+        {
+            return PlayerPrefs.GetInt("CurrentLevel", 0);
+        }
+        set
+        {
+            PlayerPrefs.SetInt("CurrentLevel", value);
+        }
+    }
     //public static int CurrentStars
     //{
     //    get
@@ -38,48 +38,48 @@ public class PlayerStats
     //        PlayerPrefs.SetInt("CurrentStars", value);
     //    }
     //}
-    public static int TotalVotes
-    {
-        get;set;
-    }
     //public static int TotalVotes
     //{
-    //    get
-    //    {
-    //        return PlayerPrefs.GetInt("TotalVotes", 0);
-    //    }
-    //    set
-    //    {
-    //        PlayerPrefs.SetInt("TotalVotes", value);
-    //    }
+    //    get;set;
     //}
-
-    public static int ExperiencePoints
+    public static int TotalVotes
     {
-        get; set;
+        get
+        {
+            return PlayerPrefs.GetInt("TotalVotes", 0);
+        }
+        set
+        {
+            PlayerPrefs.SetInt("TotalVotes", value);
+        }
     }
+
     //public static int ExperiencePoints
     //{
-    //    get
-    //    {
-    //        return PlayerPrefs.GetInt("ExperiencePoints");
-    //    }
-    //    set
-    //    {
-    //        PlayerPrefs.SetInt("ExperiencePoints",value);
-
-    //    }
+    //    get; set;
     //}
-
-    public static int GamesWon
+    public static int ExperiencePoints
     {
-        get; set;
+        get
+        {
+            return PlayerPrefs.GetInt("ExperiencePoints");
+        }
+        set
+        {
+            PlayerPrefs.SetInt("ExperiencePoints", value);
+
+        }
     }
+
     //public static int GamesWon
     //{
-    //    get { return PlayerPrefs.GetInt("GamesWon"); }
-    //    set { PlayerPrefs.SetInt("GamesWon", value); }
+    //    get; set;
     //}
+    public static int GamesWon
+    {
+        get { return PlayerPrefs.GetInt("GamesWon"); }
+        set { PlayerPrefs.SetInt("GamesWon", value); }
+    }
 
     //public static int totalvotes
     //{
@@ -101,13 +101,13 @@ public class PlayerStats
     //    set { PlayerPrefs.SetInt("WinRate", value); }
     //}
 
-    public static int GamesLost
-    {
-        get; set;
-    }
     //public static int GamesLost
     //{
-    //    get { return PlayerPrefs.GetInt("GamesLost"); }
-    //    set { PlayerPrefs.SetInt("GamesLost", value); }
+    //    get; set;
     //}
+    public static int GamesLost
+    {
+        get { return PlayerPrefs.GetInt("GamesLost"); }
+        set { PlayerPrefs.SetInt("GamesLost", value); }
+    }
 }

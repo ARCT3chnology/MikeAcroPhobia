@@ -8,8 +8,9 @@ public class WaitingPanel : WelcomePanel
     {
         GameManager.faceOffRoundNumberIncreased = false;
         Debug.Log("Round number is: " + GameManager.getroundNumber());
+        Debug.Log("Normal Game: " + GameSettings.normalGame);  
         Debug.Log("Faceoff number number is: " + GameManager.getFaceOffRoundNumber());  
-        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 1))
+        if ((GameSettings.normalGame) && (GameManager.getroundNumber() != 5))
         {
             timer_txt.text = "";
             Invoke(nameof(StartGame),1f);
@@ -47,7 +48,7 @@ public class WaitingPanel : WelcomePanel
 
     private void Update()
     {
-        //Debug.Log("InRoom: " + GameSettings.PlayerInRoom + " Round Number: " + GameManager.getroundNumber() + " Normal Game:  " + GameSettings.normalGame);
+        Debug.Log("InRoom: " + GameSettings.PlayerInRoom + " Round Number: " + GameManager.getroundNumber() + " Normal Game:  " + GameSettings.normalGame);
         if (GameSettings.PlayerInRoom)
         {
             if (GameSettings.normalGame && GameManager.getroundNumber() < 5)

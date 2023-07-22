@@ -8,7 +8,8 @@ public enum menuName
     Room,
     PlayPanel,
     LobbyPanel,
-    RoomPanel
+    RoomPanel,
+    LoadingPanel
 }
 public class Menu : MonoBehaviour
 {

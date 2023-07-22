@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba443f98bc11a7a419a296e06f34d7d5, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  _gameVersion: 0.0.1
+  _gameVersion: 0.0.2
   _nickName: Mike
   _maxPlayerForLobby: 4
   _maxPlayerForRoom: 10

@@ -72,13 +72,13 @@ public class GameSettings : ScriptableObject
     {
         get 
         {
-            return PlayerPrefs.GetString("Name"+val.ToString(), "Player");
-            //return PlayerPrefs.GetString("Name", "Player");
+            //return PlayerPrefs.GetString("Name"+val.ToString(), "Player");
+            return PlayerPrefs.GetString("Name", "Player");
         }
         set 
         { 
-            PlayerPrefs.SetString("Name"+val.ToString(), value);
-            //PlayerPrefs.SetString("Name", value);
+            //PlayerPrefs.SetString("Name"+val.ToString(), value);
+            PlayerPrefs.SetString("Name", value);
         }
     }
 

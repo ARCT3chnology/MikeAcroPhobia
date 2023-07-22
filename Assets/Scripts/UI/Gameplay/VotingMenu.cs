@@ -93,8 +93,10 @@ public class VotingMenu : MonoBehaviour
         {
             for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
             {
+
                 //Debug.Log("Answer is: " + PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER]);
-                if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
+                //if (PhotonNetwork.PlayerList[i].CustomProperties[GameSettings.PlAYER_ANSWER] != null)
+                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey(GameSettings.PlAYER_ANSWER))
                 {
                     GameObject vote = Instantiate(voteUI, parentObject);
                     //Debug.Log(PhotonNetwork.PlayerList[i].NickName);

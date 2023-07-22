@@ -774,7 +774,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
-  m_HideMobileInput: 0
+  m_HideMobileInput: 1
   m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnSubmit:
@@ -1533,7 +1533,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
-  m_HideMobileInput: 0
+  m_HideMobileInput: 1
   m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnSubmit:
@@ -1728,7 +1728,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -24}
   m_SizeDelta: {x: 500, y: 250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &371658425
@@ -1779,7 +1779,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: JEST
 --- !u!222 &371658427
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3661,7 +3661,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 0, y: 212.5743}
+  m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &801013695
 GameObject:
@@ -5625,7 +5625,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 8}
   m_SizeDelta: {x: 163, y: 77}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1139979511
@@ -11623,8 +11623,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278247640
+  m_fontColor: {r: 0.84705883, g: 0.8784314, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -11641,8 +11641,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70
-  m_fontSizeBase: 70
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -11700,8 +11700,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 4512.9}
+  m_AnchoredPosition: {x: 2.5513, y: 0}
+  m_SizeDelta: {x: -5.1027, y: 4512.9}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &617662839757418519
 GameObject:
@@ -11937,7 +11937,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: Enter message...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

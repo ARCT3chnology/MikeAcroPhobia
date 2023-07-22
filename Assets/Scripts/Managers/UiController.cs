@@ -433,9 +433,9 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
             GameManager.updateRoundNumber();
         }
         GameManager.updateAnswersSubmittedNumber(0);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.VOTING_IN_PROGRESS, false } });
         resetPlayerAnswer();
         Invoke(nameof(StartNextRound), 5f);
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { GameSettings.VOTING_IN_PROGRESS, false } });
     }
 
 
@@ -489,6 +489,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
             Debug.Log("Game tied");
             GameTieMenu.gameObject.SetActive(true);
             GameTieMenu.showPlayers();
+            waitingPanel.gameObject.SetActive(false);
             //GameTieMenu.showPlayers();
             GameSettings.PlayerInRoom = false;
             if (GameSettings.CurrentRooms != null)

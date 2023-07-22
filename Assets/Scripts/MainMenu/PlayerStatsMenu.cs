@@ -9,11 +9,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
 
+
+
+
 public class PlayerStatsMenu : MonoBehaviour
 {
     [SerializeField] TMP_Text PlayerName;
     [SerializeField] TMP_Text PlayerLevel;
-    [SerializeField] Text StarsText;
+    [SerializeField] Text ExperienceText;
     [SerializeField] Image ExperienceSlider;
     [SerializeField] GameObject PlayerStatsUI;
     [SerializeField] Image SmallProfileImage;
@@ -59,6 +62,9 @@ public class PlayerStatsMenu : MonoBehaviour
             DestroyImmediate(Instance);
         }
     }
+
+
+
 
     public void SetGamesWonText()
     {
@@ -129,7 +135,7 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void setExperienceSlider()
     {
-        //Debug.Log("Setting SLider Value");
+        Debug.Log("Setting SLider Value");
         float fillValue;
         if (PlayerStats.ExperiencePoints > 0)
         {
@@ -146,9 +152,11 @@ public class PlayerStatsMenu : MonoBehaviour
             fillValue = 0;
         }
         PlayerStats.Experience = fillValue;
-        //Debug.Log("Experience: " + fillValue.ToString());
+        Debug.Log("Experience: " + PlayerStats.Experience.ToString());
         ExperienceSlider.fillAmount = PlayerStats.Experience;
         LargePlayerStats.experienceSlider.fillAmount = PlayerStats.Experience;
+        //UpdateStarsText();
+
     }
 
     public IEnumerator startNextLevel()
@@ -173,11 +181,11 @@ public class PlayerStatsMenu : MonoBehaviour
 
     public void UpdateStarsText() 
     {
-        StarsText.text = PlayerStats.ExperiencePoints.ToString() + " / " +MasterManager.Instance._gameSettings.gameLevels[PlayerStats.CurrentLevel].maxStars.ToString();
+        ExperienceText.text = PlayerStats.ExperiencePoints.ToString() + " / " +MasterManager.Instance._gameSettings.gameLevels[PlayerStats.CurrentLevel].maxStars.ToString();
         LargePlayerStats.txt_Experience.text = PlayerStats.ExperiencePoints.ToString() + " / " +MasterManager.Instance._gameSettings.gameLevels[PlayerStats.CurrentLevel].maxStars.ToString();
     }
 
-    void Update()
+    void LateUpdate()
     {
         // Check if the player has touched the screen
 #if !UNITY_EDITOR
@@ -208,9 +216,12 @@ public class PlayerStatsMenu : MonoBehaviour
                     // Check if the hit object is a UI element
                     if (hitObject.GetComponent<UIBehaviour>() != null)
                     {
+                        //MoveObjectUp(hitObject);
                         // A UI element was hit by the raycast
                         // Implement your logic based on the hit information
                         //Debug.Log("Hit UI element: " + hitObject.name);
+                        MoveObjectUp(hitObject);
+
                         if (hitObject.name == "PlayerStatsImage")
                         {
                             LargePlayerStats.mainGameObject.SetActive(true);
@@ -259,7 +270,8 @@ public class PlayerStatsMenu : MonoBehaviour
                     {
                         // A UI element was hit by the raycast
                         // Implement your logic based on the hit information
-                        //Debug.Log("Hit UI element: " + hitObject.name);
+                        Debug.Log("Hit UI element: " + hitObject.name);
+                        MoveObjectUp(hitObject);
                         if(hitObject.name == "PlayerStatsImage")
                         {
                             LargePlayerStats.mainGameObject.SetActive(true);
@@ -289,6 +301,22 @@ public class PlayerStatsMenu : MonoBehaviour
         Debug.Log("Updating Games Won");
         PlayerStats.GamesWon++;
         SetGamesWonText();
+    }
+
+    public void MoveObjectUp(GameObject ObjectToMove)
+    {
+        Debug.Log("Keyboard Height: "+ObjectToMove.name);
+        if (ObjectToMove.name == "NameText")
+        {
+            ObjectToMove.transform.parent.parent.parent.GetComponent<RectTransform>().DOAnchorPos(new Vector2(0,220),.5f);
+        }
+        else
+        {
+            if (GameObject.Find("LoginPanel"))
+            {
+                GameObject.Find("LoginPanel").GetComponent<RectTransform>().DOAnchorPos(new Vector2(0,0),.5f);
+            }
+        }
     }
 
 

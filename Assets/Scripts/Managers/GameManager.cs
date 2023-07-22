@@ -122,7 +122,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public static bool getFaceOffInProgress()
     {
-        return (bool)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_IN_PROGRESS];
+        if (PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_IN_PROGRESS]!=null)
+        {
+            return (bool)PhotonNetwork.CurrentRoom.CustomProperties[GameSettings.FACEOFF_IN_PROGRESS];
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static void setFaceOffInProgress(bool state)

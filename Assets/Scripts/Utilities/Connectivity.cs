@@ -20,6 +20,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
     [SerializeField] Menu LoginMenu;
     [SerializeField] Menu SplashMenu;
     [SerializeField] GameObject ageInput;
+    [SerializeField] RoomFullUI RoomFullUI;
     //private void Awake()
     //{
     //    PlayerPrefs.DeleteAll();
@@ -27,42 +28,31 @@ public class Connectivity : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        Debug.Log("Connecting to server");
-        //PhotonNetwork.NickName = MasterManager.GameSettings.NickName;
-        PhotonNetwork.GameVersion = MasterManager.GameSettings.GameVersion;
-        if (!connected || PhotonNetwork.NetworkClientState == ClientState.Disconnected)
-        {
-            connected = PhotonNetwork.ConnectUsingSettings();
-        }
-        PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.EnableCloseConnection = true;
-        Debug.Log(connected);
+
         //placeholderText.text = GameSettings.NickName;
 
-        //if (GameSettings.NickName != "Player")
-        //{
-        //    if (PlayerPrefs.GetInt("Gender") == 0)
-        //    {
-        //        Gender = sex.male;
-        //    }
-        //    else
-        //    {
-        //        Gender = sex.female;
-        //    }
-        //    MenuManager.Instance.CloseMenu(LoginMenu);
-        //    MenuManager.Instance.OpenMenu(menuName.PlayPanel);
-        //    PlayerStatsMenu.Instance.setName();
-        //    PlayerStatsMenu.Instance.setLevel();
-        //    PlayerStatsMenu.Instance.setImageProfile(Gender);
-        //    PlayerStatsMenu.Instance.setExperienceSlider();
-        //    PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
-        //}
+        if (GameSettings.NickName != "Player")
+        {
+            //if (PlayerPrefs.GetInt("Gender") == 0)
+            //{
+            //    Gender = sex.male;
+            //}
+            //else
+            //{
+            //    Gender = sex.female;
+            //}
+            MenuManager.Instance.CloseMenu(LoginMenu);
+            MenuManager.Instance.OpenMenu(menuName.LoadingPanel);
+            //PlayerStatsMenu.Instance.setName();
+            //PlayerStatsMenu.Instance.setLevel();
+            //PlayerStatsMenu.Instance.setImageProfile(Gender);
+            //PlayerStatsMenu.Instance.setExperienceSlider();
+            //PlayerStatsMenu.Instance.UpdateStarsText();
+            //PlayerStatsMenu.Instance.setPlayerStatsmenuState(true);
+        }
         if (PhotonNetwork.IsConnected)
         {
             PlayButton.interactable = true;
-            if (connected)
-            {
-            }
         }
     }
 
@@ -177,21 +167,9 @@ public class Connectivity : MonoBehaviourPunCallbacks
         Debug.Log("connected");
     }
 
-    public override void OnConnected()
-    {
-        Debug.Log("Connected");
-        PlayButton.interactable = false;
-        base.OnConnected();
-    }
 
-    public override void OnConnectedToMaster()
-    {
-        Debug.Log("Connected to Master");
-        GameSettings.ConnectedtoMaster = true;
-        PlayButton.interactable = true;
-        //ConnectionCanvas.instance.showConnectedPanel(true);
-        //base.OnConnectedToMaster();
-    }
+
+
 
     public void SettingNickName_OnClick()
     {
@@ -267,7 +245,16 @@ public class Connectivity : MonoBehaviourPunCallbacks
         options.IsVisible = true;
         options.CustomRoomPropertiesForLobby = new string[] { "NotStarted" };
         addRoomProperties(options);
-        PhotonNetwork.JoinOrCreateRoom("Random", options, TypedLobby.Default);
+        if(PhotonNetwork.JoinOrCreateRoom("Random", options, TypedLobby.Default))
+        {
+            //RoomJoined SuccessFully.
+            GameSettings.PlayerInRoom = true;
+
+        }
+        else
+        {
+            //Room is full.
+        }
 
     }
 
@@ -304,6 +291,13 @@ public class Connectivity : MonoBehaviourPunCallbacks
         //    //PhotonNetwork.CurrentRoom.IsOpen = false;
         //}
         base.OnJoinedRoom();
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("Failed to join room, reason: " + message);
+        RoomFullUI.showText("Room Full");
+        //base.OnJoinRoomFailed(returnCode, message);
     }
 
     public void LoadLevelForPlayers()
@@ -343,7 +337,7 @@ public class Connectivity : MonoBehaviourPunCallbacks
     public void OnClick_AgeSelected()
     {
         Debug.Log("Player age is:" + PlayerStats.BirthYear);
-        MenuManager.Instance.OpenMenu(menuName.PlayPanel);
+        MenuManager.Instance.OpenMenu(menuName.LoadingPanel);
         PlayerStatsMenu.Instance.setName();
         PlayerStatsMenu.Instance.setLevel();
         PlayerStatsMenu.Instance.setImageProfile(Gender);
