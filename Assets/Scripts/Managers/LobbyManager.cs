@@ -451,6 +451,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         UpdateUi(GameSettings.CurrentRooms);
+        if (!PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
         //base.OnConnectedToMaster();
     }
 

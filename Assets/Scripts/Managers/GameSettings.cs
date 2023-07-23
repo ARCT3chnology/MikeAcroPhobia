@@ -299,28 +299,28 @@ public class GameSettings : ScriptableObject
     {
         get
         {
-            return 60;
+            return 120;
         }
     }
     public static float FiveLetterRoundTime
     {
         get
         {
-            return 60;
+            return 150;
         }
     }
     public static float SixLetterRoundTime
     {
         get
         {
-            return 60;
+            return 180;
         }
     }
     public static float SevenLetterRoundTime
     {
         get
         {
-            return 70;
+            return 200;
         }
     }
     public static bool normalGame

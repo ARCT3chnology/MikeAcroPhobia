@@ -104,6 +104,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        ConnectionCanvas.instance.showDisConnectedPanel();
+        base.OnDisconnected(cause);
+    }
+
+    public override void OnConnected()
+    {
+        ConnectionCanvas.instance.showConnectedPanel(true);
+        base.OnConnected();
+    }
+
     public void makePlayerWaitForFaceOffVoting(Player p)
     {
         uiController.makePlayerWaitForFaceOffVoting(p);

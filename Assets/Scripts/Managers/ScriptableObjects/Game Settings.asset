@@ -38,3 +38,21 @@ MonoBehaviour:
     maxStars: 15000
   - minStars: 15001
     maxStars: 20000
+  - minStars: 20001
+    maxStars: 30000
+  - minStars: 30001
+    maxStars: 50000
+  - minStars: 50001
+    maxStars: 80000
+  - minStars: 80001
+    maxStars: 110000
+  - minStars: 110001
+    maxStars: 150000
+  - minStars: 150001
+    maxStars: 200000
+  - minStars: 200001
+    maxStars: 300000
+  - minStars: 300001
+    maxStars: 500000
+  - minStars: 500001
+    maxStars: 500000

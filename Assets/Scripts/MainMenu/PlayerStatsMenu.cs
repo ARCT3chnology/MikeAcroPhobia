@@ -22,6 +22,7 @@ public class PlayerStatsMenu : MonoBehaviour
     [SerializeField] Image SmallProfileImage;
     [SerializeField] Sprite defaultImage;
     [SerializeField] GraphicRaycaster graphicRaycaster;
+    [SerializeField] GameObject helperText;
     public static PlayerStatsMenu Instance;
 
     [Serializable]
@@ -220,6 +221,7 @@ public class PlayerStatsMenu : MonoBehaviour
                         // A UI element was hit by the raycast
                         // Implement your logic based on the hit information
                         //Debug.Log("Hit UI element: " + hitObject.name);
+                        
                         MoveObjectUp(hitObject);
 
                         if (hitObject.name == "PlayerStatsImage")
@@ -235,6 +237,8 @@ public class PlayerStatsMenu : MonoBehaviour
                             {
                                 LargePlayerStats.mainGameObject.SetActive(false);
                                 graphicRaycaster.enabled = false;
+                                helperText.SetActive(false);
+
                             });
                         }
                         break; // Exit the loop after the first UI hit
@@ -285,6 +289,7 @@ public class PlayerStatsMenu : MonoBehaviour
                             {
                                 LargePlayerStats.mainGameObject.SetActive(false);
                                 graphicRaycaster.enabled = false;
+                                helperText.SetActive(false);
                             });
                         }
                         break; // Exit the loop after the first UI hit

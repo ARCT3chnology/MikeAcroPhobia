@@ -67,7 +67,6 @@ public class PlayerStats
         set
         {
             PlayerPrefs.SetInt("ExperiencePoints", value);
-
         }
     }
 

@@ -1303,7 +1303,7 @@ public class UiController : MonoBehaviourPunCallbacks, IPunObservable
 
     public bool checkIfTheVotingIsInProgress()
     {
-        if (GameManager.isVotingInprogress())
+        if (GameManager.isVotingInprogress() && (votingPanel.gameObject.activeSelf == true))
         {
             SingleWaitingPanel.SetActive(true);
             roundConfigurator.roundTimer.StartTime = false;
